@@ -3,9 +3,8 @@ const sequelize = require("../config/connectDB"); // Ensure the path is correct
 
 const Organizer = sequelize.define("Organizer", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
-    autoIncrement: true,
   },
   userName: {
     type: DataTypes.STRING,
@@ -14,7 +13,6 @@ const Organizer = sequelize.define("Organizer", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       isEmail: true,
     },
@@ -38,14 +36,17 @@ const Organizer = sequelize.define("Organizer", {
   age: {
     type: DataTypes.INTEGER,
   },
+  // gender: {
+  //   type: DataTypes.ENUM("male", "female"),
+  // }
   gender: {
-    type: DataTypes.ENUM("male", "female"),
-  },
-  role: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
-    defaultValue: "organizer", // Default role
+    validate: {
+      isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+    }
   },
+  
   // Organizer-specific attributes
   jobTitle: {
     type: DataTypes.STRING,

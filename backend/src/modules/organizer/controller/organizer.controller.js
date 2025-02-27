@@ -1,11 +1,11 @@
-const Advisor = require("../../../../DB/models/index");
+const {Organizer} = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
 
 
 // ✅ Create an Organizer
 exports.createOrganizer = async (req, res) => {
   try {
-    const { userName, email, password, phoneNumber, photo, address, age, gender, jobTitle } = req.body;
+    const { id,userName, email, password, phoneNumber, photo, address, age, gender, jobTitle } = req.body;
     // Check if email already exists
     const existingOrganizer = await Organizer.findOne({ where: { email } });
     if (existingOrganizer) {
@@ -18,7 +18,8 @@ exports.createOrganizer = async (req, res) => {
 
 
     const organizer = await Organizer.create({
-      userName,
+      id,
+      userName,  
       email,
       password: hashedPassword, // Store encrypted password
       phoneNumber,
@@ -26,7 +27,6 @@ exports.createOrganizer = async (req, res) => {
       address,
       age,
       gender,
-      role: "organizer",
       jobTitle,
     });
 

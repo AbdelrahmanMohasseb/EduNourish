@@ -4,8 +4,7 @@ const sequelize = require("../config/connectDB");
 const Teacher = sequelize.define("Teacher", {
   teacherID: {
     type: DataTypes.STRING,
-    primaryKey: true,
-    unique: true,
+    primaryKey: true
   },
   username: {
     type: DataTypes.STRING,
@@ -13,8 +12,7 @@ const Teacher = sequelize.define("Teacher", {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
+    allowNull: false
   },
   password: {
     type: DataTypes.STRING,
@@ -32,9 +30,16 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  // gender: {
+  //   type: DataTypes.ENUM("male", "female"),
+  //   allowNull: true,
+  // }
   gender: {
-    type: DataTypes.ENUM("male", "female"),
-    allowNull: true,
+    type: DataTypes.STRING,  // Use STRING instead of ENUM
+    allowNull: false,
+    validate: {
+      isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+    }
   },
   salary: {
     type: DataTypes.FLOAT,

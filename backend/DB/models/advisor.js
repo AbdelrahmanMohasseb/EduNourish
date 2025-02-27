@@ -3,9 +3,8 @@ const sequelize = require("../config/connectDB"); // Adjust the path to your DB 
 
 const Advisor = sequelize.define("Advisor", {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+    type: DataTypes.STRING,
+    primaryKey: true
   },
   userName: {
     type: DataTypes.STRING,
@@ -14,7 +13,6 @@ const Advisor = sequelize.define("Advisor", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       isEmail: true,
     },
@@ -38,14 +36,17 @@ const Advisor = sequelize.define("Advisor", {
   age: {
     type: DataTypes.INTEGER,
   },
+  // gender: {
+  //   type: DataTypes.ENUM("male", "female"),
+  // }
   gender: {
-    type: DataTypes.ENUM("male", "female"),
-  },
-  role: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
-    defaultValue: "advisor", // Default role
+    validate: {
+      isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+    }
   },
+
   // Advisor-specific attributes
   schoolName: {
     type: DataTypes.STRING,

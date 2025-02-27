@@ -14,7 +14,6 @@ const Parent = sequelize.define("Parent", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       isEmail: true,
     },
@@ -39,10 +38,17 @@ const Parent = sequelize.define("Parent", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  // gender: {
+  //   type: DataTypes.ENUM("Male", "Female"),
+  //   allowNull: true,
+  // } 
   gender: {
-    type: DataTypes.ENUM("Male", "Female"),
-    allowNull: true,
-  },
+    type: DataTypes.STRING,  // Use STRING instead of ENUM
+    allowNull: false,
+    validate: {
+      isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+    }
+  } ,
   
 });
 

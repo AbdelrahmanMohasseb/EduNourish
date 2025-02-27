@@ -1,4 +1,4 @@
-const Advisor = require("../../../../DB/models/index");
+const {Advisor} = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
 
 // ✅ Create an Advisor
@@ -25,7 +25,6 @@ exports.createAdvisor = async (req, res) => {
       address,
       age,
       gender,
-      role: "advisor",
       schoolName,
       careerHistory,
     });

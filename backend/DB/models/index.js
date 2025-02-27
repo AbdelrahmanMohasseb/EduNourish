@@ -8,7 +8,7 @@ const Teacher=require('./Teacher');
 
 
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
 
