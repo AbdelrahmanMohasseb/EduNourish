@@ -1,14 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const busController = require('./controller/Bus.controller');
+const {createBus,getAllBuses,getBusById,updateBus,deleteBus} 
+= require("../../../src/modules/bus/controller/bus.controller");
 
-
-router.get('/', busController.getAllBuses); 
-
-router.post('/', busController.createBus);  
-
-router.put('/:id', busController.updateBus);
-
-router.delete('/:id', busController.deleteBus);
+router.post("/", createBus);
+router.get("/", getAllBuses);
+router.get("/:id", getBusById);
+router.put("/:id", updateBus);
+router.delete("/:id", deleteBus);
 
 module.exports = router;

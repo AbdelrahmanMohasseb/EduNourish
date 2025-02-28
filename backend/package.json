@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node app.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "typescript": "^5.7.2"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.8",
     "@types/node": "^22.10.0"
   }
 }

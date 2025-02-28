@@ -1,62 +1,62 @@
 const { Bus } = require('../../../../DB/models/index');
 
 
+exports.createBus = async (req, res) => {
+    try {
+      const { number,driverName, arrivalTime, departureTime } = req.body;
+  
+      const bus = await Bus.create({
+        number,
+        driverName,
+        arrivalTime,
+        departureTime,
+      });
+  
+      res.status(201).json({ message: "Bus created successfully", bus });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
 exports.getAllBuses = async (req, res) => {
     try {
         const buses = await Bus.findAll();
-        res.json(buses);
+        res.status(200).json(buses);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
-
-exports.createBus = async (req, res) => {
+exports.getBusById = async (req, res) => {
     try {
-        const { number, driverName, arrivalTime, departureTime } = req.body;
-        const bus = await Bus.create({ number, driverName, arrivalTime, departureTime });
-        res.status(201).json(bus);
+        const bus = await Bus.findByPk(req.params.id);
+        if (!bus) return res.status(404).json({ message: "Bus not found" });
+        res.status(200).json(bus);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
-
 
 exports.updateBus = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { number, driverName, arrivalTime, departureTime } = req.body;
-        const bus = await Bus.findByPk(id);
+        const bus = await Bus.findByPk(req.params.id);
+        if (!bus) return res.status(404).json({ message: "Bus not found" });
 
-        if (!bus) {
-            return res.status(404).json({ message: "Bus not found" });
-        }
-
-        bus.number = number || bus.number;
-        bus.driverName = driverName || bus.driverName;
-        bus.arrivalTime = arrivalTime || bus.arrivalTime;
-        bus.departureTime = departureTime || bus.departureTime;
-
-        await bus.save();
-        res.json(bus);
+        await bus.update(req.body);
+        res.status(200).json({ message: "Bus updated successfully", bus });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
-
 exports.deleteBus = async (req, res) => {
     try {
-        const { id } = req.params;
-        const bus = await Bus.findByPk(id);
-
-        if (!bus) {
-            return res.status(404).json({ message: "Bus not found" });
-        }
+        const bus = await Bus.findByPk(req.params.id);
+        if (!bus) return res.status(404).json({ message: "Bus not found" });
 
         await bus.destroy();
-        res.status(204).json({ message: "Bus deleted" });
+        res.status(200).json({ message: "Bus deleted successfully" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
