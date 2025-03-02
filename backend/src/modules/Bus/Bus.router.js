@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {createBus,getAllBuses,getBusById,updateBus,deleteBus} 
-= require("../../../src/modules/bus/controller/Bus.controller");
+= require("../../../src/modules/Bus/controller/Bus.controller");
 
 router.post("/", createBus);
 router.get("/", getAllBuses);
