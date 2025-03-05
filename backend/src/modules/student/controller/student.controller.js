@@ -135,4 +135,3 @@ exports.signup = async (req, res) => {
         
         res.status(500).json({ message: "A server error occurred!" });
     }
-};
