@@ -1,22 +1,3 @@
-// const {body}=require('express-validator');
-
-// const singUpvalidation=[
-//     body("userName").isString(),
-//     body("email").isString().isEmail(),
-//     body('password').isLength({ min: 5 }),
-//     body('cPassword').custom((value, { req }) => {
-//         if (value !== req.body.password) {
-//           throw new Error('Password confirmation does not match password');
-//         }
-    
-//         // Indicates the success of this synchronous custom validator
-//         return true;
-//       }),
-//       body("photo").isString()
-// ]
-// module.exports={singUpvalidation}
-
-
 const { body, validationResult } = require("express-validator");
 
 // التحقق من بيانات الطالب عند التسجيل
@@ -49,4 +30,3 @@ exports.validateStudentSignup = [
         next();
     }
 ];
-

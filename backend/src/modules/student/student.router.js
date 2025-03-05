@@ -10,6 +10,7 @@ router.get("/", getAllStudents);
 router.get("/:id", getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
+router.post("/signup", validateStudentSignup, signup);
 
 router.post("/signup", validateStudentSignup, signup);
 // // إضافة المسارات الجديدة
