@@ -5,6 +5,7 @@ const Student=require('./student');
 const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
+const Signup=require("./studentsignup")
 
 
 // Optional: Sync database (only in development)
@@ -19,5 +20,6 @@ module.exports = {
   Advisor,
   Organizer,
   Student,
+  Signup,
   sequelize,
 };
