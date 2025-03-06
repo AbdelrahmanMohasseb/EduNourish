@@ -7,7 +7,7 @@ const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
-
+const Signin=require("./studentsignin")
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -22,4 +22,5 @@ module.exports = {
   Organizer,
   Student,
   Signup,
+  Signin
 };

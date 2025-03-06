@@ -1,6 +1,7 @@
-const {Student,Signup} = require("../../../../DB/models/index");
+const {Student,Signup,Signin} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
+const StudentSignup = require("../../../../DB/models/studentsignup");
 
 exports.createStudent = async (req, res) => {
     try {
@@ -130,3 +131,43 @@ exports.signup = async (req, res) => {
         res.status(500).json({ message: "A server error occurred!" });
     }
 }
+exports.signin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
+        const student = await StudentSignup.findOne({ where: { email } });
+        if (!student) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        const isMatch = await bcrypt.compare(password, student.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        const token = jwt.sign(
+            { id: student.id, email: student.email },
+            process.env.JWT_SECRET || "your_secret_key",
+            { expiresIn: "1h" }
+        );
+
+        res.status(200).json({
+            message: "Login successful",
+            student: {
+                id: student.id,
+                userName: student.userName,
+                email: student.email,
+                classNumber: student.classNumber
+            },
+            token
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
