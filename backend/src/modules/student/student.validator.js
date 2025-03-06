@@ -1,6 +1,5 @@
 const { body, validationResult } = require("express-validator");
 
-// التحقق من بيانات الطالب عند التسجيل
 exports.validateStudentSignup = [
     body("userName")
         .notEmpty().withMessage("User name is required")

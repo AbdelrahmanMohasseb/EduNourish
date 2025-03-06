@@ -24,6 +24,6 @@ const validationFunc=(schema)=>{
 }
 
 
-module.exports={validationFunc}
+module.exports={validationResult , validationFunc}
 
 

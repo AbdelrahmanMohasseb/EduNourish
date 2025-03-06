@@ -1,5 +1,6 @@
 const {Student,Signup} = require("../../../../DB/models/index");
-
+const bcrypt = require("bcrypt"); 
+const jwt = require("jsonwebtoken");
 
 exports.createStudent = async (req, res) => {
     try {
@@ -86,26 +87,21 @@ exports.signup = async (req, res) => {
     try {
         const { userName, email, password, classNumber } = req.body;
 
-        // التحقق من إدخال جميع الحقول
         if (!userName || !email || !password || !classNumber) {
             return res.status(400).json({ message: "All fields are required!" });
         }
 
-        // التحقق من قوة كلمة المرور (على الأقل 6 أحرف)
-        if (password.length < 6) {
-            return res.status(400).json({ message: "Password must be at least 6 characters long" });
-        }
-
-        // التحقق من عدم تكرار البريد الإلكتروني
         const existingStudent = await Student.findOne({ where: { email } });
         if (existingStudent) {
             return res.status(400).json({ message: "Email is already registered!" });
         }
+        
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
+        }
 
-        // تشفير كلمة المرور
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // إنشاء الطالب
         const newStudent = await Signup.create({
             userName,
             email,
@@ -113,7 +109,6 @@ exports.signup = async (req, res) => {
             classNumber
         });
 
-        // إنشاء التوكن
        const token = jwt.sign({ id: newStudent.id }, "your_secret_key", { expiresIn: "1h" });
 
         res.status(201).json({
@@ -125,7 +120,6 @@ exports.signup = async (req, res) => {
     } catch (error) {
         console.error(error);
         
-        // إرجاع الأخطاء إذا كانت من Sequelize
         if (error.name === "SequelizeValidationError") {
             return res.status(400).json({
                 message: "Validation error",
@@ -135,3 +129,4 @@ exports.signup = async (req, res) => {
         
         res.status(500).json({ message: "A server error occurred!" });
     }
+}
