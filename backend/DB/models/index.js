@@ -1,10 +1,13 @@
 const sequelize = require('../config/connectDB');
+
 const Advisor = require('./advisor');
 const Organizer = require('./organizer');
 const Student=require('./student');
 const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
+const Signup=require("./studentsignup")
+const Signin=require("./studentsignin")
 
 
 // Optional: Sync database (only in development)
@@ -13,11 +16,17 @@ sequelize.sync({ alter: false })
   .catch((err) => console.error("Database synchronization error:", err));
 
 module.exports = {
-  Bus,
+   Bus,
   Teacher,
   Parent,
   Advisor,
   Organizer,
   Student,
+  Signup,
+
+
+  Signin,
+
   sequelize,
+
 };
