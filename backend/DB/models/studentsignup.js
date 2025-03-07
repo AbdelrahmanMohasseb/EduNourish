@@ -1,3 +1,4 @@
+
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
 
@@ -26,7 +27,7 @@ const StudentSignup = sequelize.define("StudentSignup", {
         allowNull: false
     }
 }, {
-    timestamps: true // لتتبع وقت الإنشاء والتحديث
+    timestamps: true 
 });
 
 
