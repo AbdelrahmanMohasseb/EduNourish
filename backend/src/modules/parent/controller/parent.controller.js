@@ -2,10 +2,12 @@ const { Parent } = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 exports.createParent = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);              
-    const parent = await Parent.create({ ...req.body, password: hashedPassword }); 
+
+    const parent = await Parent.create({ ...req.body, password: hashedPassword });
 
     res.status(201).json(parent);
   } catch (error) {
@@ -58,9 +60,10 @@ exports.deleteParent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
 
-// Sign-in function
+};
+
+
 exports.signin = async (req, res) => {
   try {
       const { email, password } = req.body;
@@ -87,4 +90,5 @@ exports.signin = async (req, res) => {
       console.error("Signin Error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
   }
+
 };
