@@ -1,7 +1,6 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,16 +12,19 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+
     "express": "^4.21.1",
+
     "express-validator": "^7.2.1",
     "mssql": "^11.0.1",
-    "mysql2": "^3.11.4",
-    "nodemon": "^3.1.7",
+    "mysql2": "^3.13.0",
+    "nodemon": "^3.1.9",
     "sequelize": "^6.37.5",
     "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.7.8",
     "@types/node": "^22.10.0"
-  }
+  },
+  "description": ""
 }

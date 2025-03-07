@@ -1,3 +1,4 @@
+
 const {Student,Signup,Signin} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
@@ -177,3 +178,4 @@ exports.signin = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+

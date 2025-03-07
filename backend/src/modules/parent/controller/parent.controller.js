@@ -6,13 +6,14 @@ const jwt = require("jsonwebtoken");
 exports.createParent = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);              
+
     const parent = await Parent.create({ ...req.body, password: hashedPassword });
+
     res.status(201).json(parent);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
-
 
 exports.getAllParents = async (req, res) => {
   try {
@@ -22,7 +23,6 @@ exports.getAllParents = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.getParentById = async (req, res) => {
   try {
@@ -35,7 +35,6 @@ exports.getParentById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.updateParent = async (req, res) => {
   try {
@@ -50,7 +49,6 @@ exports.updateParent = async (req, res) => {
   }
 };
 
-
 exports.deleteParent = async (req, res) => {
   try {
     const parent = await Parent.findByPk(req.params.id);
@@ -62,7 +60,9 @@ exports.deleteParent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
 };
+
 
 exports.signin = async (req, res) => {
   try {
@@ -90,4 +90,5 @@ exports.signin = async (req, res) => {
       console.error("Signin Error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
   }
+
 };

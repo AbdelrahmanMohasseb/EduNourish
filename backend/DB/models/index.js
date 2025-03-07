@@ -8,6 +8,7 @@ const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
 const Signin=require("./studentsignin")
 
+
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))
@@ -21,6 +22,8 @@ module.exports = {
   Organizer,
   Student,
   Signup,
+
   Signin,
+
   sequelize,
 };
