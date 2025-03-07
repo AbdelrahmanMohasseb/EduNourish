@@ -1,3 +1,4 @@
+
 const { body, validationResult } = require("express-validator");
 
 exports.validateStudentSignup = [
@@ -30,6 +31,7 @@ exports.validateStudentSignup = [
     }
 ];
 
+
 exports.validateStudentSignin = [
     body("email")
         .notEmpty().withMessage("Email is required")
@@ -50,3 +52,4 @@ exports.validateStudentSignin = [
         }
 
     ]
+

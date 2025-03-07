@@ -1,7 +1,8 @@
+
+
 const {Student,Signup,Signin} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
-const StudentSignup = require("../../../../DB/models/studentsignup");
 
 exports.createStudent = async (req, res) => {
     try {
@@ -130,7 +131,9 @@ exports.signup = async (req, res) => {
         
         res.status(500).json({ message: "A server error occurred!" });
     }
-}
+
+};
+
 exports.signin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -170,4 +173,5 @@ exports.signin = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
+
 };

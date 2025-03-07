@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,signup, signin} 
     = require("../../../src/modules/student/controller/student.controller");
+
 const { validateStudentSignup, validateStudentSignin } = require("./student.validator"); 
+
+
 
 // تعريف الـ Routes
 router.post("/", createStudent); 
@@ -13,26 +16,6 @@ router.delete("/:id", deleteStudent);
 
 router.post("/signup", validateStudentSignup, signup);
 router.post("/signin",validateStudentSignin,signin)
-// // إضافة المسارات الجديدة
-// router.get("/:id/viewTable", viewTable);
 
-// router.get("/:id/viewSubjects", viewSubjects);
-
-// router.get("/checkMenu", checkMenu);
-// router.post("/addMenuItem",addMenuItem);
-
-// router.post("/submitAssignments",submitAssignments);
-// router.get("/:id/getAssignments", getAssignments);
-
-// router.get("/:id/getActivities", getStudentActivities);
-// router.post("/participateActivity", participateActivity);
-
-// router.post("/markAttendance", markAttendance);
-// router.get("/:id/attendance", getAttendance);
-
-// router.get("/:id/viewGrades",viewGrades);
-// router.post("/addGrade",addGrade);
-
-// router.get("/:id/displayStudentInfo", displayStudentInfo);
 
 module.exports = router;
