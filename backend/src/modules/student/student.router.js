@@ -6,6 +6,8 @@ const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,s
 const { validateStudentSignup, validateStudentSignin } = require("./student.validator"); 
 
 
+
+// تعريف الـ Routes
 router.post("/", createStudent); 
 router.get("/", getAllStudents); 
 router.get("/:id", getStudentById); 
@@ -14,7 +16,6 @@ router.delete("/:id", deleteStudent);
 
 router.post("/signup", validateStudentSignup, signup);
 router.post("/signin",validateStudentSignin,signin)
-
 
 
 module.exports = router;

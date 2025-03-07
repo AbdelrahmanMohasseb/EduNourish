@@ -27,7 +27,7 @@ const StudentSignup = sequelize.define("StudentSignup", {
         allowNull: false
     }
 }, {
-    timestamps: true // لتتبع وقت الإنشاء والتحديث
+    timestamps: true 
 });
 
 

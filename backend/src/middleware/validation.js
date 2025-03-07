@@ -1,3 +1,4 @@
+
 const { validationResult } = require("express-validator")
 
 const headerData=["body","params","query"]
@@ -23,4 +24,6 @@ const validationFunc=(schema)=>{
 }
 
 
-module.exports={validationFunc}
+module.exports={validationResult , validationFunc}
+
+
