@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB"); 
 
+const bcrypt = require ("bcrypt")
+
 const Parent = sequelize.define("Parent", {
   id: {
     type: DataTypes.STRING,
