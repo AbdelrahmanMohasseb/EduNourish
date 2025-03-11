@@ -8,7 +8,8 @@ const Parent=require('./parent');
 const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
 const Signin=require("./studentsignin")
-
+const TimeTable=require("./timeTable")
+const Menu=require("./Menu")
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -23,10 +24,9 @@ module.exports = {
   Organizer,
   Student,
   Signup,
-
-
   Signin,
-
+  TimeTable,
+  Menu,
   sequelize,
 
 };

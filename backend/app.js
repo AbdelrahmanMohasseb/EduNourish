@@ -6,8 +6,8 @@ const organizerRoutes = require("./src/modules/organizer/organizer.router");
 const parentRoutes = require("./src/modules/parent/parent.router");
 const teacherRoutes = require("./src/modules/teacher/teacher.router");
 const BusRoutes = require("./src/modules/Bus/Bus.router");
-
-
+const timetableRoutes=require("./src/modules/Timetable/timetable.router")
+const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
 const app = express();
 
 app.use(express.json());
@@ -19,7 +19,8 @@ app.use("/api/organizers", organizerRoutes);
 app.use("/api/parents", parentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/buses", BusRoutes);
-
+app.use("/api/timetables",timetableRoutes);
+app.use("/api/ResturantMenu",resturantMenu);
 
 // Server
 const PORT = 3000;
