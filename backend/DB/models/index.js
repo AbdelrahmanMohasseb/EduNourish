@@ -8,6 +8,7 @@ const Parent=require('./parent');
 const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
 const Signin=require("./studentsignin")
+const News=require("./news")
 
 
 // Optional: Sync database (only in development)
@@ -23,10 +24,8 @@ module.exports = {
   Organizer,
   Student,
   Signup,
-
-
   Signin,
-
+  News,
   sequelize,
 
 };
