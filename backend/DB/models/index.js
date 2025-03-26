@@ -9,7 +9,9 @@ const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
 const Signin=require("./studentsignin")
 const News=require("./news")
-
+const Feedback=require("./feedback")
+const Advice=require("./advice")
+const Notification=require("./notification")
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -26,6 +28,9 @@ module.exports = {
   Signup,
   Signin,
   News,
+  Feedback,
+  Advice,
+  Notification,
   sequelize,
 
 };

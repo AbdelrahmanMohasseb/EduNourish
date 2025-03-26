@@ -7,6 +7,8 @@ const parentRoutes = require("./src/modules/parent/parent.router");
 const teacherRoutes = require("./src/modules/teacher/teacher.router");
 const BusRoutes = require("./src/modules/Bus/Bus.router");
 const newsRoutes = require("./src/modules/news/news.router");
+const feedbackRoutes = require("./src/modules/feedback/feedback.router");
+const adviceRoutes = require("./src/modules/advice/advice.router");
 
 
 const app = express();
@@ -21,6 +23,8 @@ app.use("/api/parents", parentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/buses", BusRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
+app.use("/api/advices", adviceRoutes);
 
 
 
