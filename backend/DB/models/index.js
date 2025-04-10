@@ -10,7 +10,9 @@ const Signin=require("./studentsignin");
 const Subject = require("./subject");
 const Exam = require("./Exam");
 const Quiz = require('./Quiz');
-const Grade = require('./grade');
+const grade = require('./grade');
+const Attendance=require("./attendance");
+const Alarm=require("./Alarm")
 
 
 
@@ -30,7 +32,9 @@ module.exports = {
   Subject,
   Exam,
   Quiz,
-  Grade,
+  grade,
+  Attendance,
+  Alarm,
   Signup,
   Signin
 };

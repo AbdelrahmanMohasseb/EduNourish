@@ -49,6 +49,10 @@ const Parent = sequelize.define("Parent", {
       isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
     }
   } ,
+  // profilePicture: {
+  //   type: DataTypes.STRING, // لحفظ رابط الصورة
+  //   allowNull: true,
+  // },
   
 });
 

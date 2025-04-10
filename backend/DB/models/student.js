@@ -5,7 +5,8 @@ const Student = sequelize.define("Student", {
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
-        allowNull:false
+        allowNull:false,
+        primaryKey: true
       },
       userName: {
         type: DataTypes.STRING,
@@ -69,9 +70,12 @@ const Student = sequelize.define("Student", {
         type: DataTypes.INTEGER,
         allowNull: false
     }
+
+
 }, {
     timestamps: true 
 });
+
 
 
 

@@ -45,7 +45,14 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  // profilePicture: {
+  //   type: DataTypes.STRING, // لحفظ رابط الصورة
+  //   allowNull: true,
+  // },
   
+
+
 });
+
 
 module.exports = Teacher;

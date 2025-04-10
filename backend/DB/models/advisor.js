@@ -45,6 +45,8 @@ const Advisor = sequelize.define("Advisor", {
     validate: {
       isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
     }
+
+    
   },
 
   // Advisor-specific attributes

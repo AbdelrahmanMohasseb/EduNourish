@@ -4,7 +4,6 @@ const db = require("../config/connectDB");
 const Subject = db.define("Subject", {
     id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },

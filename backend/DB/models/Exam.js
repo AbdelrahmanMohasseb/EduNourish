@@ -28,8 +28,12 @@ const Exam = sequelize.define("Exam", {
         type: DataTypes.ENUM("scheduled", "ongoing", "completed"),
         allowNull: false
     }
+
+
+    
 }, {
     timestamps: true
 });
+
 
 module.exports = Exam;
