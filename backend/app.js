@@ -8,6 +8,8 @@ const teacherRoutes = require("./src/modules/teacher/teacher.router");
 const BusRoutes = require("./src/modules/Bus/Bus.router");
 const timetableRoutes=require("./src/modules/Timetable/timetable.router")
 const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
+const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
+const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const app = express();
 
 app.use(express.json());
@@ -21,6 +23,8 @@ app.use("/api/teachers", teacherRoutes);
 app.use("/api/buses", BusRoutes);
 app.use("/api/timetables",timetableRoutes);
 app.use("/api/ResturantMenu",resturantMenu);
+app.use("/api/Excuses",excuseRoutes);
+app.use("/api/pocket-money",pocketMoneyRoutes)
 
 // Server
 const PORT = 3000;

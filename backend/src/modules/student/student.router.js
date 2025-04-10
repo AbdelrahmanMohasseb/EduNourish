@@ -17,5 +17,4 @@ router.delete("/:id", deleteStudent);
 router.post("/signup", validateStudentSignup, signup);
 router.post("/signin",validateStudentSignin,signin)
 
-
 module.exports = router;

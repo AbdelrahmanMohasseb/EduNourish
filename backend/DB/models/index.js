@@ -7,9 +7,9 @@ const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
-const Signin=require("./studentsignin")
 const TimeTable=require("./timeTable")
 const Menu=require("./Menu")
+const Excuse=require("./Excuse.js")
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -17,16 +17,16 @@ sequelize.sync({ alter: false })
   .catch((err) => console.error("Database synchronization error:", err));
 
 module.exports = {
-   Bus,
+  Bus,
   Teacher,
   Parent,
   Advisor,
   Organizer,
   Student,
   Signup,
-  Signin,
   TimeTable,
   Menu,
+  Excuse,
   sequelize,
 
 };

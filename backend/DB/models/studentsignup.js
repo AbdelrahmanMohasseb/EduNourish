@@ -4,7 +4,6 @@ const sequelize = require("../config/connectDB");
 
 const StudentSignup = sequelize.define("StudentSignup", {
   
-    
       userName: {
         type: DataTypes.STRING,
         allowNull: false
@@ -29,7 +28,6 @@ const StudentSignup = sequelize.define("StudentSignup", {
 }, {
     timestamps: true 
 });
-
 
 
 module.exports = StudentSignup;

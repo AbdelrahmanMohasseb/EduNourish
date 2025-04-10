@@ -2,14 +2,14 @@ const { TimeTable, Student } = require("../../../../DB/models/index");
 
 exports.addTimetable = async (req, res) => {
     try {
-        const { id, day, subject, time } = req.body; 
+        const { id, day, subject, time ,studentId} = req.body; 
 
-        const student = await Student.findByPk(id);
+        const student = await Student.findByPk(studentId);
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
         }
 
-        const newTimetable = await TimeTable.create({  id, day, subject, time });
+        const newTimetable = await TimeTable.create({  id, day, subject, time,studentId });
 
         res.status(201).json({ message: "Timetable entry added", timetable: newTimetable });
     } catch (error) {

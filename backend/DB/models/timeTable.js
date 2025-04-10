@@ -3,18 +3,32 @@ const sequelize = require("../config/connectDB");
 const Student = require("./student");
 
 const Timetable = sequelize.define("Timetable", {
-    day: {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      day: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-    subject: {
+      },
+      subject: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-    time: {
+      },
+      time: {
         type: DataTypes.STRING,
         allowNull: false
-    }
+      },
+      studentId: {  // المفتاح الخارجي هنا
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+          model: "Students",
+          key: "id"
+        },
+        onDelete: "CASCADE"
+      }
 
 },
 {
@@ -22,7 +36,7 @@ const Timetable = sequelize.define("Timetable", {
 
 });
 
-Student.hasMany(Timetable, { foreignKey: "id", onDelete: "CASCADE" });
-Timetable.belongsTo(Student, { foreignKey: "id" });
+// Student.hasMany(Timetable, { foreignKey: "id", onDelete: "CASCADE" });
+Timetable.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
 
 module.exports = Timetable;

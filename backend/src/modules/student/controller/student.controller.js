@@ -1,5 +1,4 @@
-
-const {Student,Signup,Signin} = require("../../../../DB/models/index");
+const {Student,Signup} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 const StudentSignup = require("../../../../DB/models/studentsignup");
@@ -177,18 +176,3 @@ exports.signin = async (req, res) => {
 
 };
 
-exports.viewTable = async (req, res) => {
-    try {
-        const studentId = req.params.id;
-
-        const student = await Student.findByPk(studentId);
-        if (!student) {
-            return res.status(404).json({ message: "Student not found" });
-        }
-
-        const timetable = await Timetable.findAll({ where: { studentId } });
-
-        res.status(200).json({ message: "Student timetable", timetable });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }}
