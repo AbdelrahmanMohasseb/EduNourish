@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB"); 
+const Student=require('./student');
+
 const bcrypt = require ("bcrypt")
 
 const Parent = sequelize.define("Parent", {
@@ -52,5 +54,7 @@ const Parent = sequelize.define("Parent", {
   } ,
   
 });
+
+
 
 module.exports = Parent;

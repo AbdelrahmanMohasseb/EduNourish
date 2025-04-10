@@ -13,6 +13,9 @@ const Feedback=require("./feedback")
 const Advice=require("./advice")
 const Notification=require("./notification")
 
+Parent.hasMany(Student, { foreignKey: 'parentId' });
+Student.belongsTo(Parent, { foreignKey: 'parentId' });
+
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))

@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 exports.createStudent = async (req, res) => {
     try {
-        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, classNumber } = req.body;
+        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, classNumber ,parentId} = req.body;
 
         const existingUser = await Student.findOne({ where: { email } });
         if (existingUser) {
@@ -24,7 +24,8 @@ exports.createStudent = async (req, res) => {
             gender,
             pocketmoney,
             academicYear,
-            classNumber
+            classNumber,
+            parentId
         });
 
 

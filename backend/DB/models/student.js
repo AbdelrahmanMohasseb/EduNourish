@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
+const Parent=require('./parent');
+
 
 const Student = sequelize.define("Student", {
     id: {
@@ -68,11 +70,18 @@ const Student = sequelize.define("Student", {
     classNumber: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    parentId: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'Parents',
+        key: 'id',
+      },
     }
-}, {
+}, 
+{
     timestamps: true 
 });
-
 
 
 
