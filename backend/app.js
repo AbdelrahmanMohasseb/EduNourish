@@ -11,7 +11,7 @@ const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.r
 const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
-
+const classRoutes=require("./src/modules/class/class.router")
 
 const app = express();
 
@@ -29,6 +29,7 @@ app.use("/api/ResturantMenu",resturantMenu);
 app.use("/api/Excuses",excuseRoutes);
 app.use("/api/pocket-money",pocketMoneyRoutes)
 app.use("/api/payments",PaymentRoutes)
+app.use("/api/Classes",classRoutes)
 // Server
 const PORT = 3000;
 app.listen(PORT, () => {

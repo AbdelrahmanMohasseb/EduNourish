@@ -11,17 +11,20 @@ const TimeTable=require("./timeTable")
 const Menu=require("./Menu")
 const Excuse=require("./Excuse.js")
 const Payment=require("./payment.js")
+const Class=require("./class.js")
+
+
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: true ,focus:true})
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
-
-
-
+ 
   Parent.hasMany(Student, { foreignKey: 'parentId' });
   Student.belongsTo(Parent, { foreignKey: 'parentId' })
+// العلاقة: Class ليه Timetables كتير
+ Class.hasMany(Timetable, { foreignKey: "classId", onDelete: "CASCADE" });
+ Timetable.belongsTo(Class, { foreignKey: "classId" });
 
-  
 module.exports = {
   Payment,
   Bus,
@@ -34,6 +37,7 @@ module.exports = {
   TimeTable,
   Menu,
   Excuse,
+  Class,
   sequelize,
 
 };

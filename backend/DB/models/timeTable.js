@@ -1,42 +1,34 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
-const Student = require("./student");
 
 const Timetable = sequelize.define("Timetable", {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.STRING,
         primaryKey: true
-      },
-      day: {
+    },
+    day: {
         type: DataTypes.STRING,
         allowNull: false
-      },
-      subject: {
+    },
+    subject: {
         type: DataTypes.STRING,
         allowNull: false
-      },
-      time: {
+    },
+    time: {
         type: DataTypes.STRING,
         allowNull: false
-      },
-      studentId: {  
+    },
+    classId: {
         type: DataTypes.STRING,
         allowNull: false,
         references: {
-          model: "Students",
-          key: "id"
-        },
-        onDelete: "CASCADE"
-      }
-
-},
-{
-    timestamps: true 
+            model: "Classes", 
+            key: "id",
+        }
+    }
+}, {
+    timestamps: true,
 
 });
-
-// Student.hasMany(Timetable, { foreignKey: "id", onDelete: "CASCADE" });
-//Timetable.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
 
 module.exports = Timetable;

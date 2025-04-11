@@ -1,4 +1,3 @@
-const { Parent } = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Parent ,Student} = require("../../../../DB/models/index");
