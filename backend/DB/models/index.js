@@ -12,9 +12,14 @@ const News=require("./news")
 const Feedback=require("./feedback")
 const Advice=require("./advice")
 const Notification=require("./notification")
+const Subject = require("./subject");
+
 
 Parent.hasMany(Student, { foreignKey: 'parentId' });
 Student.belongsTo(Parent, { foreignKey: 'parentId' });
+Subject.hasMany(Teacher, { foreignKey: 'SubjectID' });
+Teacher.belongsTo(Subject, { foreignKey: 'SubjectID' });
+
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -30,6 +35,7 @@ module.exports = {
   Student,
   Signup,
   Signin,
+  Subject,
   News,
   Feedback,
   Advice,

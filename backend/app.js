@@ -9,6 +9,8 @@ const BusRoutes = require("./src/modules/Bus/Bus.router");
 const newsRoutes = require("./src/modules/news/news.router");
 const feedbackRoutes = require("./src/modules/feedback/feedback.router");
 const adviceRoutes = require("./src/modules/advice/advice.router");
+const subjectRoutes = require("./src/modules/subject/subject.router");
+
 
 
 const app = express();
@@ -25,6 +27,7 @@ app.use("/api/buses", BusRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/advices", adviceRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 
 

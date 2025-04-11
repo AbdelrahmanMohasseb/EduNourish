@@ -45,6 +45,13 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  SubjectID: {
+    type: DataTypes.STRING,
+    references: {
+      model: 'Subjects',
+      key: 'SubjectID',
+      },
+    }
   
 });
 
