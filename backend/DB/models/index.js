@@ -10,13 +10,20 @@ const Signup=require("./studentsignup")
 const TimeTable=require("./timeTable")
 const Menu=require("./Menu")
 const Excuse=require("./Excuse.js")
-
+const Payment=require("./payment.js")
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: false })
+sequelize.sync({ alter: true })
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
 
+
+
+  Parent.hasMany(Student, { foreignKey: 'parentId' });
+  Student.belongsTo(Parent, { foreignKey: 'parentId' })
+
+  
 module.exports = {
+  Payment,
   Bus,
   Teacher,
   Parent,

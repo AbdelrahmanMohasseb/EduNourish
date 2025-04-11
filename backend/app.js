@@ -10,6 +10,9 @@ const timetableRoutes=require("./src/modules/Timetable/timetable.router")
 const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
 const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
+const PaymentRoutes=require("./src/modules/Payment/payment.router")
+
+
 const app = express();
 
 app.use(express.json());
@@ -25,7 +28,7 @@ app.use("/api/timetables",timetableRoutes);
 app.use("/api/ResturantMenu",resturantMenu);
 app.use("/api/Excuses",excuseRoutes);
 app.use("/api/pocket-money",pocketMoneyRoutes)
-
+app.use("/api/payments",PaymentRoutes)
 // Server
 const PORT = 3000;
 app.listen(PORT, () => {

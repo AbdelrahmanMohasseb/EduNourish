@@ -14,7 +14,7 @@ router.put("/set-pocket-money/:studentId", isParent, async (req, res) => {
         }
 
         // تحديث المصروف
-        student.pocketmoney = amount;
+        student.pocketmoney += amount;
         await student.save();
 
         res.status(200).json({ message: "Pocket money updated successfully", student });

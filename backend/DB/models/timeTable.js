@@ -20,7 +20,7 @@ const Timetable = sequelize.define("Timetable", {
         type: DataTypes.STRING,
         allowNull: false
       },
-      studentId: {  // المفتاح الخارجي هنا
+      studentId: {  
         type: DataTypes.STRING,
         allowNull: false,
         references: {
@@ -37,6 +37,6 @@ const Timetable = sequelize.define("Timetable", {
 });
 
 // Student.hasMany(Timetable, { foreignKey: "id", onDelete: "CASCADE" });
-Timetable.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
+//Timetable.belongsTo(Student, { foreignKey: "studentId", onDelete: "CASCADE" });
 
 module.exports = Timetable;
