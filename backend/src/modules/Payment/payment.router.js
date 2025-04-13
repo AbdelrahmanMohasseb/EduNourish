@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { sendPayment ,getStudentPayments} = require("../Payment/controller/payment.controller");
-const { isParent ,isStudent} = require("../../middleware/auth"); 
+const paymentController = require("../Payment/controller/payment.controller");
 
-router.post("/send", isParent, sendPayment);
-router.get("/student", isStudent, getStudentPayments);
+router.post("/create-checkout-session", paymentController.createCheckoutSession);
+router.post("/webhook", express.raw({ type: 'application/json' }), paymentController.stripeWebhook);
+router.get("/", paymentController.getAllPayments);
 
 module.exports = router;
+

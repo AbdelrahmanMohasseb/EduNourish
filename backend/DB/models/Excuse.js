@@ -1,13 +1,13 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB"); 
+
  const Excuse = sequelize.define("Excuse", {
         id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING,
             primaryKey: true
         },
         studentId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: "Students",
@@ -15,7 +15,7 @@ const sequelize = require("../config/connectDB");
             }
         },
         parentId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: true,
             references: {
                 model: "Parents",
@@ -33,7 +33,6 @@ const sequelize = require("../config/connectDB");
      } ,
         {
             timestamps: true ,
-            tableName: "Excuses",
         
         });
 

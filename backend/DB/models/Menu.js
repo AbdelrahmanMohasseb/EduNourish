@@ -3,9 +3,8 @@ const sequelize = require("../config/connectDB");
 
     const Menu = sequelize.define("Menu", {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             primaryKey: true,
-            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,

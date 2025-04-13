@@ -1,4 +1,4 @@
-const {Student,Signup} = require("../../../../DB/models/index");
+const {Student,Signup,Class} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 const StudentSignup = require("../../../../DB/models/studentsignup");
@@ -6,7 +6,7 @@ const Timetable=require("../../../../DB/models/index")
 
 exports.createStudent = async (req, res) => {
     try {
-        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, classNumber } = req.body;
+        const {id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear,classId,parentId } = req.body;
 
         const existingUser = await Student.findOne({ where: { email } });
         if (existingUser) {
@@ -24,7 +24,8 @@ exports.createStudent = async (req, res) => {
             gender,
             pocketmoney,
             academicYear,
-            classNumber
+            classId,
+            parentId
         });
 
 
@@ -176,3 +177,26 @@ exports.signin = async (req, res) => {
 
 };
 
+exports.getClassByStudent = async (req, res) => {
+    try {
+      const { studentId } = req.params;
+      const student = await Student.findByPk(studentId, {
+        include: {
+          model: Class,
+          attributes: ['id', 'className']
+        }
+      });
+  
+      if (!student) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+  
+      res.status(200).json({
+        studentId: student.id,
+        studentName: student.userName,
+        class: student.Class
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

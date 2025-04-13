@@ -16,6 +16,4 @@ const Class = sequelize.define("Class", {
     
 });
 
-
-
 module.exports = Class;

@@ -9,24 +9,36 @@ const Teacher=require('./Teacher');
 const Signup=require("./studentsignup")
 const TimeTable=require("./timeTable")
 const Menu=require("./Menu")
-const Excuse=require("./Excuse.js")
-const Payment=require("./payment.js")
+const Excuse=require("./excuse.js")
 const Class=require("./class.js")
+const Payment=require("./payment.js")
 
+
+Parent.hasMany(Student, { foreignKey: 'parentId' });
+Student.belongsTo(Parent, { foreignKey: 'parentId' })
+
+Class.hasMany(TimeTable, { foreignKey: "classId" });
+TimeTable.belongsTo(Class, { foreignKey: "classId" });
+
+Excuse.belongsTo(Student, { foreignKey: 'studentId' });
+Excuse.belongsTo(Parent, { foreignKey: 'parentId' });
+
+Class.hasMany(Student, { foreignKey: 'classId' });
+Student.belongsTo(Class, { foreignKey: 'classId' });
+
+
+
+Payment.belongsTo(Student, { foreignKey: "studentId" });
 
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: true ,focus:true})
+sequelize.sync({ alter: false})
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
  
-  Parent.hasMany(Student, { foreignKey: 'parentId' });
-  Student.belongsTo(Parent, { foreignKey: 'parentId' })
-// العلاقة: Class ليه Timetables كتير
- Class.hasMany(Timetable, { foreignKey: "classId", onDelete: "CASCADE" });
- Timetable.belongsTo(Class, { foreignKey: "classId" });
+
 
 module.exports = {
-  Payment,
+ Payment,
   Bus,
   Teacher,
   Parent,
@@ -36,8 +48,8 @@ module.exports = {
   Signup,
   TimeTable,
   Menu,
-  Excuse,
   Class,
+  Excuse,
   sequelize,
 
 };

@@ -2,7 +2,7 @@ const { Excuse, Student, Parent } = require("../../../../DB/models/index");
 
 exports.sendExcuse = async (req, res) => {
     try {
-        const { studentId, parentId, reason } = req.body;
+        const { id,studentId, parentId, reason } = req.body;
 
         const student = await Student.findByPk(studentId);
         if (!student) {
@@ -16,7 +16,7 @@ exports.sendExcuse = async (req, res) => {
             }
         }
 
-        const excuse = await Excuse.create({ studentId, parentId, reason });
+        const excuse = await Excuse.create({id, studentId, parentId, reason });
 
         res.status(201).json({ message: "Excuse request sent successfully", excuse });
     } catch (error) {
@@ -34,7 +34,7 @@ exports.getExcuses = async (req, res) => {
 };
 exports.updateExcuseStatus = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params.id;
         const { status } = req.body;
 
         const excuse = await Excuse.findByPk(id);

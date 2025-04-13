@@ -1,11 +1,10 @@
-const Timetable = require("../../../../DB/models/timeTable");
-const Class = require("../../../../DB/models/class");
+const {TimeTable,Class} = require("../../../../DB/models/index");
 
 
 exports.createTimetable = async (req, res) => {
   try {
-    const { day, subject, time, classId } = req.body;
-    const newTimetable = await Timetable.create({ day, subject, time, classId });
+    const {id, day, subject, time, classId } = req.body;
+    const newTimetable = await TimeTable.create({ id,day, subject, time, classId });
     res.status(201).json({ message: "Timetable created successfully", timetable: newTimetable });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -15,7 +14,7 @@ exports.createTimetable = async (req, res) => {
 
 exports.getAllTimetables = async (req, res) => {
   try {
-    const timetables = await Timetable.findAll();
+    const timetables = await TimeTable.findAll();
     res.status(200).json(timetables);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -25,20 +24,17 @@ exports.getAllTimetables = async (req, res) => {
 
 exports.getTimetableById = async (req, res) => {
   try {
-    const timetable = await Timetable.findByPk(req.params.id);
+    const timetable = await TimeTable.findByPk(req.params.id);
     if (!timetable) return res.status(404).json({ message: "Timetable not found" });
     res.status(200).json(timetable);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-
-
 exports.getTimetableByClass = async (req, res) => {
   try {
     const { classId } = req.params;
-    const classTimetable = await Timetable.findAll({ where: { classId } });
+    const classTimetable = await TimeTable.findAll({ where: { classId } });
     res.status(200).json(classTimetable);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -48,11 +44,9 @@ exports.getTimetableByClass = async (req, res) => {
 
 exports.updateTimetable = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { day, subject, time } = req.body;
-    const timetable = await Timetable.findByPk(id);
+    const timetable = await TimeTable.findByPk(req.params.id);
     if (!timetable) return res.status(404).json({ message: "Timetable not found" });
-    await timetable.update({ day, subject, time });
+    await timetable.update( req.body );
     res.status(200).json({ message: "Timetable updated", timetable });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -63,8 +57,9 @@ exports.updateTimetable = async (req, res) => {
 
 exports.deleteTimetable = async (req, res) => {
   try {
-    const { id } = req.params;
-    const timetable = await Timetable.findByPk(id);
+    
+    
+    const timetable = await TimeTable.findByPk(req.params.id);
     if (!timetable) return res.status(404).json({ message: "Timetable not found" });
     await timetable.destroy();
     res.status(200).json({ message: "Timetable deleted" });

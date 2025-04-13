@@ -1,48 +1,69 @@
-const { Payment, Student, Parent } = require("../../../../DB/models/index");
+// // 📁 controllers/payment.controller.js
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const Payment = require("../../../../DB/models/payment");
 
-exports.sendPayment = async (req, res) => {
+exports.createCheckoutSession = async (req, res) => {
   try {
-    const { studentId, amount, method, note } = req.body;
-    const parentId = req.user.id; 
+    const { id, studentId, amount } = req.body;
 
-    const student = await Student.findByPk(studentId);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "School Payment",
+            },
+            unit_amount: amount,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
+    });
 
-    const payment = await Payment.create({
+    await Payment.create({
+        id,
       studentId,
-      parentId,
       amount,
-      method,
-      note,
-      status: "completed"
+      stripeSessionId: session.id
     });
 
-    res.status(201).json({
-      message: "Payment sent successfully",
-      payment
-    });
+    res.status(200).json({ url: session.url });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-exports.getStudentPayments = async (req, res) => {
-    try {
-      const studentId = req.params.id; 
-  
-      const payments = await Payment.findAll({
-        where: { studentId },
-        include: ["Parent"], 
-        order: [["createdAt", "DESC"]]
-      });
-  
-      res.status(200).json({
-        message: "Student payments retrieved successfully",
-        payments
-      });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+
+exports.stripeWebhook = async (req, res) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+    await Payment.update({ status: "paid" }, {
+      where: { stripeSessionId: session.id }
+    });
+  }
+
+  res.status(200).json({ received: true });
+};
+
+exports.getAllPayments = async (req, res) => {
+    const payments = await Payment.findAll();
+    res.json(payments);
   };
   

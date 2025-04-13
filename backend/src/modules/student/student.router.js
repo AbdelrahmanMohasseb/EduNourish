@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,signup, signin} 
+const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,signup, signin,getClassByStudent} 
     = require("../../../src/modules/student/controller/student.controller");
 
 const { validateStudentSignup, validateStudentSignin } = require("./student.validator"); 
@@ -13,6 +13,8 @@ router.get("/", getAllStudents);
 router.get("/:id", getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
+router.get("/:studentId/class", getClassByStudent);
+
 
 router.post("/signup", validateStudentSignup, signup);
 router.post("/signin",validateStudentSignin,signin)

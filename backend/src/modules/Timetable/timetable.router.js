@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const timetableController = require("./controller/timetable.controller");
+const timetableController = require("../../../src/modules/Timetable/controller/timetable.controller");
 
 router.post("/", timetableController.createTimetable);
 

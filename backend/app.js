@@ -1,4 +1,11 @@
+require('dotenv').config();
 const express = require("express");
+
+console.log("STRIPE_SECRET_KEY =", process.env.STRIPE_SECRET_KEY);
+
+app.post("/api/payments/webhook", 
+  express.raw({ type: 'application/json' }), 
+  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
 
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
@@ -12,12 +19,16 @@ const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
 const classRoutes=require("./src/modules/class/class.router")
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+
 app.use(express.json());
 
-// Routes
+
+
+
 app.use('/api/students',studentRoutes)
 app.use("/api/advisors", advisorRoutes);
 app.use("/api/organizers", organizerRoutes);
@@ -30,6 +41,11 @@ app.use("/api/Excuses",excuseRoutes);
 app.use("/api/pocket-money",pocketMoneyRoutes)
 app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
+
+
+
+
+
 // Server
 const PORT = 3000;
 app.listen(PORT, () => {

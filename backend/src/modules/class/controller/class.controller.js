@@ -1,5 +1,5 @@
 // controllers/classController.js
-const Class = require("../../../../DB//models/class");
+const {Class,Student} = require("../../../../DB/models/index.js");
 
 exports.createClass = async (req, res) => {
     try {
@@ -66,3 +66,27 @@ exports.deleteClass = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getStudentsByClass = async (req, res) => {
+    try {
+      const { classId } = req.params;
+      const classData = await Class.findByPk(classId, {
+        include: {
+          model: Student,
+          attributes: ['id', 'userName', 'email'] // حسب الأعمدة اللي محتاجاها
+        }
+      });
+  
+      if (!classData) {
+        return res.status(404).json({ message: "Class not found" });
+      }
+  
+      res.status(200).json({
+        classId: classData.id,
+        className: classData.className,
+        students: classData.Students
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
