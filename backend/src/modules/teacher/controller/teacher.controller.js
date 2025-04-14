@@ -5,7 +5,7 @@ const { Teacher } = require("../../../../DB/models/index");
 exports.createTeacher = async (req, res) => {
   try {
     console.log("🔍 Received data:", req.body); // 
-    const { teacherID, username, email, password, phoneNumber, address, age, gender, salary} = req.body;
+    const { teacherID, username, email, password, phoneNumber, address, age, gender, salary,SubjectID} = req.body;
 
     if (!teacherID || !username || !email || !password|| !phoneNumber|| !address|| !age|| !gender|| !salary ) 
       {
@@ -22,6 +22,7 @@ return res.status(400).json({ success: false, error: "Missing required fields" }
       age,
       gender,
       salary,
+      SubjectID,
 
     });
     
@@ -49,7 +50,13 @@ exports.getAllTeachers = async (req, res) => {
 
 exports.getTeacherById = async (req, res) => {
   try {
-    const teacher = await Teacher.findByPk(req.params.id);
+    const teacher = await Teacher.findByPk(req.params.id,{
+      include: [
+        {model: Advice},
+        { model: Exam },
+        { model: Attendance }
+        // ,as: 'students' // Optional: Specify the alias for the association
+      ]});
     if (!teacher) {
       return res.status(404).json({ success: false, message: "Teacher not found" });
     }

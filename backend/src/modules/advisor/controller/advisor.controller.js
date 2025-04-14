@@ -1,6 +1,7 @@
 const {Advisor} = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
 
+
 // ✅ Create an Advisor
 exports.createAdvisor = async (req, res) => {
   try {
@@ -94,3 +95,5 @@ exports.deleteAdvisor = async (req, res) => {
     res.status(500).json({ message: "Error deleting advisor", error: error.message });
   }
 };
+
+
