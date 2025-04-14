@@ -41,6 +41,7 @@ exports.getClassesByTeacher = async (req, res) => {
         }
       ]
      });
+     
     res.status(200).json(classes);
   } catch (error) {
     res.status(500).json({ error: error.message });

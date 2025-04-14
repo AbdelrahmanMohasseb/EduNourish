@@ -5,7 +5,7 @@ const Payment = require("../../../../DB/models/payment");
 
 exports.createCheckoutSession = async (req, res) => {
   try {
-    const { id, studentId, amount } = req.body;
+    const { studentId, amount } = req.body;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -27,7 +27,6 @@ exports.createCheckoutSession = async (req, res) => {
     });
 
     await Payment.create({
-        id,
       studentId,
       amount,
       stripeSessionId: session.id

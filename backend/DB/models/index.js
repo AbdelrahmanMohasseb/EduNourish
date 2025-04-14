@@ -28,13 +28,14 @@ Student.belongsTo(Class, { foreignKey: 'classId' });
 
 Teacher.belongsToMany(Class, { through: ClassTeacher, foreignKey: "teacherId" });
 Class.belongsToMany(Teacher, { through: ClassTeacher, foreignKey: "classId" });
+
 ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
 ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: true})
+sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
  
