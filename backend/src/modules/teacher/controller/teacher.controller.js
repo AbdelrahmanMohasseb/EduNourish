@@ -1,4 +1,4 @@
-const { Teacher,Exam, Attendance } = require("../../../../DB/models/index");
+const { Teacher,Attendance,subject } = require("../../../../DB/models/index");
 
 
 
@@ -7,7 +7,7 @@ exports.createTeacher = async (req, res) => {
     console.log("🔍 Received data:", req.body); // 
     const { teacherID, username, email, password, phoneNumber, address, age, gender, salary,SubjectID} = req.body;
 
-    if (!teacherID || !username || !email || !password|| !phoneNumber|| !address|| !age|| !gender|| !salary ) 
+    if (!teacherID || !username || !email || !password|| !phoneNumber|| !address|| !age|| !gender|| !salary ||!SubjectID ) 
       {
 return res.status(400).json({ success: false, error: "Missing required fields" });
     }
@@ -52,8 +52,9 @@ exports.getTeacherById = async (req, res) => {
   try {
     const teacher = await Teacher.findByPk(req.params.id, {
       include: [
-        { model: Exam },
-        { model: Attendance }
+        { model: Attendance },
+        {model:subject}
+
       ]
     });
 

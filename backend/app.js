@@ -7,10 +7,10 @@ const teacherRoutes = require("./src/modules/teacher/teacher.router");
 const BusRoutes = require("./src/modules/Bus/Bus.router");
 const subjectRoutes = require("./src/modules/subject/subject.router");
 const ExamRoutes=require("./src/modules/Exam/Exam.router");
-const quizRoutes=require("./src/modules/Quiz/Quiz.router");
+
 const gradeRoutes=require("./src/modules/grade/grade.router");
 const AttendanceRoutes=require("./src/modules/attendance/attendance.routes");
-const AlarmRoutes=require("./src/modules/Alarm/Alarm.routes");
+
 
 const uploadRoutes = require("./src/modules/upload/uploadRoutes");
 
@@ -40,10 +40,10 @@ app.use("/api/teachers", teacherRoutes);
 app.use("/api/buses", BusRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/exams",ExamRoutes);
-app.use("/api/quiz",quizRoutes);
+
 app.use("/api/grades",gradeRoutes);
 app.use("/api/attendance", AttendanceRoutes);
-app.use("/api/alarm",AlarmRoutes);
+
 
 app.use("/api/upload-profile-picture", uploadRoutes);
 

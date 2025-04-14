@@ -5,14 +5,12 @@ const Exam = sequelize.define("Exam", {
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
-        
     },
     subjectName: { 
         type: DataTypes.STRING,
         allowNull: false
     },
-
-    duration: {  //Minutes
+    duration: {  // Minutes
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -24,25 +22,23 @@ const Exam = sequelize.define("Exam", {
         type: DataTypes.DATE,
         allowNull: false
     },
-
+    
     status: {  
         type: DataTypes.ENUM("scheduled", "ongoing", "completed"),
         allowNull: false
     },
 
-    teacherID: {
-        type: DataTypes.STRING,
-        references: {
-          model: 'Teachers',
-          key: 'teacherID',
-        },
+    Type: {
+        type: DataTypes.ENUM("Quiz", "Final Exam"),
         allowNull: false
-      }
-      
+    },
     
-}, {
+
+   
+
+}, 
+{
     timestamps: true
 });
-
 
 module.exports = Exam;

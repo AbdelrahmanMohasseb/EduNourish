@@ -1,13 +1,11 @@
-const {Student,Signup,Signin, Attendance,Subject} = require("../../../../DB/models/index");
+const {Student,Signup,Signin, Attendance,Subject, Grade} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 const StudentSignup = require("../../../../DB/models/studentsignup");
 
 exports.createStudent = async (req, res) => {
     try {
-        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, parentId,
-            //examId 
-        } = req.body;
+        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, parentId} = req.body;
 
         const existingUser = await Student.findOne({ where: { email } });
         if (existingUser) {
@@ -26,7 +24,7 @@ exports.createStudent = async (req, res) => {
             pocketmoney,
             academicYear,
             parentId,
-            //examId
+           
         });
 
 
@@ -47,6 +45,9 @@ exports.getStudentById = async (req, res) => {
 
                 {
                     model: Subject
+                },
+                {
+                    model: Grade
                 }
             ]
         });

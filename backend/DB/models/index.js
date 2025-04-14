@@ -9,10 +9,8 @@ const Signup=require("./studentsignup");
 const Signin=require("./studentsignin");
 const Subject = require("./subject");
 const Exam = require("./Exam");
-const Quiz = require('./Quiz');
 const Grade = require('./grade');
 const Attendance=require("./attendance");
-const Alarm=require("./Alarm");
 const StudentExam = require('./studentexam');
 
 
@@ -26,10 +24,13 @@ Student.belongsTo(Parent, { foreignKey: 'parentId' });
 Student.belongsToMany(Exam, { through: StudentExam, foreignKey: 'studentId' });
 Exam.belongsToMany(Student, { through: StudentExam, foreignKey: 'examId' });
 
-Teacher.hasMany(Exam, { foreignKey: 'teacherID' });
-Exam.belongsTo(Teacher, { foreignKey: 'teacherID' });
 
+////////////////////////////////////////////////////////////////////////
 
+Student.hasMany(Grade, { foreignKey: 'StudentIDg' });
+Grade.belongsTo(Student, { foreignKey: 'StudentIDg' });
+
+///////////////////////////////////////////////////////////////////////
 Student.hasMany(Attendance, { foreignKey: 'studentId' });
 Attendance.belongsTo(Student, { foreignKey: 'studentId' });
 
@@ -43,7 +44,7 @@ Attendance.belongsTo(Teacher, { foreignKey: "teacherID" });
 
 
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: false })
+sequelize.sync({ alter:false })
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
 
@@ -56,10 +57,9 @@ module.exports = {
   Organizer,
   Subject,
   Exam,
-  Quiz,
   Grade,
   Attendance,
-  Alarm,
+
   Advisor,
   Signup,
   Signin,

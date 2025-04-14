@@ -1,17 +1,19 @@
-const { Exam,Student,Teacher } = require("../../../../DB/models/index");
+const { Exam,Student } = require("../../../../DB/models/index");
 
 
 
 exports.createExam = async (req, res) => {
   try {
-    const { id,subjectName, date, duration, totalMarks, status,teacherID } = req.body;
-    const newExam = await Exam.create({ id,subjectName, date, duration, totalMarks, status,teacherID });
+    const { id, subjectName, duration, totalMarks, date, status, Type } = req.body;
+    const newExam = await Exam.create({ id, subjectName, duration, totalMarks, date, status, Type});
 
     res.status(201).json(newExam);
   } catch (error) {
-    res.status(500).json({ error: "Error creating exam", details: error.message });
+    console.error("Error creating exam:", error); // اطبع الخطأ الحقيقي
+    res.status(500).json({ error: "Error creating exam", details: error.message || error });
   }
 };
+
 
 exports.assignStudentToExam = async (req, res) => {
   try {
@@ -47,18 +49,7 @@ exports.getAllExams = async (req, res) => {
 
 exports.getExamById = async (req, res) => {
   try {
-    const exam = await Exam.findByPk(req.params.id, {
-      // include: [
-      //   {
-      //     model: Student,
-      //     as: 'students'  // اسم العلاقة إذا كنت قد قمت بتحديده في العلاقة بين الطالب والامتحان
-      //   },
-        
-          model: Teacher,
-          as: 'teacher'  // اسم العلاقة بين الامتحان والمدرس
-        
-      
-    });
+    const exam = await Exam.findByPk(req.params.id);
 
     if (!exam) return res.status(404).json({ error: "Exam not found" });
     res.status(200).json(exam);
