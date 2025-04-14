@@ -1,5 +1,4 @@
-const { Grade } = require("../../../../DB/models/index");
-
+const { Grade } = require("../../../../DB/models/index") ;
 
 exports.addGrade = async (req, res) => {
   try {
@@ -15,17 +14,18 @@ exports.addGrade = async (req, res) => {
     res.status(500).json({ error: "Error adding grade", details: error.message });
   }
 };
-
-
 exports.getAllGrades = async (req, res) => {
   try {
+    if (!Grade) {
+      return res.status(500).json({ error: "Grade model not found" });
+    }
+
     const grades = await Grade.findAll();
     res.status(200).json(grades);
   } catch (error) {
     res.status(500).json({ error: "Error retrieving grades", details: error.message });
   }
 };
-
 
 exports.getGradesByStudent = async (req, res) => {
   try {
@@ -40,10 +40,7 @@ exports.getGradesByStudent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error retrieving student grades", details: error.message });
   }
-};
-
-
-exports.updateGrade = async (req, res) => {
+};exports.updateGrade = async (req, res) => {
   try {
     const { id } = req.params;
     const { obtainedMarks, grade } = req.body;
@@ -59,9 +56,8 @@ exports.updateGrade = async (req, res) => {
     res.status(500).json({ error: "Error updating grade", details: error.message });
   }
 };
-
-
-exports.deleteGrade = async (req, res) => {
+ 
+ exports.deleteGrade = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -75,6 +71,4 @@ exports.deleteGrade = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error deleting grade", details: error.message });
   }
-};
-
-
+} ;

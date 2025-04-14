@@ -1,12 +1,14 @@
 const { DataTypes } = require("sequelize");
-const db = require("../config/connectDB");
+const sequelize = require("../config/connectDB");
 
-const Subject = db.define("Subject", {
-    id: {
-        type: DataTypes.INTEGER,
+const Subject = sequelize.define("Subject", {
+   
+    SubjectID: {
+        type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true
     },
+    
     name: {
         type: DataTypes.STRING,
         allowNull: false
@@ -35,9 +37,20 @@ const Subject = db.define("Subject", {
     description: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+
+    studentId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+          model: "Students", // تأكد إن اسم الجدول فعليًا "Students"
+          key: "id"
+        }
     }
+    
+
 }, {
     timestamps: true
 });
 
-module.exports = Subject;
+module.exports = Subject ;

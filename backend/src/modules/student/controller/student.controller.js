@@ -1,11 +1,13 @@
-const {Student,Signup,Signin} = require("../../../../DB/models/index");
+const {Student,Signup,Signin, Attendance,Subject} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 const StudentSignup = require("../../../../DB/models/studentsignup");
 
 exports.createStudent = async (req, res) => {
     try {
-        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, classNumber } = req.body;
+        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, parentId,
+            //examId 
+        } = req.body;
 
         const existingUser = await Student.findOne({ where: { email } });
         if (existingUser) {
@@ -23,7 +25,8 @@ exports.createStudent = async (req, res) => {
             gender,
             pocketmoney,
             academicYear,
-            classNumber
+            parentId,
+            //examId
         });
 
 
@@ -36,7 +39,16 @@ exports.createStudent = async (req, res) => {
 exports.getStudentById = async (req, res) => {
     try {
         const student = await Student.findOne({
-            where: { id: req.params.id }
+            where: { id: req.params.id },
+            include: [
+                {
+                    model: Attendance
+                },
+
+                {
+                    model: Subject
+                }
+            ]
         });
 
         if (!student) {
@@ -48,6 +60,7 @@ exports.getStudentById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 exports.getAllStudents = async (req, res) => {
     try {

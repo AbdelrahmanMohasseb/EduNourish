@@ -2,25 +2,44 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
 
 const Attendance = sequelize.define("Attendance", {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-      
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    
+  },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  status: {
+    type: DataTypes.ENUM("present", "absent", "late", "excused"),
+    allowNull: false
+  },
+  remarks: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+
+  studentId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+      model: "Students", // تأكد إن اسم الجدول فعليًا "Students"
+      key: "id"
     },
-    date: {  
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    status: {
-        type: DataTypes.ENUM("present", "absent", "late", "excused"),
-        allowNull: false
-    },
-    remarks: {                     // Notes (sick)
-        type: DataTypes.STRING, 
-        allowNull: true 
-    }
+
+    teacherID: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+          model: "Teachers",
+          key: "teacherID"
+        }
+      }
+
+  }
 }, {
-    timestamps: true
+  timestamps: true
 });
 
 module.exports = Attendance;

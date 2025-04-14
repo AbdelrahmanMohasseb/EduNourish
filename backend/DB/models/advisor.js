@@ -39,14 +39,16 @@ const Advisor = sequelize.define("Advisor", {
   // gender: {
   //   type: DataTypes.ENUM("male", "female"),
   // }
+
+
+
+
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
-    allowNull: false,
+    allowNull: true,
     validate: {
       isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
-    }
-
-    
+    } 
   },
 
   // Advisor-specific attributes

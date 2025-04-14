@@ -6,19 +6,22 @@ const parentRoutes = require("./src/modules/parent/parent.router");
 const teacherRoutes = require("./src/modules/teacher/teacher.router");
 const BusRoutes = require("./src/modules/Bus/Bus.router");
 const subjectRoutes = require("./src/modules/subject/subject.router");
-const ExamRouter=require("./src/modules/Exam/Exam.router");
-const quizRouter=require("./src/modules/Quiz/Quiz.router");
-const gradeRouter=require("./src/modules/grade/grade.router");
-const AttendanceRouter=require("./src/modules/attendance/attendance.routes");
-const AlarmRouter=require("./src/modules/Alarm/Alarm.routes");
+const ExamRoutes=require("./src/modules/Exam/Exam.router");
+const quizRoutes=require("./src/modules/Quiz/Quiz.router");
+const gradeRoutes=require("./src/modules/grade/grade.router");
+const AttendanceRoutes=require("./src/modules/attendance/attendance.routes");
+const AlarmRoutes=require("./src/modules/Alarm/Alarm.routes");
 
 const uploadRoutes = require("./src/modules/upload/uploadRoutes");
 
+
+const studentExamRouter = require("./src/modules/studentexam/studentexam.router")
 const app = express();
 app.use(express.json());
 
 
 require("dotenv").config();
+
 
 
 
@@ -36,15 +39,15 @@ app.use("/api/parents", parentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/buses", BusRoutes);
 app.use("/api/subjects", subjectRoutes);
-app.use("/api/exams",ExamRouter);
-app.use("/api/quiz",quizRouter);
-app.use("/api/grade",gradeRouter);
-app.use("/api/attendance", AttendanceRouter);
-app.use("/api/alarm",AlarmRouter);
+app.use("/api/exams",ExamRoutes);
+app.use("/api/quiz",quizRoutes);
+app.use("/api/grades",gradeRoutes);
+app.use("/api/attendance", AttendanceRoutes);
+app.use("/api/alarm",AlarmRoutes);
 
 app.use("/api/upload-profile-picture", uploadRoutes);
 
-
+app.use("/api/studentexams", studentExamRouter);  // تأكد من المسار الصحيح
 
 
 // Server

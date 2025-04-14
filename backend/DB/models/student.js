@@ -6,7 +6,7 @@ const Student = sequelize.define("Student", {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull:false,
-        primaryKey: true
+      
       },
       userName: {
         type: DataTypes.STRING,
@@ -66,18 +66,23 @@ const Student = sequelize.define("Student", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    classNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    }
+    
+    parentId: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'Parents',
+        key: 'id',
+      },
 
+     
+}
 
-}, {
-    timestamps: true 
+},
+{
+
+ timestamps: false
+ 
 });
-
-
-
 
 
 module.exports = Student;

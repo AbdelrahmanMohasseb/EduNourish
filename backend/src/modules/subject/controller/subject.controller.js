@@ -1,16 +1,28 @@
-const {Subject} = require("../../../../DB/models/index");
+const {Subject, Teacher,student} = require("../../../../DB/models/index");
 
-const createSubject = async (req, res) => {
+
+exports.createSubject = async (req, res) => {
     try {
-        const subject = await Subject.create(req.body);
+
+        const {SubjectID, name, code, category, gradeLevel, semester, description,studentId } = req.body;
+        const subject = await Subject.create({
+           
+            SubjectID,
+            name,
+            code,
+            category,
+            gradeLevel,
+            semester,
+            description,
+            studentId
+        });
         res.status(201).json(subject);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ message: 'Error creating subject', error });
     }
 };
 
-
-const getAllSubjects = async (req, res) => {
+exports.getAllSubjects = async (req, res) => {
     try {
         const subjects = await Subject.findAll();
         res.status(200).json(subjects);
@@ -20,9 +32,20 @@ const getAllSubjects = async (req, res) => {
 };
 
 
-const getSubjectById = async (req, res) => {
+exports.getSubjectById = async (req, res) => {
     try {
-        const subject = await Subject.findByPk(req.params.id);
+        const subject = await Subject.findByPk(req.params.id,{
+            include: [{
+              model: Teacher
+              // ,as: 'students' // Optional: Specify the alias for the association
+            },
+            {
+
+                model:student
+            }
+    
+    
+    ]});
         if (!subject) {
             return res.status(404).json({ message: "Subject not found" });
         }
@@ -33,7 +56,7 @@ const getSubjectById = async (req, res) => {
 };
 
 
-const updateSubject = async (req, res) => {
+exports.updateSubject = async (req, res) => {
     try {
         const subject = await Subject.findByPk(req.params.id);
         if (!subject) {
@@ -47,7 +70,7 @@ const updateSubject = async (req, res) => {
 };
 
 
-const deleteSubject = async (req, res) => {
+exports.deleteSubject = async (req, res) => {
     try {
         const subject = await Subject.findByPk(req.params.id);
         if (!subject) {
@@ -59,14 +82,3 @@ const deleteSubject = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-module.exports = {
-    createSubject,
-    getAllSubjects,
-    getSubjectById,
-    updateSubject,
-    deleteSubject
-};
-
-
-
