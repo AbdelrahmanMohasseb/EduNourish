@@ -1,17 +1,12 @@
 const express = require("express");
+const attendanceController = require("../attendance/controller/attendance.controller");
+
 const router = express.Router();
-const timetableController = require("../../../src/modules/Timetable/controller/timetable.controller");
 
-router.post("/", timetableController.createTimetable);
-
-router.get("/", timetableController.getAllTimetables);
-
-router.get("/:id", timetableController.getTimetableById);
-
-router.get("/class/:classId", timetableController.getTimetableByClass);
-
-router.put("/:id", timetableController.updateTimetable);
-
-router.delete("/:id", timetableController.deleteTimetable);
+router.post("/", attendanceController.createAttendance);
+router.get("/", attendanceController.getAllAttendance);
+router.get("/:id", attendanceController.getAttendanceById);
+router.put("/:id", attendanceController.updateAttendance);
+router.delete("/:id", attendanceController.deleteAttendance);
 
 module.exports = router;
