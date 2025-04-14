@@ -10,7 +10,8 @@ const Class = sequelize.define("Class", {
     className: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    
 }, {
     timestamps: true,
     

@@ -3,10 +3,6 @@ const express = require("express");
 
 console.log("STRIPE_SECRET_KEY =", process.env.STRIPE_SECRET_KEY);
 
-app.post("/api/payments/webhook", 
-  express.raw({ type: 'application/json' }), 
-  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
-
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
 const organizerRoutes = require("./src/modules/organizer/organizer.router");
@@ -19,14 +15,18 @@ const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
 const classRoutes=require("./src/modules/class/class.router")
+const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 
 const app = express();
 
+app.post("/api/payments/webhook", 
+  express.raw({ type: 'application/json' }), 
+  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
+
 
 app.use(express.json());
-
-
 
 
 app.use('/api/students',studentRoutes)
@@ -41,7 +41,7 @@ app.use("/api/Excuses",excuseRoutes);
 app.use("/api/pocket-money",pocketMoneyRoutes)
 app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
-
+app.use("/api/class-teachers", classTeacherRoutes);
 
 
 

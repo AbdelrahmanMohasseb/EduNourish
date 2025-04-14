@@ -12,7 +12,7 @@ const Menu=require("./Menu")
 const Excuse=require("./excuse.js")
 const Class=require("./class.js")
 const Payment=require("./payment.js")
-
+const ClassTeacher=require("./classteacher.js")
 
 Parent.hasMany(Student, { foreignKey: 'parentId' });
 Student.belongsTo(Parent, { foreignKey: 'parentId' })
@@ -26,12 +26,15 @@ Excuse.belongsTo(Parent, { foreignKey: 'parentId' });
 Class.hasMany(Student, { foreignKey: 'classId' });
 Student.belongsTo(Class, { foreignKey: 'classId' });
 
-
+Teacher.belongsToMany(Class, { through: ClassTeacher, foreignKey: "teacherId" });
+Class.belongsToMany(Teacher, { through: ClassTeacher, foreignKey: "classId" });
+ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
+ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 
 // Optional: Sync database (only in development)
-sequelize.sync({ alter: false})
+sequelize.sync({ alter: true})
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
  
@@ -50,6 +53,7 @@ module.exports = {
   Menu,
   Class,
   Excuse,
+  ClassTeacher,
   sequelize,
 
 };

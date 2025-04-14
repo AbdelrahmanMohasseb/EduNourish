@@ -9,7 +9,7 @@ exports.createTeacher = async (req, res) => {
 
     if (!teacherID || !username || !email || !password|| !phoneNumber|| !address|| !age|| !gender|| !salary ) 
       {
-return res.status(400).json({ success: false, error: "Missing required fields" });
+    return res.status(400).json({ success: false, error: "Missing required fields" });
     }
 
     const newTeacher = await Teacher.create({
@@ -24,8 +24,7 @@ return res.status(400).json({ success: false, error: "Missing required fields" }
       salary,
 
     });
-    
-    
+  
 
     res.status(201).json({ success: true, data: newTeacher });
   } catch (error) {
