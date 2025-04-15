@@ -50,7 +50,13 @@ exports.getAllTeachers = async (req, res) => {
 
 exports.getTeacherById = async (req, res) => {
   try {
-    const teacher = await Teacher.findByPk(req.params.id);
+    const teacher = await Teacher.findByPk(req.params.id,{
+      include: [
+        {model: Advice},
+        { model: Exam },
+        { model: Attendance }
+        // ,as: 'students' // Optional: Specify the alias for the association
+      ]});
     if (!teacher) {
       return res.status(404).json({ success: false, message: "Teacher not found" });
     }

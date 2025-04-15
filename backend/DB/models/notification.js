@@ -8,11 +8,11 @@ const Notification = sequelize.define("Notification", {
     autoIncrement: true,
   },
   receiverId: {
-    type: DataTypes.INTEGER, // User who will receive the notification
+    type: DataTypes.STRING, // User who will receive the notification
     allowNull: false,
   },
   senderId: {
-    type: DataTypes.INTEGER, // User who sent the notification
+    type: DataTypes.STRING, // User who sent the notification
     allowNull: false,
   },
   message: {

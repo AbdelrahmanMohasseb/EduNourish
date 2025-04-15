@@ -67,12 +67,9 @@ const Student = sequelize.define("Student", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    classNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     parentId: {
       type: DataTypes.STRING,
+      allowNull: false,
       references: {
         model: 'Parents',
         key: 'id',
@@ -80,7 +77,7 @@ const Student = sequelize.define("Student", {
     }
 }, 
 {
-    timestamps: true 
+    timestamps: false 
 });
 
 

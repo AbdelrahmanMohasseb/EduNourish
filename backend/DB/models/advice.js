@@ -1,33 +1,28 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/connectDB");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/connectDB');
 
-const Advice = sequelize.define("Advice", {
+const Advice = sequelize.define('Advice', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
-    autoIncrement: true,
   },
-  senderId: {
-    type: DataTypes.INTEGER, // Automatically associated with parent
-    allowNull: false,
-  },
-  senderName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  senderPhoto: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  adviceMessage: {
+  parentAdvice: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  studentId: {
-    type: DataTypes.STRING, // Automatically associated with parent’s child
+  teacherAdvice: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
-}, { 
+  parentId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  teacherId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
   timestamps: true,
 });
 

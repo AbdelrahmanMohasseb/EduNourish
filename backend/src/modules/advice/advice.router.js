@@ -1,17 +1,13 @@
-const express = require("express");
+const express = require('express');
+const { validateAdvice } = require('../advice/adviceValidator');
 const router = express.Router();
 const {
-  createAdvice,
-  getAllAdvice,
-  getAdviceById,
-  updateAdvice,
-  deleteAdvice,
-} = require("../../modules/advice/controller/advice.controller");
+  createAdviceFromFlask,
+  getAllAdvice
+} = require("../advice/controller/advice.controller");
 
-router.post("/", createAdvice);
-router.get("/", getAllAdvice);
-router.get("/:id", getAdviceById);
-router.put("/:id", updateAdvice);
-router.delete("/:id", deleteAdvice);
+// Destructure for cleaner route
+router.get('/get', getAllAdvice);
+router.post('/create', validateAdvice,createAdviceFromFlask);
 
 module.exports = router;

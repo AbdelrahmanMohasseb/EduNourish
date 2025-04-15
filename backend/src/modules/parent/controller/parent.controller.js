@@ -1,4 +1,4 @@
-const { Parent ,Student} = require("../../../../DB/models/index");
+const { Parent ,Student,Advice} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -27,10 +27,11 @@ exports.getAllParents = async (req, res) => {
 exports.getParentById = async (req, res) => {
   try {
     const parent = await Parent.findByPk(req.params.id,{
-      include: [{
-        model: Student
+      include: [
+        {model: Student},
+        {model: Advice},
         // ,as: 'students' // Optional: Specify the alias for the association
-      }]});
+      ]});
     if (!parent) {
       return res.status(404).json({ error: "Parent not found" });
     }

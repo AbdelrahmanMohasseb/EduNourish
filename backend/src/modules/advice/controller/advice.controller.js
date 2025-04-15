@@ -1,83 +1,52 @@
-const{Advice,Parent,Student} = require("../../../../DB/models/index");
+const{Advice} = require("../../../../DB/models/index");
+const axios = require('axios');
 
 
 
-// ✅ Create Advice (Auto-associate parent’s child)
-exports.createAdvice = async (req, res) => {
+const createAdviceFromFlask = async (req, res) => {
   try {
-    const { senderId, senderName, senderPhoto, adviceMessage } = req.body;
+    // Step 1: Fetch advice from Flask API (which already did the processing)
+    const { data } = await axios.get('http://localhost:5000/api/advice'); // Flask URL
 
-    // Fetch child associated with the parent
-    const parent = await Parent.findOne({ where: { id: senderId }, include: Student });
-    if (!parent || parent.Student.length === 0) {
-      return res.status(404).json({ message: "No associated child found for this parent" });
-    }
+    const { parentAdvice, teacherAdvice, parentId, teacherId } = data;
 
-    const studentId = parent.Student[0].id; // Assign first child automatically
-
+    // Step 2: Store in DB
     const newAdvice = await Advice.create({
-      senderId,
-      senderName,
-      senderPhoto,
-      adviceMessage,
-      studentId,
+      parentAdvice,
+      teacherAdvice,
+      parentId,
+      teacherId
     });
 
-    res.status(201).json({ message: "Advice submitted successfully!", advice: newAdvice });
+    res.status(201).json({
+      message: 'Advice created successfully',
+      advice: newAdvice,
+    });
+
   } catch (error) {
-    res.status(500).json({ message: "Error submitting advice", error: error.message });
+    console.error("Error creating advice:", error);
+    res.status(500).json({
+      message: 'Error creating advice',
+      error: error.message,
+    });
   }
 };
 
-// ✅ Get All Advice
-exports.getAllAdvice = async (req, res) => {
+const getAllAdvice = async (req, res) => {
   try {
-    const adviceList = await Advice.findAll();
-    res.status(200).json(adviceList);
+    const allAdvice = await Advice.findAll({
+      include: [
+        { model: Parent },
+        { model: Teacher },
+      ]
+    });
+    res.status(200).json(allAdvice);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching advice", error: error.message });
+    res.status(500).json({ message: 'Error fetching advice', error });
   }
 };
 
-// ✅ Get Advice by ID
-exports.getAdviceById = async (req, res) => {
-  try {
-    const advice = await Advice.findByPk(req.params.id);
-    if (!advice) {
-      return res.status(404).json({ message: "Advice not found" });
-    }
-    res.status(200).json(advice);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching advice", error: error.message });
-  }
-};
-
-// ✅ Update Advice
-exports.updateAdvice = async (req, res) => {
-  try {
-    const advice = await Advice.findByPk(req.params.id);
-    if (!advice) {
-      return res.status(404).json({ message: "Advice not found" });
-    }
-
-    await advice.update(req.body);
-    res.status(200).json({ message: "Advice updated successfully", advice });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating advice", error: error.message });
-  }
-};
-
-// ✅ Delete Advice
-exports.deleteAdvice = async (req, res) => {
-  try {
-    const advice = await Advice.findByPk(req.params.id);
-    if (!advice) {
-      return res.status(404).json({ message: "Advice not found" });
-    }
-
-    await advice.destroy();
-    res.status(200).json({ message: "Advice deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting advice", error: error.message });
-  }
+module.exports = {
+  createAdviceFromFlask,
+  getAllAdvice,
 };
