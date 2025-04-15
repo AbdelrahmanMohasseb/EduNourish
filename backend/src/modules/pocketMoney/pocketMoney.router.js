@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Parent, Student } = require("../../../DB/models/index"); 
+const { Parent, Student ,Payment} = require("../../../DB/models/index"); 
 const { isParent } = require("../../middleware/auth"); 
 
 router.put("/set-pocket-money/:studentId", isParent, async (req, res) => {

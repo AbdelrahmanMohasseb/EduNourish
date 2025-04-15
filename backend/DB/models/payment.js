@@ -31,6 +31,10 @@ const Payment = sequelize.define("Payment", {
   stripeSessionId: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  type: {
+    type: DataTypes.STRING, // 'checkout' or 'pocketmoney'
+    defaultValue: "checkout"
   }
 }, {
   timestamps: true,

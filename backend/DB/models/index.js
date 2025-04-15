@@ -32,6 +32,8 @@ Class.belongsToMany(Teacher, { through: ClassTeacher, foreignKey: "classId" });
 ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
 ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
+
+Student.hasMany(require('./payment.js'), { foreignKey: 'studentId' });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 
 // Optional: Sync database (only in development)
