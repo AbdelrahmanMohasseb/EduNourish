@@ -16,22 +16,23 @@ const subjectRoutes = require("./src/modules/subject/subject.router");
 const timetableRoutes=require("./src/modules/Timetable/timetable.router")
 const ExamRoutes=require("./src/modules/Exam/Exam.router");
 const gradeRoutes=require("./src/modules/grade/grade.router");
-const AttendanceRoutes=require("./src/modules/attendance/attendance.routes");
-const uploadRoutes = require("./src/modules/upload/uploadRoutes");
+const AttendanceRoutes=require("./src/modules/attendance/attendance.router");
+const uploadRoutes = require("./src/modules/upload/upload.router");
 const studentExamRouter = require("./src/modules/studentexam/studentexam.router");
 //picture
-app.use(express.urlencoded({ extended: true })); 
+ 
 const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
 const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
-const classRoutes=require("./src/modules/class/class.router")
+const classRoutes=require("./src/modules/class/calss.router")
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.post("/api/payments/webhook", 
   express.raw({ type: 'application/json' }), 
