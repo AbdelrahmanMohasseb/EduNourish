@@ -1,8 +1,6 @@
 const express = require("express");
 require("dotenv").config();
 
-
-
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
 const organizerRoutes = require("./src/modules/organizer/organizer.router");
