@@ -3,9 +3,9 @@ const sequelize = require("../config/connectDB");
 
 const Attendance = sequelize.define("Attendance", {
   id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-    
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
   },
   date: {
     type: DataTypes.DATE,
@@ -22,7 +22,7 @@ const Attendance = sequelize.define("Attendance", {
 
   studentId: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: "Students", // تأكد إن اسم الجدول فعليًا "Students"
       key: "id"
@@ -30,7 +30,7 @@ const Attendance = sequelize.define("Attendance", {
 
     teacherID: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Teachers",
           key: "teacherID"
