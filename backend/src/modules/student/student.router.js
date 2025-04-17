@@ -1,21 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,signup, signin} 
+const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent} 
     = require("../../../src/modules/student/controller/student.controller");
 
-const { validateStudentSignup, validateStudentSignin } = require("./student.validator"); 
+
+const auth = require("../../middleware/auth");
+// router.get("/profile", auth(["student", "parent"]), profileHandler);
 
 
 
 // تعريف الـ Routes
 router.post("/", createStudent); 
 router.get("/", getAllStudents); 
-router.get("/:id", getStudentById); 
+router.get("/:id", auth(["student", "parent"]), getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
 
-router.post("/signup", validateStudentSignup, signup);
-router.post("/signin",validateStudentSignin,signin)
+
 
 
 module.exports = router;

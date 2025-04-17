@@ -41,10 +41,6 @@ const Parent = sequelize.define("Parent", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // gender: {
-  //   type: DataTypes.ENUM("Male", "Female"),
-  //   allowNull: true,
-  // } 
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,

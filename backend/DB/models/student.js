@@ -61,7 +61,7 @@ const Student = sequelize.define("Student", {
 
     pocketmoney: {
         type: DataTypes.DOUBLE,
-        allowNull: false
+        allowNull: true
     },
     academicYear: {
         type: DataTypes.STRING,
@@ -69,12 +69,19 @@ const Student = sequelize.define("Student", {
     },
     parentId: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Parents',
         key: 'id',
       },
-    }
+    },
+    classId: {
+    type: DataTypes.STRING,
+   allowNull: true,
+   references: {
+     model: 'Classes',  
+     key: 'id',        
+  },}
 }, 
 {
     timestamps: false 

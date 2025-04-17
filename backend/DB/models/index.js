@@ -6,8 +6,6 @@ const Student=require('./student');
 const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
-const Signup=require("./studentsignup")
-const Signin=require("./studentsignin")
 const News=require("./news")
 const Feedback=require("./feedback")
 const Advice=require("./advice")
@@ -23,6 +21,7 @@ const Excuse=require("./Excuse.js")
 const Class=require("./class.js")
 const Payment=require("./payment.js")
 const ClassTeacher=require("./classteacher.js")
+const InstructionAI = require("./instructionAi.js");
 
 
 
@@ -71,6 +70,8 @@ ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
 ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
 Payment.belongsTo(Student, { foreignKey: "studentId" });
+Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
+InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -84,8 +85,6 @@ module.exports = {
   Advisor,
   Organizer,
   Student,
-  Signup,
-  Signin,
   Subject,
   News,
   Feedback,
@@ -100,6 +99,10 @@ module.exports = {
   Class,
   Excuse,
   ClassTeacher,
+  InstructionAI,
   sequelize,
 
 };
+
+
+

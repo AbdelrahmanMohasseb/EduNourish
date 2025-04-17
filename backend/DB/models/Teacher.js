@@ -30,10 +30,6 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // gender: {
-  //   type: DataTypes.ENUM("male", "female"),
-  //   allowNull: true,
-  // }
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,

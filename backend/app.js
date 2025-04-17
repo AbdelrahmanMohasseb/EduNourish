@@ -24,8 +24,11 @@ const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
 const classRoutes=require("./src/modules/class/calss.router")
+const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.router");
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const loginRoutes = require("./src/modules/login/login.router");
+
 
 const app = express();
 
@@ -53,13 +56,15 @@ app.use("/api/exams",ExamRoutes);
 app.use("/api/grades",gradeRoutes);
 app.use("/api/attendance", AttendanceRoutes);
 app.use("/api/upload-profile-picture", uploadRoutes);
-app.use("/api/studentexams", studentExamRouter);  // تأكد من المسار الصحيح
+app.use("/api/studentexams", studentExamRouter);
 app.use("/api/ResturantMenu",resturantMenu);
 app.use("/api/Excuses",excuseRoutes);
 app.use("/api/pocket-money",pocketMoneyRoutes)
 app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
 app.use("/api/class-teachers", classTeacherRoutes);
+app.use("/api/instruction-ai", instructionAIRouter);
+app.use("/api/login", loginRoutes);
 
 // Server
 const PORT = 3000;
