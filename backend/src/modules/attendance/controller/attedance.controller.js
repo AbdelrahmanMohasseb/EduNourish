@@ -14,7 +14,7 @@ const { Attendance, Teacher } = require("../../../../DB/models/index");
 exports.createAttendance = async (req, res) => {
   try {
     const {  date, status, remarks, studentId, teacherID } = req.body;
-
+ console.log('REQ BODY:', req.body);  // Debug log
     const attendance = await Attendance.create({
      
       date,
