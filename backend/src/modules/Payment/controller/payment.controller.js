@@ -30,8 +30,8 @@ exports.createCheckoutSession = async (req, res) => {
     await Payment.create({
       studentId,
       amount,
-      stripeSessionId: session.id,
-      type: "checkout"
+       stripeSessionId: session.id,
+       type: "checkout"
     });
 
     res.status(200).json({ url: session.url });
@@ -59,6 +59,7 @@ exports.stripeWebhook = async (req, res) => {
       where: { stripeSessionId: session.id }
     });
   }
+
   res.status(200).json({ received: true });
 };
 
@@ -91,8 +92,4 @@ exports.receivePocketMoney = async (req, res) => {
   }
 };
 
-exports.getAllPayments = async (req, res) => {
-    const payments = await Payment.findAll();
-    res.json(payments);
-  };
   

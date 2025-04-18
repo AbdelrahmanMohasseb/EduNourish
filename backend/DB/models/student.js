@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
+const Parent=require('./parent');
+
 
 const Student = sequelize.define("Student", {
     id: {
@@ -39,45 +41,42 @@ const Student = sequelize.define("Student", {
       age:{
         type: DataTypes.INTEGER, 
       },
-   
+      
       gender: {
-        type: DataTypes.STRING,  // Use STRING instead of ENUM
+        type: DataTypes.STRING,  
         allowNull: false,
         validate: {
-          isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+          isIn: [['male', 'female']]  
         }
       },
 
     pocketmoney: {
         type: DataTypes.DOUBLE,
-        allowNull: false
+        allowNull: true
     },
     academicYear: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    
     parentId: {
       type: DataTypes.STRING,
+      allowNull: true,
       references: {
         model: 'Parents',
         key: 'id',
-    },
+      },
+    },
     classId: {
     type: DataTypes.STRING,
-   allowNull: false,
+   allowNull: true,
    references: {
      model: 'Classes',  
      key: 'id',        
-  },
-  }
-
+  },}
 }, 
-},
 {
-  timestamps: false
+    timestamps: false 
 });
-
 
 
 

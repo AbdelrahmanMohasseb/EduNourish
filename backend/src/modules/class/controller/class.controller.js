@@ -1,5 +1,5 @@
 // controllers/classController.js
-const {Class,Student} = require("../../../../DB/models/index.js");
+const {Class,Student, Teacher} = require("../../../../DB/models/index.js");
 
 exports.createClass = async (req, res) => {
     try {
@@ -74,6 +74,10 @@ exports.getStudentsByClass = async (req, res) => {
         include: {
           model: Student,
           attributes: ['id', 'userName', 'email'] // حسب الأعمدة اللي محتاجاها
+        },
+        include:{
+            model:Teacher,
+            attributes:["id","userName","email"]
         }
       });
   
@@ -84,7 +88,8 @@ exports.getStudentsByClass = async (req, res) => {
       res.status(200).json({
         classId: classData.id,
         className: classData.className,
-        students: classData.Students
+        students: classData.Students,
+        teacher:classData.Teacher
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -1,63 +1,72 @@
 const jwt = require("jsonwebtoken");
-const { Student, Parent, Teacher, Advisor, Organizer } = require("../../DB/models/index");
+const dotenv = require("dotenv");
+dotenv.config();
 
-exports.isAdmin = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")?.replace("Bearer ", "");
-        if (!token) {
-            return res.status(401).json({ message: "No token provided" });
-        }
+const {Student} = require("../../DB/models/index");
+const {Teacher} = require("../../DB/models/index");
+const {Parent} = require("../../DB/models/index");
+const {Organizer} = require("../../DB/models/index");
+const {Advisor} = require("../../DB/models/index");
 
-        const decoded = jwt.verify(token, "SECRET_KEY"); 
-
-        const admin = await Organizer.findByPk(decoded.id) || await Advisor.findByPk(decoded.id);
-
-        if (!admin) {
-            return res.status(403).json({ message: "Access denied. Admins only." });
-        }
-
-        req.user = admin;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: "Invalid token" });
-    }
+const models = {
+  student: Student,
+  teacher: Teacher,
+  parent: Parent,
+  organizer: Organizer,
+  advisor: Advisor,
 };
 
-exports.isStudent = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization")?.replace("Bearer ", " ");
-        if (!token) {
-            return res.status(401).json({ message: "No token provided" });
-        }
+const auth = (allowedRoles = []) => {
+  return async (req, res, next) => {
+    const token = req.header("Authorization")?.split(" ")[1];
 
-        const decoded = jwt.verify(token, "SECRET_KEY");
-
-        const student = await Student.findByPk(decoded.id);
-
-        if (!student) {
-            return res.status(403).json({ message: "Access denied. Students only." });
-        }
-
-        req.user = student;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: "Invalid token" });
+    if (!token) {
+      return res.status(401).json({ message: "Access Denied. No token provided." });
     }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
+
+      let user = null;
+      let role = null;
+
+      for (const [key, model] of Object.entries(models)) {
+        user = await model.findByPk(userId);
+        if (user) {
+          role = key;
+          break;
+        }
+      }
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      // Authorization: Check if user role is in allowed roles
+      if (allowedRoles.length && !allowedRoles.includes(role)) {
+        return res.status(403).json({ message: "Access Denied. Not authorized." });
+      }
+
+      req.user = { ...user.dataValues, role }; // Attach user data and role
+      next();
+    } catch (error) {
+      res.status(400).json({ message: "Invalid Token", error: error.message });
+    }
+  };
 };
 
-exports.isParent = async (req, res, next) => {
-    try {
-        const token = req.header("Authorization").replace("Bearer ", "");
-        const decoded = jwt.verify(token, "SECRET_KEY");
+module.exports = auth;
 
-        const parent = await Parent.findByPk(decoded.id);
-        if (!parent) {
-            return res.status(403).json({ message: "Access denied. Parents only." });
-        }
 
-        req.parent = parent;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: "Invalid token" });
-    }
-};
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB"); 
+const Student=require('./student');
 
+const bcrypt = require ("bcrypt")
 
 const Parent = sequelize.define("Parent", {
   id: {
@@ -39,7 +41,6 @@ const Parent = sequelize.define("Parent", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-   
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
@@ -49,5 +50,7 @@ const Parent = sequelize.define("Parent", {
   } ,
   
 });
+
+
 
 module.exports = Parent;

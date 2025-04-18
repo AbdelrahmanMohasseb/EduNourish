@@ -6,16 +6,54 @@ const Student=require('./student');
 const Bus=require('./bus');
 const Parent=require('./parent');
 const Teacher=require('./Teacher');
-const Signup=require("./studentsignup")
+const News=require("./news")
+const Feedback=require("./feedback")
+const Advice=require("./advice")
+const Notification=require("./notification")
+const Subject = require("./subject");
 const TimeTable=require("./timeTable")
+const Exam = require("./Exam");
+const Grade = require('./grade');
+const Attendance=require("./attendance");
+const StudentExam = require('./studentexam');
 const Menu=require("./Menu")
-const Excuse=require("./excuse.js")
+const Excuse=require("./Excuse.js")
 const Class=require("./class.js")
 const Payment=require("./payment.js")
 const ClassTeacher=require("./classteacher.js")
+const InstructionAI = require("./instructionAi.js");
+
+
 
 Parent.hasMany(Student, { foreignKey: 'parentId' });
-Student.belongsTo(Parent, { foreignKey: 'parentId' })
+Student.belongsTo(Parent, { foreignKey: 'parentId' });
+
+Subject.hasMany(Teacher, { foreignKey: 'SubjectID' });
+Teacher.belongsTo(Subject, { foreignKey: 'SubjectID' });
+
+Advice.belongsTo(Parent, { foreignKey: 'parentId' });
+Parent.hasMany(Advice, { foreignKey: 'parentId' });
+
+Advice.belongsTo(Teacher, { foreignKey: 'teacherId' });
+Teacher.hasMany(Advice, { foreignKey: 'teacherId' });
+
+Student.belongsToMany(Exam, { through: StudentExam, foreignKey: 'studentId' });
+Exam.belongsToMany(Student, { through: StudentExam, foreignKey: 'examId' });
+
+
+Student.hasMany(Grade, { foreignKey: 'StudentIDg' });
+Grade.belongsTo(Student, { foreignKey: 'StudentIDg' });
+
+Student.hasMany(Attendance, { foreignKey: 'studentId' });
+Attendance.belongsTo(Student, { foreignKey: 'studentId' });
+
+Student.hasMany(Subject, { foreignKey: "studentId" });
+Subject.belongsTo(Student, { foreignKey: "studentId" });
+
+
+Teacher.hasMany(Attendance, { foreignKey: "teacherID" });
+Attendance.belongsTo(Teacher, { foreignKey: "teacherID" });
+
 
 Class.hasMany(TimeTable, { foreignKey: "classId" });
 TimeTable.belongsTo(Class, { foreignKey: "classId" });
@@ -32,31 +70,43 @@ Class.belongsToMany(Teacher, { through: ClassTeacher, foreignKey: "classId" });
 ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
 ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
-
 Student.hasMany(require('./payment.js'), { foreignKey: 'studentId' });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
+
+Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
+InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))
   .catch((err) => console.error("Database synchronization error:", err));
- 
-
 
 module.exports = {
- Payment,
-  Bus,
+   Bus,
   Teacher,
   Parent,
   Advisor,
   Organizer,
   Student,
-  Signup,
+  Subject,
+  News,
+  Feedback,
+  Advice,
+  Notification,
   TimeTable,
+  Exam,
+  Grade,
+  Attendance,
+  StudentExam,
   Menu,
   Class,
   Excuse,
   ClassTeacher,
+  InstructionAI,
+  Payment,
   sequelize,
 
 };
+
+
+

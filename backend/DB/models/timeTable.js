@@ -25,7 +25,11 @@ const Timetable = sequelize.define("Timetable", {
             model: "Classes", 
             key: "id",
         }
-    }
+    },
+    teacherID: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
 }, {
     timestamps: true,
 

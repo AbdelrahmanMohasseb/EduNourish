@@ -36,9 +36,6 @@ const Advisor = sequelize.define("Advisor", {
   age: {
     type: DataTypes.INTEGER,
   },
-  // gender: {
-  //   type: DataTypes.ENUM("male", "female"),
-  // }
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,

@@ -11,6 +11,7 @@ router.get("/",  parentController.getAllParents);
 router.get("/:id",  parentController.getParentById);
 router.put("/:id", parentController.updateParent);
 router.delete("/:id", parentController.deleteParent);
+router.post("/signin", parentController.signin);
 
 
 //signin

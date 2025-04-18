@@ -1,23 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,signup, signin,getClassByStudent,receivePocketMoney} 
+const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,getClassByStudent} 
     = require("../../../src/modules/student/controller/student.controller");
-
-const { validateStudentSignup, validateStudentSignin } = require("./student.validator"); 
-
+const auth = require("../../middleware/auth");
 
 
-// تعريف الـ Routes
 router.post("/", createStudent); 
 router.get("/", getAllStudents); 
-router.get("/:id", getStudentById); 
+router.get("/:id", auth(["student", "parent"]), getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
-router.get("/:studentId/class", getClassByStudent);
-//router.post("/:studentId/pocket-money", receivePocketMoney);
+router.get("/class",auth(["student", "parent"]), getClassByStudent);
 
 
-router.post("/signup", validateStudentSignup, signup);
-router.post("/signin",validateStudentSignin,signin)
 
 module.exports = router;

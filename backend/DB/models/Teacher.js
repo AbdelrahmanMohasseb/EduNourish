@@ -30,10 +30,6 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // subject: {
-  //   type: DataTypes.STRING, 
-  //   allowNull: false
-  // },
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
@@ -45,6 +41,13 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  SubjectID: {
+    type: DataTypes.STRING,
+    references: {
+      model: 'Subjects',
+      key: 'SubjectID',
+      },
+    }
   
 });
 
