@@ -40,7 +40,7 @@ app.post("/api/payments/webhook",
 
 
 // Routes
-app.use("/api/Login", loginRoutes);
+app.use("/api/Login", require("./src/modules/Login/Login.router"));
 app.use('/api/students',studentRoutes)
 app.use("/api/advisors", advisorRoutes);
 app.use("/api/organizers", organizerRoutes);
