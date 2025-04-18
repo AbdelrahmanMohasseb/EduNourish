@@ -1,5 +1,5 @@
 
-const { Student, Class ,Payment,} = require("../../../../DB/models/index");
+const { Student, Class ,Payment,Attendance} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 
