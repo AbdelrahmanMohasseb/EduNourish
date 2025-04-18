@@ -17,8 +17,6 @@ const gradeRoutes=require("./src/modules/grade/grade.router");
 const AttendanceRoutes=require("./src/modules/attendance/attendance.router");
 const uploadRoutes = require("./src/modules/upload/upload.router");
 const studentExamRouter = require("./src/modules/studentexam/studentexam.router");
-//picture
- 
 const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
 const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
 const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
@@ -42,6 +40,7 @@ app.post("/api/payments/webhook",
 
 
 // Routes
+app.use("/api/login", loginRoutes);
 app.use('/api/students',studentRoutes)
 app.use("/api/advisors", advisorRoutes);
 app.use("/api/organizers", organizerRoutes);
@@ -65,7 +64,7 @@ app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
 app.use("/api/class-teachers", classTeacherRoutes);
 app.use("/api/instruction-ai", instructionAIRouter);
-app.use("/api/login", loginRoutes);
+
 
 // Server
 const PORT = 3000;
