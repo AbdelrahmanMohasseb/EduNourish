@@ -10,7 +10,7 @@ router.get("/", getAllStudents);
 router.get("/:id", auth(["student", "parent"]), getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
-router.get("/:studentId/class", getClassByStudent);
+router.get("/class",auth(["student", "parent"]), getClassByStudent);
 
 
 
