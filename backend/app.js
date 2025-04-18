@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const cors = require("cors");
 
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
@@ -30,6 +31,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+
 app.use(express.json({
   verify: (req, res, buf) => {
     try {
@@ -40,6 +42,8 @@ app.use(express.json({
     }
   }
 }));
+app.use(cors());
+
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/api/payments/webhook", 

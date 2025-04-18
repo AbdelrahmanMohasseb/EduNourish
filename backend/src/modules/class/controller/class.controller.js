@@ -75,10 +75,10 @@ exports.getStudentsByClass = async (req, res) => {
           model: Student,
           attributes: ['id', 'userName', 'email'] // حسب الأعمدة اللي محتاجاها
         },
-        include:{
-            model:Teacher,
-            attributes:["id","userName","email"]
-        }
+        // include:{
+        //     model:Teacher,
+        //     attributes:["id","userName","email"]
+        // }
       });
   
       if (!classData) {
@@ -89,7 +89,7 @@ exports.getStudentsByClass = async (req, res) => {
         classId: classData.id,
         className: classData.className,
         students: classData.Students,
-        teacher:classData.Teacher
+        // teacher:classData.Teacher
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
