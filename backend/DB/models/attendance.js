@@ -3,9 +3,10 @@ const sequelize = require("../config/connectDB");
 
 const Attendance = sequelize.define("Attendance", {
   id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
-        autoIncrement: true
+        // autoIncrement: true
+        allowNull:true
   },
   date: {
     type: DataTypes.DATE,
