@@ -48,7 +48,7 @@ app.post("/api/payments/webhook",
 
 
 // Routes
-app.use("/api/Login", require("./src/modules/login/Login.router.js"));
+app.use("/api/Login", loginRoutes);
 app.use('/api/students',studentRoutes)
 app.use("/api/advisors", advisorRoutes);
 app.use("/api/organizers", organizerRoutes);
