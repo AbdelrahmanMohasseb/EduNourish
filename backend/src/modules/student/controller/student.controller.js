@@ -1,5 +1,5 @@
 
-const {Student, Attendance} = require("../../../../DB/models/index");
+const { Student, Class ,Payment,} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 
@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 exports.createStudent = async (req, res) => {
     try {
-        const { id,userName, email, password, phoneNumber, photo, address, age, gender, pocketmoney, academicYear, classNumber , classId,parentId} = req.body;
+        const { id,userName, email, password, phoneNumber, photo, address, age, gender, academicYear, classNumber , classId,parentId} = req.body;
 
         const existingUser = await Student.findOne({ where: { email } });
         if (existingUser) {
@@ -50,6 +50,14 @@ exports.getStudentById = async (req, res) => {
             where: { id: req.user.id },
             include: [
                 {model: Attendance},
+                {
+                    model: Payment,
+                    attributes: ['id', 'amount','status',  'createdAt']
+                },
+                {
+                    model: Class,
+                    attributes: ['id', 'className']
+                }
                 // {model: Advice},
                 // {model:InstructionAI},
                 // ,as: 'students' // Optional: Specify the alias for the association
@@ -103,3 +111,26 @@ exports.deleteStudent = async (req, res) => {
     }
 };
 
+exports.getClassByStudent = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const student = await Student.findByPk(studentId, {
+            include: {
+                model: Class,
+                attributes: ['id', 'className']
+            }
+        });
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        res.status(200).json({
+            studentId: student.id,
+            studentName: student.userName,
+            class: student.Class
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

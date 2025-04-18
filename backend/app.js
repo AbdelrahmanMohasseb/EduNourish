@@ -19,7 +19,6 @@ const uploadRoutes = require("./src/modules/upload/upload.router");
 const studentExamRouter = require("./src/modules/studentexam/studentexam.router");
 const resturantMenu=require("./src/modules/resturantMenuItem/resturantMenuItem.router")
 const excuseRoutes=require("./src/modules/Excuse/Excuse.router")
-const pocketMoneyRoutes=require("./src/modules/pocketMoney/pocketMoney.router")
 const PaymentRoutes=require("./src/modules/Payment/payment.router")
 const classRoutes=require("./src/modules/class/calss.router")
 const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.router");
@@ -68,7 +67,6 @@ app.use("/api/upload-profile-picture", uploadRoutes);
 app.use("/api/studentexams", studentExamRouter);
 app.use("/api/ResturantMenu",resturantMenu);
 app.use("/api/Excuses",excuseRoutes);
-app.use("/api/pocket-money",pocketMoneyRoutes)
 app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
 app.use("/api/class-teachers", classTeacherRoutes);

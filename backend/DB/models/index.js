@@ -72,6 +72,7 @@ ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
 InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
+Student.hasMany(require('./payment.js'), { foreignKey: 'studentId' });
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -100,6 +101,7 @@ module.exports = {
   Excuse,
   ClassTeacher,
   InstructionAI,
+  Payment,
   sequelize,
 
 };

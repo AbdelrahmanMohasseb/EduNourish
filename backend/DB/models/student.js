@@ -41,21 +41,12 @@ const Student = sequelize.define("Student", {
       age:{
         type: DataTypes.INTEGER, 
       },
-      // gender:{
-      //   type: DataTypes.ENUM("male", "female")
-      // }
-      // gender: {
-      //   type: DataTypes.STRING,  // Use STRING instead of ENUM
-      //   allowNull: false,
-      //   validate: {
-      //     isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
-      //   }
-      // }
+      
       gender: {
-        type: DataTypes.STRING,  // Use STRING instead of ENUM
+        type: DataTypes.STRING,  
         allowNull: false,
         validate: {
-          isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
+          isIn: [['male', 'female']]  
         }
       },
 

@@ -1,11 +1,12 @@
 // // 📁 controllers/payment.controller.js
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const Payment = require("../../../../DB/models/payment");
+const {Payment,Student} = require("../../../../DB/models/index");
 
 exports.createCheckoutSession = async (req, res) => {
   try {
-    const { studentId, amount } = req.body;
+    const studentId = req.params.id;
+    const {  amount } = req.body;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -29,7 +30,8 @@ exports.createCheckoutSession = async (req, res) => {
     await Payment.create({
       studentId,
       amount,
-      stripeSessionId: session.id
+       stripeSessionId: session.id,
+       type: "checkout"
     });
 
     res.status(200).json({ url: session.url });
@@ -61,8 +63,33 @@ exports.stripeWebhook = async (req, res) => {
   res.status(200).json({ received: true });
 };
 
-exports.getAllPayments = async (req, res) => {
-    const payments = await Payment.findAll();
-    res.json(payments);
-  };
+exports.receivePocketMoney = async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const { amount } = req.body;
+
+    const student = await Student.findByPk(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    student.pocketmoney += amount;
+    await student.save();
+
+    await Payment.create({
+      studentId,
+      amount,
+      status: "paid",
+      type: "pocketmoney"
+    });
+
+    res.status(200).json({
+      message: "Pocket money added and recorded",
+      pocketMoney: student.pocketmoney
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
   

@@ -1,21 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent} 
+const {createStudent,getStudentById,getAllStudents,updateStudent,deleteStudent,getClassByStudent} 
     = require("../../../src/modules/student/controller/student.controller");
-
-
 const auth = require("../../middleware/auth");
-// router.get("/profile", auth(["student", "parent"]), profileHandler);
 
 
-
-// تعريف الـ Routes
 router.post("/", createStudent); 
 router.get("/", getAllStudents); 
 router.get("/:id", auth(["student", "parent"]), getStudentById); 
 router.put("/:id", updateStudent);
 router.delete("/:id", deleteStudent);
-
+router.get("/:studentId/class", getClassByStudent);
 
 
 
