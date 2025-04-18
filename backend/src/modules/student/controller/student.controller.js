@@ -1,5 +1,5 @@
 
-const {Student} = require("../../../../DB/models/index");
+const {Student, Attendance} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 
@@ -48,6 +48,12 @@ exports.getStudentById = async (req, res) => {
         // const student = await Student.findOne({ _id: req.user._id }).select('-password');
         const student = await Student.findOne({
             where: { id: req.user.id },
+            include: [
+                {model: Attendance},
+                // {model: Advice},
+                // {model:InstructionAI},
+                // ,as: 'students' // Optional: Specify the alias for the association
+              ],
             attributes: { exclude: ['password'] }
           });
 

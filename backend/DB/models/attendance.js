@@ -25,7 +25,7 @@ const Attendance = sequelize.define("Attendance", {
     type: DataTypes.STRING,
     allowNull: true,
     references: {
-      model: "Students", // تأكد إن اسم الجدول فعليًا "Students"
+      model: "Students", 
       key: "id"
     },
 
