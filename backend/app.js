@@ -23,7 +23,7 @@ const PaymentRoutes=require("./src/modules/Payment/payment.router")
 const classRoutes=require("./src/modules/class/calss.router")
 const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.router");
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
-const loginRoutes = require("./src/modules/login/Login.router.js");
+const loginRoutes = require("./src/modules/login/login.router.js");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
