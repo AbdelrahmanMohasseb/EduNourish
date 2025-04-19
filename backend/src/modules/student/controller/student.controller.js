@@ -24,7 +24,6 @@ exports.createStudent = async (req, res) => {
             address,
             age,
             gender,
-            pocketmoney,
             academicYear,
             classNumber,
             classId,
