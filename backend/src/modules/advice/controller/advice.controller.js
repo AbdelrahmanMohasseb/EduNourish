@@ -1,17 +1,18 @@
 const{Advice} = require("../../../../DB/models/index");
-const axios = require('axios');
+// const axios = require('axios');
 
 
 
 const createAdviceFromFlask = async (req, res) => {
   try {
     // Step 1: Fetch advice from Flask API (which already did the processing)
-    const { data } = await axios.get('http://localhost:5000/api/advice'); // Flask URL
+    // const { data } = await axios.get('http://localhost:5000/api/advice'); // Flask URL
 
-    const { parentAdvice, teacherAdvice, parentId, teacherId } = data;
+    const {id, parentAdvice, teacherAdvice, parentId, teacherId } = req.body;
 
     // Step 2: Store in DB
     const newAdvice = await Advice.create({
+      id,
       parentAdvice,
       teacherAdvice,
       parentId,

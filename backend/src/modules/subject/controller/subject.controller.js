@@ -4,7 +4,7 @@ const {Subject, Teacher} = require("../../../../DB/models/index");
 exports.createSubject = async (req, res) => {
     try {
 
-        const {SubjectID, name, code, category, gradeLevel, semester, description } = req.body;
+        const {SubjectID, name, code, category, gradeLevel, semester, description ,studentId} = req.body;
         const subject = await Subject.create({
            
             SubjectID,
@@ -13,7 +13,8 @@ exports.createSubject = async (req, res) => {
             category,
             gradeLevel,
             semester,
-            description
+            description,
+            studentId
         });
         res.status(201).json(subject);
     } catch (error) {
