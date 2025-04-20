@@ -24,6 +24,7 @@ const classRoutes=require("./src/modules/class/calss.router")
 const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.router");
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const loginRoutes = require("./src/modules/login/login.router.js");
+const cors = require("cors");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
@@ -41,6 +42,7 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.post("/api/payments/webhook", 
   express.raw({ type: 'application/json' }), 

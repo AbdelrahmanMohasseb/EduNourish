@@ -37,7 +37,14 @@ const Subject = sequelize.define("Subject", {
     description: {
         type: DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    studentId: {
+      type: DataTypes.STRING,
+      references: {
+        model: 'Students',
+        key: 'id',
+        },
+      }
 }, {
     timestamps: true
 });
