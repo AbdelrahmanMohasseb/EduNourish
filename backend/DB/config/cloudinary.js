@@ -1,14 +1,9 @@
-
-
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config(); 
-
-
 console.log("Cloudinary Config:");
 console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME || "Not Found");
 console.log("API Key:", process.env.CLOUDINARY_API_KEY ? "Loaded" : "Not Found");
 console.log("API Secret:", process.env.CLOUDINARY_API_SECRET ? "Loaded" : "Not Found");
-
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

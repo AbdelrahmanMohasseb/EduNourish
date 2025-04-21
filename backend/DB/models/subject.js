@@ -43,11 +43,17 @@ const Subject = sequelize.define("Subject", {
       references: {
         model: 'Students',
         key: 'id',
-        },
-      }
+    },
+  },
 
-
-
+  subjectId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+      model: "Subjects", // لازم نفس اسم الجدول
+      key: "SubjectID"
+    }
+  }
   
 }, {
     timestamps: true

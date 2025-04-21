@@ -28,14 +28,7 @@ const Material = sequelize.define("Material", {
     allowNull: true
   },
 
- SubjectID: {
-    type: DataTypes.STRING,
-    references: {
-      model: 'Subjects',
-      key: 'SubjectID',
-      },
-    }
-
+ 
 
 });
 

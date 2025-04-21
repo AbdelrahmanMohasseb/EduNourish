@@ -1,21 +1,3 @@
-// const express = require("express");
-// const router = express.Router();
-// const materialController = require("../material/controller/material.controller");
-
-// // Create a new material
-// router.post("/", materialController.createMaterial);
-
-// // Get all materials
-// router.get("/", materialController.getAllMaterials);
-
-// // Get a material by ID
-// router.get("/:id", materialController.getMaterialById);
-
-// //delete material by ID
-// router.delete("/:id", materialController.deleteMaterial);
-
-// module.exports = router;
-
 const express = require("express");
 const router = express.Router();
 const materialController = require("../material/controller/material.controller");
@@ -43,3 +25,4 @@ router.put("/:id", upload.fields([
 router.delete("/:id", materialController.deleteMaterial);
 
 module.exports = router;
+
