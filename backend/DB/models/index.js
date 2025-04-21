@@ -22,6 +22,8 @@ const Class=require("./class.js")
 const Payment=require("./payment.js")
 const ClassTeacher=require("./classteacher.js")
 const InstructionAI = require("./instructionAi.js");
+const Material = require("./Material.js");
+
 
 
 
@@ -73,6 +75,8 @@ Payment.belongsTo(Student, { foreignKey: "studentId" });
 Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
 InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
 Student.hasMany(require('./payment.js'), { foreignKey: 'studentId' });
+Subject.hasMany(Material, { foreignKey: "SubjectID" });
+Material.belongsTo(Subject, { foreignKey: "SubjectID" });
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
@@ -102,6 +106,7 @@ module.exports = {
   ClassTeacher,
   InstructionAI,
   Payment,
+  Material,
   sequelize,
 
 };

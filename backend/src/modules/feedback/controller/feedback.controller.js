@@ -5,14 +5,24 @@ exports.createFeedback = async (req, res) => {
   try {
     const { senderId, senderName, senderPhoto, feedbackMessage, messageType } = req.body;
 
-    // Fetch child associated with the parent
-    const parent = await Parent.findOne({ where: { id: senderId }, include: Student });
-    if (!parent || parent.Student.length === 0) {
+    // Fetch parent with associated students (children)
+    const parent = await Parent.findOne({
+      where: { id: senderId },
+      include: {
+        model: Student,
+        as: 'Students' 
+      }
+    });
+
+    // Check if parent or their students are not found
+    if (!parent || !parent.Students || parent.Students.length === 0) {
       return res.status(404).json({ message: "No associated child found for this parent" });
     }
 
-    const studentId = parent.Student[0].id; // Assign first child automatically
+    // Assign first child by default
+    const studentId = parent.Students[0].id;
 
+    // Create feedback
     const newFeedback = await Feedback.create({
       senderId,
       senderName,
@@ -25,16 +35,6 @@ exports.createFeedback = async (req, res) => {
     res.status(201).json({ message: "Feedback submitted successfully!", feedback: newFeedback });
   } catch (error) {
     res.status(500).json({ message: "Error submitting feedback", error: error.message });
-  }
-};
-
-// ✅ Get All Feedbacks
-exports.getAllFeedbacks = async (req, res) => {
-  try {
-    const feedbacks = await Feedback.findAll();
-    res.status(200).json(feedbacks);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching feedbacks", error: error.message });
   }
 };
 

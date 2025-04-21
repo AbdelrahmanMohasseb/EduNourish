@@ -25,15 +25,20 @@ const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.r
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const loginRoutes = require("./src/modules/login/login.router.js");
 const cors = require("cors");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const materialRoutes = require("./src/modules/material/material.router.js");
+const paymentController = require("./src/modules/Payment/controller/payment.controller");
+
 
 
 
 const app = express();
 
-app.post("/api/payments/webhook", 
-  express.raw({ type: 'application/json' }), 
-  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
+app.post(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" }),
+  paymentController.stripeWebhook
+);
+
 
 
 app.use(express.json({
@@ -75,6 +80,7 @@ app.use("/api/payments",PaymentRoutes)
 app.use("/api/Classes",classRoutes)
 app.use("/api/class-teachers", classTeacherRoutes);
 app.use("/api/instruction-ai", instructionAIRouter);
+app.use("/api/materials", materialRoutes);
 
 
 // Server
