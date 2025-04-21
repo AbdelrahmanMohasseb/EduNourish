@@ -1,6 +1,5 @@
 const{Feedback,Parent,Student} = require("../../../../DB/models/index");
 
-// ✅ Create Feedback (Auto-associate parent’s child)
 exports.createFeedback = async (req, res) => {
   try {
     const { senderId, senderName, senderPhoto, feedbackMessage, messageType } = req.body;
@@ -10,7 +9,7 @@ exports.createFeedback = async (req, res) => {
       where: { id: senderId },
       include: {
         model: Student,
-        as: 'Students' 
+        as: 'Students' // تأكد أن هذا الاسم مطابق لما في association
       }
     });
 
@@ -35,6 +34,17 @@ exports.createFeedback = async (req, res) => {
     res.status(201).json({ message: "Feedback submitted successfully!", feedback: newFeedback });
   } catch (error) {
     res.status(500).json({ message: "Error submitting feedback", error: error.message });
+  }
+};
+
+
+// ✅ Get All Feedbacks
+exports.getAllFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.findAll();
+    res.status(200).json(feedbacks);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching feedbacks", error: error.message });
   }
 };
 
