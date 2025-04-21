@@ -84,4 +84,3 @@ exports.deleteExam = async (req, res) => {
     res.status(500).json({ error: "Error deleting exam", details: error.message });
   }
 };
-

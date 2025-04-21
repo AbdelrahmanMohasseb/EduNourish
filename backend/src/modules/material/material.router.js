@@ -1,0 +1,45 @@
+// const express = require("express");
+// const router = express.Router();
+// const materialController = require("../material/controller/material.controller");
+
+// // Create a new material
+// router.post("/", materialController.createMaterial);
+
+// // Get all materials
+// router.get("/", materialController.getAllMaterials);
+
+// // Get a material by ID
+// router.get("/:id", materialController.getMaterialById);
+
+// //delete material by ID
+// router.delete("/:id", materialController.deleteMaterial);
+
+// module.exports = router;
+
+const express = require("express");
+const router = express.Router();
+const materialController = require("../material/controller/material.controller");
+const upload = require("../../middleware/multer");
+
+// إنشاء مادة جديدة (مع رفع ملفات)
+router.post("/", upload.fields([
+  { name: 'pdf', maxCount: 3 },
+  { name: 'image', maxCount: 2 }
+]), materialController.createMaterial);
+
+
+router.get("/", materialController.getAllMaterials);
+
+
+router.get("/:id", materialController.getMaterialById);
+
+
+router.put("/:id", upload.fields([
+  { name: 'pdf', maxCount: 1 },
+  { name: 'image', maxCount: 1 }
+]), materialController.updateMaterial);
+
+
+router.delete("/:id", materialController.deleteMaterial);
+
+module.exports = router;

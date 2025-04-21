@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // استيراد الـ controller
-const studentexamcontroller  = require("../studentexam/contoller/studentexam.contoller");
+const studentexamcontroller  = require("../studentexam/controller/studentexam.controller");
 
 // هنا نحن نستخدم المسار "/student-exam" للإضافة
 router.post("/", studentexamcontroller.createStudentExam); // يجب أن يكون المسار هو "/"

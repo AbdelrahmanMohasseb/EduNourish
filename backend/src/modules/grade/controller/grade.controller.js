@@ -29,7 +29,7 @@ exports.getAllGrades = async (req, res) => {
 
 exports.getGradesByStudent = async (req, res) => {
   try {
-    const { studentId } = req.params;
+    const { StudentIDg } = req.params;
 
     // البحث عن الدرجات الخاصة بالطالب مع تفاصيل الطالب
     const grades = await Grade.findAll({

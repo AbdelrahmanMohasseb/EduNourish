@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB"); 
+const Student=require('./student');
+const bcrypt = require ("bcrypt")
 
 const Parent = sequelize.define("Parent", {
   id: {
@@ -38,10 +40,6 @@ const Parent = sequelize.define("Parent", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  // gender: {
-  //   type: DataTypes.ENUM("Male", "Female"),
-  //   allowNull: true,
-  // } 
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
@@ -49,11 +47,9 @@ const Parent = sequelize.define("Parent", {
       isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
     }
   } ,
-  // profilePicture: {
-  //   type: DataTypes.STRING, // لحفظ رابط الصورة
-  //   allowNull: true,
-  // },
   
 });
+
+
 
 module.exports = Parent;

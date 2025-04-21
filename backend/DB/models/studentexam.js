@@ -26,4 +26,3 @@ const StudentExam = sequelize.define("StudentExam", {
 });
 
 module.exports = StudentExam;
-

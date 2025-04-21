@@ -1,10 +1,10 @@
-const {Subject, Teacher,student} = require("../../../../DB/models/index");
+const {Subject, Teacher} = require("../../../../DB/models/index");
 
 
 exports.createSubject = async (req, res) => {
     try {
 
-        const {SubjectID, name, code, category, gradeLevel, semester, description,studentId } = req.body;
+        const {SubjectID, name, code, category, gradeLevel, semester, description ,studentId} = req.body;
         const subject = await Subject.create({
            
             SubjectID,
@@ -38,14 +38,7 @@ exports.getSubjectById = async (req, res) => {
             include: [{
               model: Teacher
               // ,as: 'students' // Optional: Specify the alias for the association
-            },
-            {
-
-                model:student
-            }
-    
-    
-    ]});
+            }]});
         if (!subject) {
             return res.status(404).json({ message: "Subject not found" });
         }
