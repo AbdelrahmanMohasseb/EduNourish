@@ -14,6 +14,7 @@ exports.addGrade = async (req, res) => {
     res.status(500).json({ error: "Error adding grade", details: error.message });
   }
 };
+
 exports.getAllGrades = async (req, res) => {
   try {
     if (!Grade) {

@@ -31,6 +31,9 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+app.post("/api/payments/webhook", 
+  express.raw({ type: 'application/json' }), 
+  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
 
 app.use(express.json({
   verify: (req, res, buf) => {
@@ -46,9 +49,7 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/api/payments/webhook", 
-  express.raw({ type: 'application/json' }), 
-  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
+
 
 
 // Routes

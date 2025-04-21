@@ -31,7 +31,7 @@ exports.createCheckoutSession = async (req, res) => {
       studentId,
       amount,
        stripeSessionId: session.id,
-       type: "checkout"
+       type: "pocketmoney"
     });
 
     res.status(200).json({ url: session.url });
@@ -43,27 +43,54 @@ exports.createCheckoutSession = async (req, res) => {
 exports.stripeWebhook = async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
+
   try {
     event = stripe.webhooks.constructEvent(
       req.rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+    console.log("✅ Webhook received:", event.type);
   } catch (err) {
+    console.error("❌ Webhook signature error:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    await Payment.update({ status: "paid" }, {
+    console.log("🔎 Session ID from Stripe:", session.id);
+
+    const payment = await Payment.findOne({
       where: { stripeSessionId: session.id }
     });
+
+    if (!payment) {
+      console.log("❌ Payment not found for session:", session.id);
+      return res.status(404).json({ message: "Payment not found" });
+    }
+
+    console.log("✅ Payment before update:", payment);
+
+    await payment.update({ status: "paid" });
+
+    if (payment.type === "pocketmoney") {
+      const student = await Student.findByPk(payment.studentId);
+      if (student) {
+        console.log("💵 Before update:", student.pocketmoney);
+        student.pocketmoney += payment.amount;
+        await student.save();
+        console.log("💵 After update:", student.pocketmoney);
+      } else {
+        console.log("❌ Student not found:", payment.studentId);
+      }
+    }
   }
 
   res.status(200).json({ received: true });
 };
 
-exports.receivePocketMoney = async (req, res) => {
+
+exports.usePocketMoney = async (req, res) => {
   try {
     const studentId = req.params.id;
     const { amount } = req.body;
@@ -73,20 +100,24 @@ exports.receivePocketMoney = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    student.pocketmoney += amount;
+    if (student.pocketmoney < amount) {
+      return res.status(400).json({ message: "Not enough pocket money" });
+    }
+
+    // خصم المبلغ من المصروف
+    student.pocketmoney -= amount;
     await student.save();
 
+    // تسجل العملية في جدول المدفوعات
     await Payment.create({
       studentId,
       amount,
       status: "paid",
-      type: "pocketmoney"
+      type: "pocketmoney-used"
     });
 
-    res.status(200).json({
-      message: "Pocket money added and recorded",
-      pocketMoney: student.pocketmoney
-    });
+    res.status(200).json({ message: "Amount deducted from pocket money", pocketMoney: student.pocketmoney });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

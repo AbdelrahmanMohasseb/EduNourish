@@ -5,6 +5,7 @@ const Student = require("./student");
 const Payment = sequelize.define("Payment", {
   id: {
     type: DataTypes.STRING,
+    autoIncrement: true, 
     primaryKey: true,
   },
   studentId: {
@@ -33,7 +34,7 @@ const Payment = sequelize.define("Payment", {
   },
   type: {
     type: DataTypes.STRING, // 'checkout' or 'pocketmoney'
-    defaultValue: "checkout"
+    defaultValue: "chectout"
   }
 }, {
   timestamps: true,
