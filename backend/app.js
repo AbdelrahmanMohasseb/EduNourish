@@ -25,15 +25,17 @@ const classRoutes=require("./src/modules/class/calss.router")
 const instructionAIRouter = require("./src/modules/instructionAi/instructionAi.router");
 const classTeacherRoutes = require("./src/modules/classteacher/classteacher.router");
 const loginRoutes = require("./src/modules/login/Login.router.js");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const paymentController = require("./src/modules/Payment/controller/payment.controller");
 
 
 
 const app = express();
 
-app.post("/api/payments/webhook", 
-  express.raw({ type: 'application/json' }), 
-  require("./src/modules/Payment/controller/payment.controller").stripeWebhook);
+app.post(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" }),
+  paymentController.stripeWebhook
+);
 
 app.use(express.json({
   verify: (req, res, buf) => {
