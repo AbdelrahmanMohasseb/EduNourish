@@ -105,7 +105,6 @@ module.exports = {
   Excuse,
   ClassTeacher,
   InstructionAI,
-  Payment,
   Material,
   sequelize,
 
