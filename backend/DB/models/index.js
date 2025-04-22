@@ -73,10 +73,10 @@ Class.belongsToMany(Teacher, { through: ClassTeacher, foreignKey: "classId" });
 ClassTeacher.belongsTo(Teacher, { foreignKey: "teacherId" });
 ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
+Student.hasMany(Payment, { foreignKey: 'studentId' });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
 InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
-Student.hasMany(require('./payment.js'), { foreignKey: 'studentId' });
 Subject.hasMany(Material, { foreignKey: "SubjectID" });
 Material.belongsTo(Subject, { foreignKey: "SubjectID" });
 
@@ -108,6 +108,7 @@ module.exports = {
   ClassTeacher,
   InstructionAI,
   Material,
+  Payment,
   sequelize,
 
 };
