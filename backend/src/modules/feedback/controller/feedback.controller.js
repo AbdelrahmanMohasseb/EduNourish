@@ -8,9 +8,7 @@ exports.createFeedback = async (req, res) => {
     const parent = await Parent.findOne({
       where: { id: senderId },
       include: {
-        model: Student,
-        as: 'Students' // تأكد أن هذا الاسم مطابق لما في association
-      }
+        model: Student      }
     });
 
     // Check if parent or their students are not found
