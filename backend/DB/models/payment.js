@@ -1,29 +1,25 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
-const Student = require("./student");
 
 const Payment = sequelize.define("Payment", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     autoIncrement: true, 
     primaryKey: true,
+  },
+ 
+  amount: {
+    type: DataTypes.FLOAT, // In cents
+    allowNull: false
   },
   studentId: {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: "Students",
-      key: "id"
+        model: "Students",
+        key: "id"
     }
-  },
-  amount: {
-    type: DataTypes.FLOAT, // In cents
-    allowNull: false
-  },
-  currency: {
-    type: DataTypes.STRING,
-    defaultValue: "usd"
-  },
+},
   status: {
     type: DataTypes.STRING,
     defaultValue: "pending"
@@ -34,7 +30,7 @@ const Payment = sequelize.define("Payment", {
   },
   type: {
     type: DataTypes.STRING, // 'checkout' or 'pocketmoney'
-    defaultValue: "checkout"
+    defaultValue: "pocketmoney"
   }
 }, {
   timestamps: true,

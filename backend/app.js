@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const app = express();
 
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
@@ -29,7 +30,6 @@ const paymentController = require("./src/modules/Payment/controller/payment.cont
 
 
 
-const app = express();
 
 app.post(
   "/api/payments/webhook",
@@ -37,16 +37,7 @@ app.post(
   paymentController.stripeWebhook
 );
 
-app.use(express.json({
-  verify: (req, res, buf) => {
-    try {
-      JSON.parse(buf.toString());
-    } catch (e) {
-      res.status(400).json({ error: "Invalid JSON format" });
-      throw new Error("Invalid JSON");
-    }
-  }
-}));
+app.use(express.json());
 app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
