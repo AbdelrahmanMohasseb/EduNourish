@@ -1,4 +1,4 @@
-const { Teacher } = require("../../../../DB/models/index");
+const { Teacher, Subject,Advice,Attendance } = require("../../../../DB/models/index");
 
 
 
@@ -53,8 +53,8 @@ exports.getTeacherById = async (req, res) => {
     const teacher = await Teacher.findByPk(req.params.id,{
       include: [
         {model: Advice},
-        { model: Exam },
-        { model: Attendance }
+        { model: Attendance },
+        { model: Subject }
         // ,as: 'students' // Optional: Specify the alias for the association
       ]});
     if (!teacher) {

@@ -34,7 +34,7 @@ const Payment = sequelize.define("Payment", {
   },
   type: {
     type: DataTypes.STRING, // 'checkout' or 'pocketmoney'
-    defaultValue: "checkout"
+    defaultValue: "pocketmoney"
   }
 }, {
   timestamps: true,

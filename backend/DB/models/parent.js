@@ -48,7 +48,14 @@ const Parent = sequelize.define("Parent", {
       isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
     }
   } ,
-  
+  busId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'Buses', 
+      key: 'id'
+    }
+  }
 });
 
 

@@ -1,4 +1,4 @@
-const { Parent ,Student,Advice,InstructionAI,Menu} = require("../../../../DB/models/index");
+const { Parent ,Student,Advice,Menu,Bus} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -30,8 +30,11 @@ exports.getParentById = async (req, res) => {
       include: [
         {model: Student},
         {model: Advice},
-        {model:InstructionAI},
         {model:Menu},
+        {
+          model: Bus,
+          attributes: ['number', 'driverName', 'arrivalTime', 'departureTime']
+        }
         // ,as: 'students' // Optional: Specify the alias for the association
       ]});
     if (!parent) {

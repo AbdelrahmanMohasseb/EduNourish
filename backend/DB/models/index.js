@@ -31,6 +31,8 @@ Parent.hasMany(Student, { foreignKey: 'parentId' });
 Student.belongsTo(Parent, { foreignKey: 'parentId' });
 Parent.hasMany(Menu, { foreignKey: 'parentId' });
 Menu.belongsTo(Parent, { foreignKey: 'parentId' });
+Bus.hasMany(Parent, { foreignKey: "busId" });
+Parent.belongsTo(Bus, { foreignKey: "busId" });
 Subject.hasMany(Teacher, { foreignKey: 'SubjectID' });
 Teacher.belongsTo(Subject, { foreignKey: 'SubjectID' });
 
