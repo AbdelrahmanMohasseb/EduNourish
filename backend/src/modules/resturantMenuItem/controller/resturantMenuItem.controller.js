@@ -2,9 +2,9 @@ const { Menu } = require("../../../../DB/models/index");
 
 exports.addMenuItem = async (req, res) => {
     try {
-        const { name, description, price } = req.body;
+        const { id,name, description,photo,parentId  } = req.body;
 
-        const newItem = await Menu.create({ name, description, price });
+        const newItem = await Menu.create({ id,name, description,photo,parentId });
 
         res.status(201).json({ message: "Menu item added", menu: newItem });
     } catch (error) {

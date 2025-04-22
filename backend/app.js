@@ -41,16 +41,7 @@ app.post(
 
 
 
-app.use(express.json({
-  verify: (req, res, buf) => {
-    try {
-      JSON.parse(buf.toString());
-    } catch (e) {
-      res.status(400).json({ error: "Invalid JSON format" });
-      throw new Error("Invalid JSON");
-    }
-  }
-}));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 

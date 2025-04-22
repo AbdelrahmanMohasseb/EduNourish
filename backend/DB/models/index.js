@@ -29,6 +29,8 @@ const Material = require("./Material.js");
 
 Parent.hasMany(Student, { foreignKey: 'parentId' });
 Student.belongsTo(Parent, { foreignKey: 'parentId' });
+Parent.hasMany(Menu, { foreignKey: 'parentId' });
+Menu.belongsTo(Parent, { foreignKey: 'parentId' });
 Subject.hasMany(Teacher, { foreignKey: 'SubjectID' });
 Teacher.belongsTo(Subject, { foreignKey: 'SubjectID' });
 

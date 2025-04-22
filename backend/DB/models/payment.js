@@ -4,7 +4,7 @@ const Student = require("./student");
 
 const Payment = sequelize.define("Payment", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     autoIncrement: true, 
     primaryKey: true,
   },

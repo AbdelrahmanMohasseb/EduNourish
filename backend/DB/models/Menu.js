@@ -1,4 +1,4 @@
-const { DataTypes, Model } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/connectDB");
 
     const Menu = sequelize.define("Menu", {
@@ -13,9 +13,16 @@ const sequelize = require("../config/connectDB");
         description: {
             type: DataTypes.STRING
         },
-        price: {
-            type: DataTypes.FLOAT,
-            allowNull: false
+        photo: {
+            type: DataTypes.STRING,
+            allowNull:true
+        },
+        parentId: {
+            type: DataTypes.STRING,
+            references: {
+              model: 'Parents',
+              key: 'id',
+            },
         }
     },
     {
