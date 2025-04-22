@@ -1,5 +1,5 @@
 
-const { Student, Class ,Payment,Attendance} = require("../../../../DB/models/index");
+const { Student, Class ,Payment,Attendance, Grade} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 
@@ -57,6 +57,11 @@ exports.getStudentById = async (req, res) => {
                 {
                     model: Class,
                     attributes: ['id', 'className']
+                }
+                ,
+                {
+                    model: Grade,
+                    attributes: [ 'examId', 'obtainedMarks', 'grade','StudentIDg']
                 }
                 // {model: Advice},
                 // {model:InstructionAI},
