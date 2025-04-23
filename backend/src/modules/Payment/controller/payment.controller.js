@@ -35,7 +35,9 @@ exports.createCheckoutSession = async (req, res) => {
 
     res.status(200).json({ url: session.url });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("❌ Error in createCheckoutSession:", error); // 👈 اطبعي الخطأ
+    res.status(500).json({ error: error.message || "Something went wrong" });
+
   }
 };
 
