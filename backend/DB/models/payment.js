@@ -20,10 +20,6 @@ const Payment = sequelize.define("Payment", {
     type: DataTypes.FLOAT, // In cents
     allowNull: false
   },
-  currency: {
-    type: DataTypes.STRING,
-    defaultValue: "usd"
-  },
   status: {
     type: DataTypes.STRING,
     defaultValue: "pending"

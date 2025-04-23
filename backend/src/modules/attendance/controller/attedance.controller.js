@@ -1,4 +1,4 @@
-const { Attendance, Teacher } = require("../../../../DB/models/index");
+const { Attendance, Teacher,Student } = require("../../../../DB/models/index");
 
 
 // exports.createAttendance = async (req, res) => {
