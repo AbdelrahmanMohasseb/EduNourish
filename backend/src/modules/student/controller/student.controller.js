@@ -1,5 +1,5 @@
 
-const { Student, Class ,Payment,Attendance, Grade} = require("../../../../DB/models/index");
+const { Student, Class ,Payment,Attendance, Grade,Subject} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 
@@ -50,6 +50,7 @@ exports.getStudentById = async (req, res) => {
             where: { id: req.user.id },
             include: [
                 {model: Attendance},
+                {model: Subject},
                 {
                     model: Payment,
                     attributes: ['id', 'amount','status',  'createdAt']
