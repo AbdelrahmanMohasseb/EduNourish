@@ -49,12 +49,11 @@ exports.getAttendanceById = async (req, res) => {
     const attendance = await Attendance.findByPk(req.params.id, {
       include: [
         {
-          model: Student,
-          attributes: ['id', 'userName', 'email'], 
+          model: Student
+         
         },
         {
-          model: Teacher,
-          attributes: ['id', 'userName', 'email'],
+          model: Teacher
         }
       ]
     });
