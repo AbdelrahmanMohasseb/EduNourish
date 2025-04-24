@@ -79,8 +79,8 @@ Student.hasMany(Payment, { foreignKey: 'studentId' });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
 Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
 InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
-Subject.hasMany(Material, { foreignKey: "SubjectID" });
-Material.belongsTo(Subject, { foreignKey: "SubjectID" });
+Subject.hasMany(Material, { foreignKey: "subjectId" });
+Material.belongsTo(Subject, { foreignKey: "subjectId" });
 
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
