@@ -1,8 +1,6 @@
-
 const { Student, Class ,Payment,Attendance, Grade,Subject} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
-
 
 
 exports.createStudent = async (req, res) => {
@@ -13,7 +11,7 @@ exports.createStudent = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: "Email already exists" });
         }
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const student = await Student.create({
             id,
             userName,
@@ -42,10 +40,6 @@ exports.createStudent = async (req, res) => {
 
 exports.getStudentById = async (req, res) => {
     try {
-        // const student = await Student.findOne({
-        //     where: { id: req.params.id }
-        // });
-        // const student = await Student.findOne({ _id: req.user._id }).select('-password');
         const student = await Student.findOne({
             where: { id: req.user.id },
             include: [
@@ -64,9 +58,6 @@ exports.getStudentById = async (req, res) => {
                     model: Grade,
                     attributes: [ 'examId', 'obtainedMarks', 'grade','StudentIDg']
                 }
-                // {model: Advice},
-                // {model:InstructionAI},
-                // ,as: 'students' // Optional: Specify the alias for the association
               ],
             attributes: { exclude: ['password'] }
           });

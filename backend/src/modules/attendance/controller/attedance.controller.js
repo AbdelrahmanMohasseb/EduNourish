@@ -1,16 +1,6 @@
 const { Attendance, Teacher,Student } = require("../../../../DB/models/index");
 
 
-// exports.createAttendance = async (req, res) => {
-//   try {
-//     const { id ,date, status, remarks,studentId,teacherID} = req.body;
-//     const newAttendance = await Attendance.create({ id, date, status, remarks,studentId,teacherID});
-//     res.status(201).json(newAttendance);
-//   } catch (error) {
-//     res.status(500).json({ error: "Error creating attendance", details: error.message });
-//   }
-// };
-
 exports.createAttendance = async (req, res) => {
   try {
     const { id, date, status, remarks, studentId, teacherID } = req.body;
@@ -32,8 +22,6 @@ exports.createAttendance = async (req, res) => {
   }
 };
 
-
-
 exports.getAllAttendance = async (req, res) => {
   try {
     const attendanceRecords = await Attendance.findAll();
@@ -42,7 +30,6 @@ exports.getAllAttendance = async (req, res) => {
     res.status(500).json({ error: "Error fetching attendance records", details: error.message });
   }
 };
-
 
 exports.getAttendanceById = async (req, res) => {
   try {
@@ -64,7 +51,6 @@ exports.getAttendanceById = async (req, res) => {
     res.status(500).json({ error: "Error fetching attendance record", details: error.message });
   }
 };
-
 
 
 exports.updateAttendance = async (req, res) => {

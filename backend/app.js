@@ -29,8 +29,6 @@ const materialRoutes = require("./src/modules/material/material.router.js");
 const paymentController = require("./src/modules/Payment/controller/payment.controller");
 
 
-
-
 const app = express();
 
 app.post(
@@ -39,15 +37,10 @@ app.post(
   paymentController.stripeWebhook
 );
 
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
-
-// Routes
 app.use("/api/Login", loginRoutes);
 app.use('/api/students',studentRoutes)
 app.use("/api/advisors", advisorRoutes);
@@ -73,8 +66,6 @@ app.use("/api/class-teachers", classTeacherRoutes);
 app.use("/api/instruction-ai", instructionAIRouter);
 app.use("/api/materials", materialRoutes);
 
-
-// Server
 const PORT = 3000;
 app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server is running on http://localhost:${PORT}`);

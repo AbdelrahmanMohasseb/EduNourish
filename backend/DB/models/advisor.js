@@ -13,9 +13,6 @@ const Advisor = sequelize.define("Advisor", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      isEmail: true,
-    },
   },
   password: {
     type: DataTypes.STRING, // Store hashed password
@@ -27,7 +24,7 @@ const Advisor = sequelize.define("Advisor", {
   },
   photo: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   address: {
     type: DataTypes.STRING,
@@ -35,13 +32,11 @@ const Advisor = sequelize.define("Advisor", {
   },
   age: {
     type: DataTypes.INTEGER,
+    allowNull:true,
   },
   gender: {
     type: DataTypes.STRING,  // Use STRING instead of ENUM
     allowNull: false,
-    validate: {
-      isIn: [['male', 'female']]  // Ensures only these values are accepted in Sequelize
-    }
   },
 
   // Advisor-specific attributes

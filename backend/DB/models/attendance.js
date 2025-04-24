@@ -5,7 +5,6 @@ const Attendance = sequelize.define("Attendance", {
   id: {
         type: DataTypes.STRING,
         primaryKey: true,
-        // autoIncrement: true
         allowNull:true
   },
   date: {
@@ -28,7 +27,6 @@ const Attendance = sequelize.define("Attendance", {
       model: "Students", 
       key: "id"
     },
-
     teacherID: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -37,7 +35,6 @@ const Attendance = sequelize.define("Attendance", {
           key: "teacherID"
         }
       }
-
   }
 }, {
   timestamps: true

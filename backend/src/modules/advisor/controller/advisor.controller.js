@@ -11,7 +11,6 @@ exports.createAdvisor = async (req, res) => {
     if (existingAdvisor) {
       return res.status(400).json({ message: "Email already in use!" });
     }
-
     // 🔹 Hash the password before saving
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -49,8 +48,8 @@ exports.getAllAdvisors = async (req, res) => {
 // ✅ Get Advisor by ID
 exports.getAdvisorById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const advisor = await Advisor.findOne({ where: { id } });
+    const advisor = await Advisor.findOne({
+      where: { id: req.user.id },})
 
     if (!advisor) return res.status(404).json({ message: "Advisor not found!" });
 
