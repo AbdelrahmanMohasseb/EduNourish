@@ -6,17 +6,19 @@ exports.createTeacher = async (req, res) => {
   try {
     console.log("🔍 Received data:", req.body); // 
     const { teacherID, username, email, password, phoneNumber,photo, address, age, gender, salary,SubjectID} = req.body;
-
-    if (!teacherID || !username || !email || !password|| !phoneNumber||!photo || !address|| !age|| !gender|| !salary ) 
-      {
-return res.status(400).json({ success: false, error: "Missing required fields" });
+    const existingTeacher = await Teacher.findOne({ where: { email } });
+    if (existingTeacher) {
+      return res.status(400).json({ message: "Email already in use!" });
     }
+    // 🔹 Hash the password before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newTeacher = await Teacher.create({
       teacherID,
       username,
       email,
-      password,
+      password:hashedPassword,
       phoneNumber,
       photo,
       address,
