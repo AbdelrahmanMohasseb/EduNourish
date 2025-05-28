@@ -1,5 +1,6 @@
 const {Advisor} = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../../../../DB/config/cloudinary"); 
 
 
 // ✅ Create an Advisor
@@ -63,13 +64,39 @@ exports.getAdvisorById = async (req, res) => {
 exports.updateAdvisor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userName, email, phoneNumber, photo, address, age, gender, schoolName, careerHistory } = req.body;
+    const { userName, email, phoneNumber,  address, age, gender, schoolName, careerHistory } = req.body;
 
     const advisor = await Advisor.findOne({ where: { id } });
     if (!advisor) return res.status(404).json({ message: "Advisor not found!" });
+    
+    await Advisor.update(
+      { userName, email, phoneNumber, address, age, gender, schoolName, careerHistory },
+      { where: { id } }
+    );
+
+    res.status(200).json({ message: "Advisor updated successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating advisor", error: error.message });
+  }
+};
+// ✅ Update Advisor
+exports.updateAdvisorPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let { photo} = req.body;
+
+    const advisor = await Advisor.findOne({ where: { id } });
+    if (!advisor) return res.status(404).json({ message: "Advisor not found!" });
+    if (req.file) {
+      const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: `EduNourish/advisor/${advisor.id}`
+      });
+      photo = cloudinaryResult.secure_url;
+    };
+    console.log("photo:",photo)
 
     await Advisor.update(
-      { userName, email, phoneNumber, photo, address, age, gender, schoolName, careerHistory },
+      {  photo },
       { where: { id } }
     );
 

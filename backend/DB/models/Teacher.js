@@ -26,6 +26,10 @@ const Teacher = sequelize.define("Teacher", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+   photo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   age: {
     type: DataTypes.INTEGER,
     allowNull: true,

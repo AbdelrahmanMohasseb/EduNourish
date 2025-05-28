@@ -1,6 +1,7 @@
 const { Parent ,Student,Advice,Menu,Bus} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../../../../DB/config/cloudinary"); 
 
 
 exports.createParent = async (req, res) => {
@@ -26,7 +27,7 @@ exports.getAllParents = async (req, res) => {
 
 exports.getParentById = async (req, res) => {
   try {
-    const parent = await Parent.findByPk(req.params.id,{
+    const parent = await Parent.findOne({where: { id: req.user.id },
       include: [
         {model: Student},
         {model: Advice},
@@ -35,7 +36,6 @@ exports.getParentById = async (req, res) => {
           model: Bus,
           attributes: ['number', 'driverName', 'arrivalTime', 'departureTime']
         }
-        // ,as: 'students' // Optional: Specify the alias for the association
       ]});
     if (!parent) {
       return res.status(404).json({ error: "Parent not found" });
@@ -73,32 +73,28 @@ exports.deleteParent = async (req, res) => {
 
 };
 
-
-exports.signin = async (req, res) => {
+exports.updateParenPhoto = async (req, res) => {
   try {
-      const { email, password } = req.body;
-      console.log("Attempting signin with:", email, password);
+    const { id } = req.params;
+    let { photo} = req.body;
 
-      const parent = await Parent.findOne({ where: { email } });
-      console.log("Parent found:", parent);
+    const parent = await Parent.findOne({ where: { id } });
+    if (!parent) return res.status(404).json({ message: "Parent not found!" });
+    if (req.file) {
+      const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: `EduNourish/parent/${parent.id}`
+      });
+      photo = cloudinaryResult.secure_url;
+    };
+    console.log("photo:",photo)
 
-      if (!parent) {
-          return res.status(400).json({ message: "Invalid email or password" });
-      }
+    await Parent.update(
+      {  photo },
+      { where: { id } }
+    );
 
-      const match = await bcrypt.compare(password, parent.password);
-      console.log("Password match:", match);
-
-      if (!match) {
-          return res.status(400).json({ message: "Invalid email or password" });
-      }
-
-      const token = jwt.sign({ id: parent.id, isLoggedIn: true }, process.env.SECRETKEY || "default_secret_key", { expiresIn: "1h" });
-
-      res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "parent updated successfully!" });
   } catch (error) {
-      console.error("Signin Error:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Error updating parent", error: error.message });
   }
-
 };

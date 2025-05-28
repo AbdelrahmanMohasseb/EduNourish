@@ -28,11 +28,14 @@ const Material = require("./Material.js");
 
 
 Parent.hasMany(Student, { foreignKey: 'parentId' });
-Student.belongsTo(Parent, { foreignKey: 'parentId' });
+Student.belongsTo(Parent, { foreignKey: 'parentId' }); 
+
 Parent.hasMany(Menu, { foreignKey: 'parentId' });
 Menu.belongsTo(Parent, { foreignKey: 'parentId' });
+
 Bus.hasMany(Parent, { foreignKey: "busId" });
 Parent.belongsTo(Bus, { foreignKey: "busId" });
+
 Subject.hasMany(Teacher, { foreignKey: 'SubjectID' });
 Teacher.belongsTo(Subject, { foreignKey: 'SubjectID' });
 
@@ -44,7 +47,6 @@ Teacher.hasMany(Advice, { foreignKey: 'teacherId' });
 
 Student.belongsToMany(Exam, { through: StudentExam, foreignKey: 'studentId' });
 Exam.belongsToMany(Student, { through: StudentExam, foreignKey: 'examId' });
-
 
 Student.hasMany(Grade, { foreignKey: 'StudentIDg' });
 Grade.belongsTo(Student, { foreignKey: 'StudentIDg' });
@@ -77,8 +79,10 @@ ClassTeacher.belongsTo(Class, { foreignKey: "classId" });
 
 Student.hasMany(Payment, { foreignKey: 'studentId' });
 Payment.belongsTo(Student, { foreignKey: "studentId" });
+
 Parent.hasMany(InstructionAI, { foreignKey: 'parentId' });  
 InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
+
 Subject.hasMany(Material, { foreignKey: "subjectId" });
 Material.belongsTo(Subject, { foreignKey: "subjectId" });
 

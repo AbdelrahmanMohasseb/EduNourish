@@ -94,6 +94,32 @@ exports.updateStudent = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.updateStudentPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let { photo} = req.body;
+
+    const student = await Student.findOne({ where: { id } });
+    if (!student) return res.status(404).json({ message: "student not found!" });
+    if (req.file) {
+      const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: `EduNourish/student/${student.id}`
+      });
+      photo = cloudinaryResult.secure_url;
+    };
+    console.log("photo:",photo)
+
+    await Student.update(
+      {  photo },
+      { where: { id } }
+    );
+
+    res.status(200).json({ message: "Student updated successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating student", error: error.message });
+  }
+};
+
 exports.deleteStudent = async (req, res) => {
     try {
         const student = await Student.findByPk(req.params.id);

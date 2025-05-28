@@ -49,8 +49,8 @@ exports.getAllOrganizers = async (req, res) => {
 // ✅ Get Organizer by ID
 exports.getOrganizerById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const organizer = await Organizer.findOne({ where: { id } });
+    const organizer = await Organizer.findOne({
+      where: { id: req.user.id },})
 
     if (!organizer) return res.status(404).json({ message: "Organizer not found!" });
 
@@ -71,6 +71,32 @@ exports.updateOrganizer = async (req, res) => {
 
     await Organizer.update(
       { userName, email, phoneNumber, photo, address, age, gender, jobTitle },
+      { where: { id } }
+    );
+
+    res.status(200).json({ message: "Organizer updated successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating organizer", error: error.message });
+  }
+};
+// ✅ Update Organizer
+exports.updateOrganizerPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let { photo} = req.body;
+
+    const organizer = await Organizer.findOne({ where: { id } });
+    if (!organizer) return res.status(404).json({ message: "Oraganizer not found!" });
+    if (req.file) {
+      const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: `EduNourish/organizer/${organizer.id}`
+      });
+      photo = cloudinaryResult.secure_url;
+    };
+    console.log("photo:",photo)
+
+    await Organizer.update(
+      {  photo },
       { where: { id } }
     );
 

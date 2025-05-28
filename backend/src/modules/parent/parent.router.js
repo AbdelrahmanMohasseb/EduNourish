@@ -3,19 +3,18 @@ const router = express.Router();
 
 const parentController = require("../parent/controller/parent.controller");
 
-const auth = require("../../middleware/auth"); 
+const { validateParent } = require('./parentValidator');
+const auth = require("../../middleware/auth");
+const upload = require("../../middleware/multer"); 
 
 
-router.post("/", parentController.createParent);
+router.post("/",validateParent ,parentController.createParent);
 router.get("/",  parentController.getAllParents);
-router.get("/:id",  parentController.getParentById);
+router.get("/:id",auth(["advisor","organizer"]),  parentController.getParentById);
 router.put("/:id", parentController.updateParent);
+router.put("/updatephoto/:id",upload.single("image"),parentController.updateParenPhoto);
 router.delete("/:id", parentController.deleteParent);
-router.post("/signin", parentController.signin);
 
-
-//signin
-router.post("/signin", parentController.signin);
 
 
 
