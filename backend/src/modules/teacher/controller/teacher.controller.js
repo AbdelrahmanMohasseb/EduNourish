@@ -1,4 +1,5 @@
 const { Teacher, Subject,Advice,Attendance } = require("../../../../DB/models/index");
+const bcrypt = require("bcryptjs");
 
 
 
