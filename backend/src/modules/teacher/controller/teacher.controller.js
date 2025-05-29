@@ -1,5 +1,6 @@
 const { Teacher, Subject,Advice,Attendance } = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../../../../DB/config/cloudinary"); 
 
 
 
@@ -88,14 +89,14 @@ exports.updateTeacher = async (req, res) => {
 };
 exports.updateTeacherPhoto = async (req, res) => {
   try {
-    const { teacherID } = req.params;
+    const { id } = req.params;
     let { photo} = req.body;
 
-    const teacher = await Teacher.findOne({ where: { teacherID } });
+    const teacher = await Teacher.findOne({ where: { teacherID:id } });
     if (!teacher) return res.status(404).json({ message: "Advisor not found!" });
     if (req.file) {
       const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
-          folder: `EduNourish/teacher/${teacher.id}`
+          folder: `EduNourish/teacher/${teacher.teacherID}`
       });
       photo = cloudinaryResult.secure_url;
     };
@@ -103,7 +104,7 @@ exports.updateTeacherPhoto = async (req, res) => {
 
     await Teacher.update(
       {  photo },
-      { where: { teacherID } }
+      { where: { teacherID:id } }
     );
 
     res.status(200).json({ message: "teacher updated successfully!" });
