@@ -88,10 +88,10 @@ exports.updateTeacher = async (req, res) => {
 };
 exports.updateTeacherPhoto = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { teacherID } = req.params;
     let { photo} = req.body;
 
-    const teacher = await Teacher.findOne({ where: { id } });
+    const teacher = await Teacher.findOne({ where: { teacherID } });
     if (!teacher) return res.status(404).json({ message: "Advisor not found!" });
     if (req.file) {
       const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
