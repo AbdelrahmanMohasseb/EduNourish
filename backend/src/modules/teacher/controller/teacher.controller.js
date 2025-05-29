@@ -55,7 +55,7 @@ exports.getAllTeachers = async (req, res) => {
 exports.getTeacherById = async (req, res) => {
   try {
     const teacher = await Teacher.findOne({
-      where: { id: req.user.id },
+      where: { teacherID: req.params.id },
       include: [
         {model: Advice},
         { model: Attendance },
@@ -103,7 +103,7 @@ exports.updateTeacherPhoto = async (req, res) => {
 
     await Teacher.update(
       {  photo },
-      { where: { id } }
+      { where: { teacherID } }
     );
 
     res.status(200).json({ message: "teacher updated successfully!" });
