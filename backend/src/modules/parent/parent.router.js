@@ -10,7 +10,7 @@ const upload = require("../../middleware/multer");
 
 router.post("/",validateParent ,parentController.createParent);
 router.get("/",  parentController.getAllParents);
-router.get("/:id",auth(["advisor","organizer"]),  parentController.getParentById);
+router.get("/:id",auth(["parent"]),  parentController.getParentById);
 router.put("/:id", parentController.updateParent);
 router.put("/updatephoto/:id",upload.single("image"),parentController.updateParenPhoto);
 router.delete("/:id", parentController.deleteParent);
