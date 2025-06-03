@@ -1,6 +1,7 @@
 const { Student, Class ,Payment,Attendance, Grade,Subject} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../../../../DB/config/cloudinary"); 
 
 
 exports.createStudent = async (req, res) => {

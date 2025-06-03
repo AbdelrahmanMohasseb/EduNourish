@@ -1,5 +1,6 @@
 const {Organizer} = require("../../../../DB/models/index");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../../../../DB/config/cloudinary"); 
 
 
 // ✅ Create an Organizer
