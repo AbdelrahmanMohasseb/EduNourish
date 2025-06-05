@@ -27,7 +27,10 @@ const loginRoutes = require("./src/modules/login/login.router.js");
 const cors = require("cors");
 const materialRoutes = require("./src/modules/material/material.router.js");
 const paymentController = require("./src/modules/Payment/controller/payment.controller");
-
+// const {sendEmail}=require("./src/services/email.js")
+// const {createInvoice}=require("./src/services/createPDF.js")
+const reportRoutes = require("./src/modules/report/report.router.js");
+const gradeReportRoutes = require("./src/modules/gradereport/gradereport.router.js");
 
 const app = express();
 
@@ -65,6 +68,27 @@ app.use("/api/Classes",classRoutes)
 app.use("/api/class-teachers", classTeacherRoutes);
 app.use("/api/instruction-ai", instructionAIRouter);
 app.use("/api/materials", materialRoutes);
+app.use("/api/report", reportRoutes);
+app.use("/api", gradeReportRoutes);
+
+// app.get("/pdf", async(req, res) => {
+
+
+//     const invoice = await userModel.find({}).select('-password');
+
+
+//     const mypath = path.join(__dirname, './pdf')
+//     createInvoice(invoice, mypath + "/one.pdf")
+
+//     await sendEmail('mahmoudelwan460@gmail.com', "<p>first pdf</p>", [{
+//         filename: "one.pdf",
+//         path: mypath + "/one.pdf",
+//         contentType: 'application/pdf'
+
+//     }])
+//     res.end()
+// })
+
 
 const PORT = 3000;
 app.listen(PORT,'0.0.0.0', () => {
