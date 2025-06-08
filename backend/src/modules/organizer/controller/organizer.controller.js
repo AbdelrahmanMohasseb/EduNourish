@@ -60,7 +60,18 @@ exports.getOrganizerById = async (req, res) => {
     res.status(500).json({ message: "Error fetching organizer", error: error.message });
   }
 };
+exports.getOrganizerByIdParam = async (req, res) => {
+  try {
+     const { id } = req.params;
+     const organizer = await Organizer.findOne({ where: { id } });
 
+    if (!organizer) return res.status(404).json({ message: "Organizer not found!" });
+
+    res.status(200).json(organizer);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching organizer", error: error.message });
+  }
+};
 // ✅ Update Organizer
 exports.updateOrganizer = async (req, res) => {
   try {

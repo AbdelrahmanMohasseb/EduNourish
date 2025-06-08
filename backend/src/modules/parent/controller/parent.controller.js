@@ -45,6 +45,26 @@ exports.getParentById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getParentByIdParam = async (req, res) => {
+  try {
+    const parent = await Parent.findByPk(req.params.id,{
+      include: [
+        {model: Student},
+        {model: Advice},
+        {model:Menu},
+        {
+          model: Bus,
+          attributes: ['number', 'driverName', 'arrivalTime', 'departureTime']
+        }
+      ]});
+    if (!parent) {
+      return res.status(404).json({ error: "Parent not found" });
+    }
+    res.status(200).json(parent);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.updateParent = async (req, res) => {
   try {
