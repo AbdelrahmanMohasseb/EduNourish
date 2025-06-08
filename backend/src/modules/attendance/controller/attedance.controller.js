@@ -5,7 +5,7 @@ exports.createAttendance = async (req, res) => {
   try {
     const { id, date, status, remarks, studentId, teacherID } = req.body;
     const attendance = await Attendance.create({
-     id,
+      id,
       date,
       status,
       remarks,

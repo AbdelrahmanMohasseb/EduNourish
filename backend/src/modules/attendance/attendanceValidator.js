@@ -8,7 +8,7 @@ exports.validateAttendance = [
   body('status')
   .isString().notEmpty().withMessage('Must string and not null'),
   body('remarks')
-  .isString().notEmpty().withMessage('Must string and not null'),
+  .isString().withMessage('Must string and not null'),
   body('studentId')
   .isString().withMessage('Must string '),
   body('teacherID')
