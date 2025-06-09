@@ -1,10 +1,10 @@
 const express = require("express");
-const attendanceController = require("../attendance/controller/attedance.controller");
+const attendanceController = require("./controller/attendance.controller");
 const { validateAttendance } = require('./attendanceValidator');
 
 const router = express.Router();
 
-router.post("/",validateAttendance, attendanceController.createAttendance);
+router.post("/", attendanceController.createAttendance);
 router.get("/", attendanceController.getAllAttendance);
 router.get("/:id", attendanceController.getAttendanceById);
 router.put("/:id", validateAttendance,attendanceController.updateAttendance);

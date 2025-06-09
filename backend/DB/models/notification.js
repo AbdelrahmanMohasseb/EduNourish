@@ -3,32 +3,53 @@ const sequelize = require("../config/connectDB");
 
 const Notification = sequelize.define("Notification", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
   },
-  receiverId: {
-    type: DataTypes.STRING, // User who will receive the notification
+  type: {
+    type: DataTypes.ENUM("attendance", "assignment", "exam", "general"),
     allowNull: false,
+    defaultValue: "attendance"
   },
-  senderId: {
-    type: DataTypes.STRING, // User who sent the notification
-    allowNull: false,
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
   message: {
     type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  type: {
-    type: DataTypes.ENUM("news", "advisorMessage", "organizerMessage", "general"),
-    allowNull: false,
+    allowNull: false
   },
   isRead: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
+  parentId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+      model: "Parents",
+      key: "id"
+    }
+  },
+  studentId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    references: {
+      model: "Students", 
+      key: "id"
+    }
+  },
+  attendanceId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    references: {
+      model: "Attendances",
+      key: "id"
+    }
+  }
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
 module.exports = Notification;

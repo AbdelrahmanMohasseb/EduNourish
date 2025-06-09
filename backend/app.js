@@ -1,5 +1,7 @@
 const express = require("express");
 require("dotenv").config();
+const socketManager = require("./src/services/socketManager.js");
+
 
 const studentRoutes = require('./src/modules/student/student.router');
 const advisorRoutes = require("./src/modules/advisor/advisor.router");
@@ -33,6 +35,11 @@ const reportRoutes = require("./src/modules/report/report.router.js");
 const gradeReportRoutes = require("./src/modules/gradereport/gradereport.router.js");
 
 const app = express();
+const http = require('http'); 
+const server = http.createServer(app);
+
+// Initialize Socket.IO
+socketManager.initialize(server);
 
 app.post(
   "/api/payments/webhook",
@@ -70,6 +77,8 @@ app.use("/api/instruction-ai", instructionAIRouter);
 app.use("/api/materials", materialRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api", gradeReportRoutes);
+
+app.use("/api/notifications", require("./src/modules/notification/notification.router.js"));
 
 // app.get("/pdf", async(req, res) => {
 

@@ -1,4 +1,4 @@
-const { Parent ,Student,Advice,Menu,Bus,Attendance} = require("../../../../DB/models/index");
+const { Parent ,Student,Advice,Menu,Bus,Attendance,Grade} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../../../../DB/config/cloudinary"); 
@@ -31,10 +31,11 @@ exports.getParentById = async (req, res) => {
       include: [
         {
         model: Student,
-        include: [{
-            model: Attendance // This assumes you have an Attendance model and proper associations
-        }]
-      },
+        include: [
+          {model: Attendance},
+          { model: Grade }
+        ]
+        },
         {model: Advice},
         {model:Menu},
         {

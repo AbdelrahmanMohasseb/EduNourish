@@ -1,53 +1,84 @@
-const {Notification} = require("../../../../DB/models/index");
-const { Op } = require("sequelize");
+const NotificationService = require("../../../services/notificationService");
 
-// Send notification (Save in DB & Emit via Socket.io)
-exports.sendNotification = async (req, res) => {
-  try {
-    const { receiverId, senderId, message, type } = req.body;
+class NotificationController {
+  
+  // Get notifications for logged-in parent
+  async getNotifications(req, res) {
+    try {
+      const parentId = req.params.id; 
+      const { page = 1, limit = 20 } = req.query;
 
-    const notification = await Notification.create({
-      receiverId,
-      senderId,
-      message,
-      type,
-    });
+      const result = await NotificationService.getParentNotifications(
+        parentId, 
+        parseInt(page), 
+        parseInt(limit)
+      );
 
-    // Emit to Socket.io
-    const { sendNotification } = require("../server"); // Import function
-    sendNotification(receiverId, notification);
+      res.status(200).json({
+        success: true,
+        data: result
+      });
 
-    res.status(201).json({ message: "Notification sent successfully!", notification });
-  } catch (error) {
-    res.status(500).json({ message: "Error sending notification", error: error.message });
-  }
-};
-
-// Get all notifications for a user
-exports.getUserNotifications = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const notifications = await Notification.findAll({ where: { receiverId: userId } });
-
-    res.status(200).json(notifications);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching notifications", error: error.message });
-  }
-};
-
-// Mark notification as read
-exports.markAsRead = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const notification = await Notification.findByPk(id);
-
-    if (!notification) {
-      return res.status(404).json({ message: "Notification not found" });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message
+      });
     }
-
-    await notification.update({ isRead: true });
-    res.status(200).json({ message: "Notification marked as read", notification });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating notification", error: error.message });
   }
-};
+
+  // Mark notification as read
+  async markAsRead(req, res) {
+    try {
+      const { notificationId } = req.params;
+      const parentId = req.user.id;
+
+      const updated = await NotificationService.markAsRead(notificationId, parentId);
+
+      if (!updated) {
+        return res.status(404).json({
+          success: false,
+          message: "Notification not found"
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Notification marked as read"
+      });
+
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message
+      });
+    }
+  }
+
+  // Get unread count
+  async getUnreadCount(req, res) {
+    try {
+      const parentId = req.params.id;
+      const count = await NotificationService.getUnreadCount(parentId);
+
+      res.status(200).json({
+        success: true,
+        data: { unreadCount: count }
+      });
+
+    } catch (error) {
+      console.error("Error getting unread count:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message
+      });
+    }
+  }
+}
+
+module.exports = new NotificationController();

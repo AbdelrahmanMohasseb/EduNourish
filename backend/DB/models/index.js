@@ -9,6 +9,7 @@ const Teacher=require('./Teacher');
 const News=require("./news")
 const Feedback=require("./feedback")
 const Advice=require("./advice")
+const Notification=require("./notification")
 const Subject = require("./subject");
 const TimeTable=require("./timeTable")
 const Exam = require("./Exam");
@@ -85,6 +86,15 @@ InstructionAI.belongsTo(Parent, { foreignKey: 'parentId' });  
 Subject.hasMany(Material, { foreignKey: "subjectId" });
 Material.belongsTo(Subject, { foreignKey: "subjectId" });
 
+Notification.belongsTo(Parent, { foreignKey: "parentId" });
+Notification.belongsTo(Student, { foreignKey: "studentId" });
+Notification.belongsTo(Attendance, { foreignKey: "attendanceId" });
+
+Parent.hasMany(Notification, { foreignKey: "parentId" });
+Student.hasMany(Notification, { foreignKey: "studentId" });
+Attendance.hasMany(Notification, { foreignKey: "attendanceId" });
+
+
 // Optional: Sync database (only in development)
 sequelize.sync({ alter: false })
   .then(() => console.log("Database synchronized"))
@@ -101,10 +111,11 @@ module.exports = {
   News,
   Feedback,
   Advice,
+  Attendance,
+  Notification,
   TimeTable,
   Exam,
   Grade,
-  Attendance,
   StudentExam,
   Menu,
   Class,

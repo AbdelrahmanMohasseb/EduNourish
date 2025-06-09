@@ -1,9 +1,20 @@
 const { Attendance, Teacher,Student } = require("../../../../DB/models/index");
+const NotificationService = require("../../../services/notificationService");
 
 
 exports.createAttendance = async (req, res) => {
   try {
     const { id, date, status, remarks, studentId, teacherID } = req.body;
+
+    // Check if student exists
+      const student = await Student.findByPk(studentId);
+      if (!student) {
+        return res.status(404).json({
+          success: false,
+          message: "Student not found"
+        });
+      }
+
     const attendance = await Attendance.create({
       id,
       date,
@@ -12,6 +23,14 @@ exports.createAttendance = async (req, res) => {
       studentId,
       teacherID
     });
+    
+    // Send notification to parent
+      try {
+        await NotificationService.createAttendanceNotification(attendance);
+      } catch (notificationError) {
+        console.error("Failed to send notification:", notificationError);
+        // Don't fail the attendance creation if notification fails
+      }
 
     res.status(201).json(attendance);
   } catch (error) {
