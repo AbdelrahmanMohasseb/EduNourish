@@ -1,4 +1,4 @@
-const { Parent ,Student,Advice,Menu,Bus} = require("../../../../DB/models/index");
+const { Parent ,Student,Advice,Menu,Bus,Attendance} = require("../../../../DB/models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../../../../DB/config/cloudinary"); 
@@ -29,7 +29,12 @@ exports.getParentById = async (req, res) => {
   try {
     const parent = await Parent.findOne({where: { id: req.user.id },
       include: [
-        {model: Student},
+        {
+        model: Student,
+        include: [{
+            model: Attendance // This assumes you have an Attendance model and proper associations
+        }]
+      },
         {model: Advice},
         {model:Menu},
         {
