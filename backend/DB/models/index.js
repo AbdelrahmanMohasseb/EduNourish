@@ -9,7 +9,6 @@ const Teacher=require('./Teacher');
 const News=require("./news")
 const Feedback=require("./feedback")
 const Advice=require("./advice")
-const Notification=require("./notification")
 const Subject = require("./subject");
 const TimeTable=require("./timeTable")
 const Exam = require("./Exam");
@@ -102,7 +101,6 @@ module.exports = {
   News,
   Feedback,
   Advice,
-  Notification,
   TimeTable,
   Exam,
   Grade,
