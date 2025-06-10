@@ -100,6 +100,6 @@ app.use("/api/notifications", require("./src/modules/notification/notification.r
 
 
 const PORT = 3000;
-app.listen(PORT,'0.0.0.0', () => {
+server.listen(PORT,'0.0.0.0', () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

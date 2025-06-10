@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-const jwt = require("jsonwebtoken");
+const {  Notification } = require("../../DB/models/index");
 
 class SocketManager {
   constructor() {
@@ -9,36 +9,24 @@ class SocketManager {
 
   initialize(server) {
     this.io = new Server(server, {
-      cors: {
-        origin: process.env.CLIENT_URL || "http://127.0.0.1:5500/index.html",
-        methods: ["GET", "POST"]
-      }
-    });
-
-    // Authentication middleware for socket connections
-    this.io.use((socket, next) => {
-      try {
-        const token = socket.handshake.auth.token;
-        if (!token) {
-          return next(new Error("Authentication error"));
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        socket.userId = decoded.id;
-        socket.userType = decoded.userType; // 'parent', 'teacher', etc.
-        next();
-      } catch (err) {
-        next(new Error("Authentication error"));
-      }
+      cors: '*'
     });
 
     this.io.on("connection", (socket) => {
-      console.log(`User connected: ${socket.userId} (${socket.userType})`);
+      console.log(`User connected: ${socket.id}`);
 
-      // Store parent connections
-      if (socket.userType === "parent") {
-        this.connectedParents.set(socket.userId, socket.id);
-      }
+      // Handle user identification (optional - can be sent from client)
+      socket.on("identify_user", (userData) => {
+        socket.userId = userData.userId;
+        socket.userType = userData.userType; // 'parent', 'teacher', etc.
+        
+        console.log(`User identified: ${socket.userId} (${socket.userType})`);
+        
+        // Store parent connections
+        if (socket.userType === "parent") {
+          this.connectedParents.set(socket.userId, socket.id);
+        }
+      });
 
       // Handle parent joining their room
       socket.on("join_parent_room", (parentId) => {
@@ -48,8 +36,8 @@ class SocketManager {
 
       // Handle disconnection
       socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.userId}`);
-        if (socket.userType === "parent") {
+        console.log(`User disconnected: ${socket.id}`);
+        if (socket.userType === "parent" && socket.userId) {
           this.connectedParents.delete(socket.userId);
         }
       });
@@ -57,9 +45,14 @@ class SocketManager {
       // Mark notifications as read
       socket.on("mark_notification_read", async (notificationId) => {
         try {
+          // Note: You'll need to import your Notification model
+          // const { Notification } = require("path/to/your/models");
+          console.log(socket)
+          console.log(socket.userId)
+
           await Notification.update(
             { isRead: true },
-            { where: { id: notificationId, parentId: socket.userId } }
+            { where: { id: notificationId } }
           );
         } catch (error) {
           console.error("Error marking notification as read:", error);
