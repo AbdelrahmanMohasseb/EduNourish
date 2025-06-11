@@ -43,17 +43,18 @@ class SocketManager {
       });
 
       // Mark notifications as read
-      socket.on("mark_notification_read", async (notificationId) => {
+      socket.on("mark_notification_read", async ({ notificationId, parentId }) => {
         try {
           // Note: You'll need to import your Notification model
           // const { Notification } = require("path/to/your/models");
-          console.log(socket)
-          console.log(socket.userId)
+           console.log(`Marking read for notification ${notificationId} from user ${parentId}`);
+
 
           await Notification.update(
             { isRead: true },
-            { where: { id: notificationId } }
-          );
+            { where: { id: notificationId, parentId } } // تأكيد أنه يخصه
+        );
+
         } catch (error) {
           console.error("Error marking notification as read:", error);
         }
