@@ -47,3 +47,16 @@ exports.getClassesByTeacher = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.deleteClassByTeacher = async (req, res) => {
+  try {
+    const { id} = req.params;
+    const record = await ClassTeacher.findOne({ where: { teacherId:id } });
+
+    if (!record) return res.status(404).json({ error: "classbyteacher record not found" });
+
+    await record.destroy();
+    res.status(200).json({ message: "classbyteacher record deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting attendance record", details: error.message });
+  }
+};
