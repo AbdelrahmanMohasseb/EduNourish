@@ -33,7 +33,7 @@ class NotificationController {
   async markAsRead(req, res) {
     try {
       const { notificationId } = req.params;
-      const parentId = req.user.id;
+      const {parentId} = req.body;
 
       const updated = await NotificationService.markAsRead(notificationId, parentId);
 
