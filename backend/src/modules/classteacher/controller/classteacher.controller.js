@@ -19,7 +19,7 @@ exports.getTeachersByClass = async (req, res) => {
         include: [
           {
             model: Teacher,
-            attributes: ['teacherID', 'username', 'email'] 
+            attributes: ['teacherID', 'username', 'photo'] 
           }
         ]
       });
