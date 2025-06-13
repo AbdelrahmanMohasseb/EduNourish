@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Attendance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-light: #ffffff;
+      --bg-gray: #f5f7fa;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-gray);
+      margin: 0;
+      transition: all 0.4s ease;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(calc(-1 * var(--sidebar-width) - var(--sidebar-margin)));
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 20px);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar.closed ~ .toggle-btn {
+      left: 28px;
+    }
+    
+    .sidebar.closed ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content */
+    .main {
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin) * 2);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Loader */
+    #loader {
+      border: 6px solid var(--border-color);
+      border-top: 6px solid var(--primary-color);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 50px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Attendance Section */
+    .section {
+      background-color: var(--bg-light);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    h2 {
+      color: var(--text-primary);
+      font-size: 24px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 3px;
+    }
+    
+    /* Filter Buttons - تم التعديل مع الحفاظ على الألوان */
+    .filter-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .filter-btn {
+      padding: 10px 20px;
+      background-color: white;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .filter-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(75, 171, 177, 0.2);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    .filter-btn:hover {
+      background-color: rgba(75, 171, 177, 0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(75, 171, 177, 0.15);
+    }
+    
+    .filter-btn:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+    
+    .filter-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 8px rgba(75, 171, 177, 0.2);
+    }
+    
+    /* Table Container */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 600px;
+    }
+    
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      font-weight: 600;
+      position: relative;
+      transition: all 0.3s;
+    }
+    
+    th:hover {
+      background-color: #3a9ca1;
+    }
+    
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr {
+      transition: all 0.3s;
+    }
+    
+    tr:hover td {
+      background-color: rgba(75, 171, 177, 0.05);
+      transform: scale(1.005);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    /* Attendance Table - تم التعديل هنا */
+    .status-cell {
+      padding: 8px 12px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      display: inline-block;
+      min-width: 80px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .present {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .absent {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .late {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .excused {
+      background-color: rgba(139, 92, 246, 0.15);
+      color: #8b5cf6;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    /* تعديلات الجدول لتحسين المسافات */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px; /* مسافة بين الصفوف */
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    td {
+      background-color: white;
+    }
+
+    tr td:first-child {
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    tr td:last-child {
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .filter-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+      
+      .section {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      th, td {
+        padding: 12px 10px;
+        font-size: 14px;
+      }
+      
+      .filter-buttons {
+        gap: 8px;
+      }
+      
+      .filter-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>ٍStudent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="profile.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Profile</span>
+      </a>
+      <a href="AttendanceStudent.html" class="menu-item active">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="GradesStudent.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="Courses.html" class="menu-item">
+        <i class="fas fa-users"></i>
+        <span>Courses</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fas fa-envelope"></i>
+        <span>Teacher</span>
+      </a>
+      <a href="Exam.html" class="menu-item">
+        <i class="fas fa-cog"></i>
+        <span>Exam</span>
+      </a>
+      <a href="Activities.html" class="menu-item">
+        <i class="fas fa-running"></i>
+        <span>Activities</span>
+      </a>
+      <a href="Resturant.html" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        <span>Restaurant</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="main">
+    <div class="section">
+      <h2><i class="fas fa-clipboard-check"></i> Student Attendance</h2>
+
+      <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterData('All')">All</button>
+        <button class="filter-btn" onclick="filterData('present')">Present</button>
+        <button class="filter-btn" onclick="filterData('absent')">Absent</button>
+        <button class="filter-btn" onclick="filterData('late')">Late</button>
+        <button class="filter-btn" onclick="filterData('excused')">Excused</button>
+      </div>
+
+      <div class="table-container">
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceBody">
+            <tr><td colspan="4">Loading attendance data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- نفس كود JavaScript الأصلي بدون أي تغييرات -->
+  <script>
+    // Sidebar Toggle Function
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+
+      sidebar.classList.toggle('closed');
+
+      if (sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // Highlight active menu item
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      window.addEventListener('resize', handleResponsiveDesign);
+      handleResponsiveDesign();
+
+      fetchAttendance();
+    });
+
+    function handleResponsiveDesign() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+
+      if (window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if (savedState === 'false') {
+          sidebar.classList.remove('closed');
+          main.style.marginLeft = '300px';
+          main.style.maxWidth = 'calc(100% - 300px)';
+        }
+      }
+    }
+    
+    let allData = [];
+
+    function getDayName(dateString) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const date = new Date(dateString);
+      return days[date.getDay()];
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    async function fetchAttendance() {
+      const token = localStorage.getItem("token");
+      const table = document.getElementById("attendanceBody");
+      const loader = document.getElementById("loader");
+
+      try {
+        if (loader) loader.classList.remove("hidden");
+        table.innerHTML = `<tr><td colspan="4" class="text-gray-400 py-4">Loading data...</td></tr>`;
+
+        const response = await fetch("http://54.242.19.19:3000/api/students/:id", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const student = await response.json();
+        allData = student.Attendances || [];
+        displayData(allData);
+      } catch (error) {
+        console.error(error);
+        table.innerHTML = `<tr><td colspan="4" class="text-red-500 py-4">Error loading attendance data.</td></tr>`;
+      } finally {
+        if (loader) loader.classList.add("hidden");
+      }
+    }
+
+    function displayData(data) {
+      const table = document.getElementById("attendanceBody");
+      table.innerHTML = "";
+
+      if (data.length === 0) {
+        table.innerHTML = `<tr><td colspan="4" class="text-gray-400 py-4">No attendance records found.</td></tr>`;
+        return;
+      }
+
+      data.forEach(record => {
+        const date = new Date(record.date);
+        const dayName = getDayName(record.date);
+        const formattedDate = date.toLocaleDateString('en-GB');
+        const status = record.status.toLowerCase();
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${dayName}</td>
+          <td>${formattedDate}</td>
+          <td><span class="status-cell ${status}">${capitalize(status)}</span></td>
+          <td>${record.remarks || '-'}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function filterData(status) {
+      if (status === 'All') {
+        displayData(allData);
+      } else {
+        const filtered = allData.filter(record => record.status.toLowerCase() === status.toLowerCase());
+        displayData(filtered);
+      }
+    }
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

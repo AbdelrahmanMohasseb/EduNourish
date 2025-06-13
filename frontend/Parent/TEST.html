@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisor Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --bg-light: #ffffff;
+            --text-primary: #1f2937;
+            --border-color: #e5e7eb;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            height: 95vh;
+            position: fixed;
+            top: 2.5vh;
+            left: 20px;
+            background: var(--bg-light);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            transition: all 0.4s ease;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .project-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .project-name i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .menu-items {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+            margin: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .menu-item:hover {
+            color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.08);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            font-weight: 500;
+            background: rgba(79, 70, 229, 0.08);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Toggle Button */
+        .toggle-btn {
+            position: fixed;
+            top: 28px;
+            left: 28px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            z-index: 101;
+            transition: all 0.3s;
+            border: none;
+            outline: none;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .toggle-btn i {
+            color: var(--primary-color);
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .sidebar:not(.closed)~.toggle-btn {
+            left: 300px;
+        }
+
+        .sidebar:not(.closed)~.toggle-btn i {
+            transform: rotate(180deg);
+        }
+
+        /* Notification Button */
+        .notification-btn {
+            position: fixed;
+            top: 78px;
+            left: 28px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            z-index: 101;
+            transition: all 0.3s;
+            border: none;
+            outline: none;
+        }
+
+        .notification-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .notification-btn i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Adjust notification button position when sidebar is open */
+        .sidebar:not(.closed)~.notification-btn {
+            left: 300px;
+        }
+
+        /* Notification Popup */
+        .notification-popup {
+            position: fixed;
+            top: 130px;
+            left: 28px;
+            width: 350px;
+            max-height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 102;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            transition: all 0.3s ease;
+
+            .notification-popup.expanded {
+                max-height: 80vh;
+                /* يمنعها من الخروج من الشاشة */
+            }
+
+
+        }
+
+        .notification-popup {
+            max-height: 500px;
+            transition: max-height 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .notification-popup.expanded {
+            max-height: 80vh;
+            /* يمنع الخروج من الشاشة */
+        }
+
+        .sidebar:not(.closed)~.notification-popup {
+            left: 300px;
+        }
+
+        .notification-popup-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-popup-header h3 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .notification-popup-header .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .notification-popup-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .notification-popup-footer {
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .view-all-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Notification Item in Popup */
+        .popup-notification {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .popup-notification:hover {
+            background: #f8fafc;
+        }
+
+        .popup-notification.unread {
+            background: #f8faff;
+        }
+
+        .popup-notification-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #1f2937;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-notification-message {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .popup-notification-time {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        .unread-dot {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(79, 70, 229, 0.3);
+            border-radius: 50%;
+            border-top-color: #4f46e5;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #6b7280;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #d1d5db;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 320px;
+            padding: 30px;
+            transition: margin 0.4s ease;
+        }
+
+        .sidebar.closed~.main-content {
+            margin-left: 80px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar:not(.closed)~.main-content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                z-index: 1000;
+            }
+
+            .toggle-btn,
+            .notification-btn {
+                z-index: 1001;
+            }
+
+            .notification-popup {
+                width: 300px;
+                left: 15px;
+                top: 120px;
+            }
+        }
+    </style>
+    <script src="http://54.242.19.19:3000/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://54.242.19.19:3000');
+    </script>
+
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="project-name">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Advisor Dashboard</span>
+            </div>
+        </div>
+
+        <div class="menu-items">
+            <a href="HomeAdvisor.html" class="menu-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="ProfileAdvisor.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Profile</span>
+            </a>
+            <a href="Dashboardschool.html" class="menu-item">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="datasearch.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>Data Search</span>
+            </a>
+            <a href="newsAdvisor.html" class="menu-item">
+                <i class="fas fa-envelope"></i>
+                <span>News</span>
+            </a>
+            <a href="select advisor.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Creation</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <button class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Notification Button -->
+    <button class="notification-btn" onclick="toggleNotificationPopup()">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge" id="notificationBadge">0</span>
+    </button>
+
+    <!-- Notification Popup -->
+    <div class="notification-popup" id="notificationPopup">
+        <div class="notification-popup-header">
+            <h3>Notifications</h3>
+            <button class="close-btn" onclick="toggleNotificationPopup()">&times;</button>
+        </div>
+        <div class="notification-popup-content" id="notificationPopupContent">
+            <div class="loading-text">
+                <div class="loading-spinner"></div>
+                <span>Loading notifications...</span>
+            </div>
+        </div>
+        <div class="notification-popup-footer">
+            <a href="#" id="viewAllToggle" class="view-all-link">View All Notifications</a>
+
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome to Advisor Dashboard</h1>
+        <p>This is your main content area. Click the bell icon to view notifications.</p>
+    </div>
+
+    <script>
+        const ADVISOR_ID = localStorage.getItem('advisorId');
+        let notifications = [];
+
+        if (!ADVISOR_ID) {
+            console.warn('Advisor ID not found. Notifications will not be loaded.');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('closed');
+
+            const popup = document.getElementById('notificationPopup');
+            popup.style.left = sidebar.classList.contains('closed') ? '28px' : '300px';
+        }
+
+        function toggleNotificationPopup() {
+            const popup = document.getElementById('notificationPopup');
+            popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+            if (popup.style.display === 'flex') loadPopupNotifications();
+        }
+
+        document.addEventListener('click', function (event) {
+            const popup = document.getElementById('notificationPopup');
+            const notificationBtn = document.querySelector('.notification-btn');
+            if (!popup.contains(event.target) && !notificationBtn.contains(event.target)) {
+                popup.style.display = 'none';
+            }
+        });
+
+        async function fetchNotifications() {
+            const ADVISOR_ID = localStorage.getItem('advisorId');
+            if (!ADVISOR_ID) {
+                console.warn('Advisor ID not found. Skipping notification fetch.');
+                return [];
+            }
+
+            try {
+                const response = await fetch(`http://54.242.19.19:3000/api/notifications/${ADVISOR_ID}`);
+                const data = await response.json();
+                notifications = data?.data?.notifications ?? [];
+                return notifications;
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+                notifications = [];
+                return [];
+            }
+        }
+
+        async function fetchUnreadCount() {
+            if (!notifications.length) return 0;
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            return unreadCount;
+        }
+
+        async function markNotificationAsRead(notificationId) {
+            const ADVISOR_ID = localStorage.getItem('advisorId');
+            if (!ADVISOR_ID || !notificationId) return false;
+
+            try {
+                const notification = notifications.find(n => n.id === notificationId);
+                if (notification && !notification.isRead) {
+                    notification.isRead = true;
+
+                    if (typeof socket !== 'undefined') {
+                        socket.emit('mark_notification_read', {
+                            notificationId,
+                            parentId: ADVISOR_ID
+                        });
+                    } else {
+                        await fetch(`http://54.242.19.19:3000/api/notifications/markAsRead/${notificationId}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ advisorId: ADVISOR_ID })
+                        });
+                    }
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+                return false;
+            }
+        }
+
+        function formatTime(timestamp) {
+            const now = new Date();
+            const date = new Date(timestamp);
+            const seconds = Math.floor((now - date) / 1000);
+            const intervals = [
+                { label: "year", seconds: 31536000 },
+                { label: "month", seconds: 2592000 },
+                { label: "day", seconds: 86400 },
+                { label: "hour", seconds: 3600 },
+                { label: "minute", seconds: 60 }
+            ];
+            for (const i of intervals) {
+                const val = Math.floor(seconds / i.seconds);
+                if (val >= 1) return `${val} ${i.label}${val > 1 ? 's' : ''} ago`;
+            }
+            return "just now";
+        }
+
+        async function loadPopupNotifications() {
+            const popupContent = document.getElementById('notificationPopupContent');
+            popupContent.innerHTML = `
+            <div class="loading-text">
+                <div class="loading-spinner"></div>
+                <span>Loading notifications...</span>
+            </div>
+        `;
+
+            try {
+                await fetchNotifications();
+
+                if (!notifications.length) {
+                    popupContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No notifications found</p>
+                    </div>
+                `;
+                    return;
+                }
+
+                popupContent.innerHTML = notifications.map(notification => `
+                <div class="popup-notification ${notification.isRead ? '' : 'unread'}" data-id="${notification.id}">
+                    <div class="popup-notification-title">
+                        ${notification.title}
+                        ${!notification.isRead ? '<span class="unread-dot">•</span>' : ''}
+                    </div>
+                    <div class="popup-notification-message">${notification.message}</div>
+                    <div class="popup-notification-time">${formatTime(notification.timestamp)}</div>
+                </div>
+            `).join('');
+
+                document.querySelectorAll('.popup-notification').forEach(item => {
+                    item.addEventListener('click', async function () {
+                        const notificationId = this.dataset.id;
+                        const success = await markNotificationAsRead(notificationId);
+
+                        if (success) {
+                            this.classList.remove('unread');
+                            this.querySelector('.unread-dot')?.remove();
+                            updateUnreadCount();
+                        }
+                    });
+                });
+
+            } catch (error) {
+                popupContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Failed to load notifications</p>
+                </div>
+            `;
+            }
+        }
+
+        async function updateUnreadCount() {
+            const count = await fetchUnreadCount();
+            const badge = document.getElementById('notificationBadge');
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = count === 0 ? 'none' : 'flex';
+        }
+
+        document.getElementById('viewAllToggle').addEventListener('click', function (e) {
+            e.preventDefault();
+            const popup = document.getElementById('notificationPopup');
+            const isExpanded = popup.classList.toggle('expanded');
+            this.textContent = isExpanded ? 'Collapse Notifications' : 'View All Notifications';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNotifications().then(() => {
+                updateUnreadCount();
+            });
+
+            setInterval(updateUnreadCount, 300000); // كل 5 دقايق
+        });
+    </script>
+
+</body>
+
+</html>

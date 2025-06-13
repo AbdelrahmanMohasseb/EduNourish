@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/colors.css">
+  <title>Home - Student Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* 🔥 Sidebar Styles - متطابق مع صفحة الهوم */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content - معدل ليتناسب مع صفحة الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+    
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+
+    /* News Slider */
+    .news-slider-container {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .news-slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .news-slide {
+      position: relative;
+      min-width: 100%;
+    }
+
+    .news-slide img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .news-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      max-width: 80%;
+    }
+
+    /* Sections */
+    .section {
+      margin-top: 40px;
+      width: 100%;
+    }
+
+    h2 {
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: var(--bg-light);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+
+    tr:hover {
+      background-color: rgba(75, 171, 177, 0.05);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .news-slide img {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .news-slide img {
+        height: 250px;
+      }
+      
+      .news-text {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      
+      th, td {
+        padding: 10px 12px;
+      }
+      
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .news-slide img {
+        height: 200px;
+      }
+      
+      th, td {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+      
+      h2 {
+        font-size: 20px;
+      }
+    }
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- السايدبار - معدل ليناسب الطالب -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-user-graduate"></i>
+        <span>Student Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="profile.html" class="menu-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+      <a href="AttendanceStudent.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="GradesStudent.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="Courses.html" class="menu-item">
+        <i class="fas fa-book"></i>
+        <span>Courses</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teachers</span>
+      </a>
+      <a href="Exam.html" class="menu-item">
+        <i class="fas fa-file-alt"></i>
+        <span>Exams</span>
+      </a>
+      <a href="Activities.html" class="menu-item">
+        <i class="fas fa-running"></i>
+        <span>Activities</span>
+      </a>
+      <a href="Resturant.html" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        <span>Cafeteria</span>
+      </a>
+    </div>
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- المحتوى الرئيسي -->
+  <div class="main">
+    <h2>📰 Latest News</h2>
+    <div class="news-slider-container">
+      <div class="news-slider" id="newsSlider">
+        <div class="news-slide">
+          <img src="" alt="News">
+          <div class="news-text">Annual Science Fair - Coming Soon!</div>
+        </div>
+        <div class="news-slide">
+          <img src="" alt="News">
+          <div class="news-text">Basketball Tournament Finals Next Week</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+  <h2>📚 Class Schedule</h2>
+  <table id="scheduleTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Time</th>
+        <th>Subject</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- البيانات هتتحط هنا -->
+    </tbody>
+  </table>
+</div>
+   <div class="section">
+  <h2>📝 Exam Schedule</h2>
+  <table id="examTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Duration (min)</th>
+        <th>Total Marks</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- البيانات هتتحط هنا -->
+    </tbody>
+  </table>
+</div>
+
+  <script>
+    // دالة تبديل السايدبار - متطابقة مع صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+document.addEventListener('DOMContentLoaded', function() {
+  const savedState = localStorage.getItem('sidebarClosed');
+  const sidebar = document.querySelector('.sidebar');
+  const main = document.querySelector('.main');
+  
+  if (savedState === 'true') {
+    sidebar.classList.add('closed');
+    main.style.marginLeft = '0';
+    main.style.maxWidth = '100%';
+  }
+
+  const currentPage = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('href') === currentPage) {
+      item.classList.add('active');
+    }
+  });
+
+  // نبدأ تحميل الأخبار من الـ API
+  loadNews();
+});
+
+    // السلايدر
+    let currentSlide = 0;
+    let slideInterval;
+
+    function startSlider() {
+      const slides = document.querySelectorAll('.news-slide');
+      if (slides.length <= 1) return;
+      
+      clearInterval(slideInterval);
+      
+      slideInterval = setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        document.getElementById("newsSlider").style.transform = `translateX(-${currentSlide * 100}%)`;
+      }, 5000);
+    }
+
+    // دالة لتحميل البيانات من الخادم (مثال)
+    function loadData() {
+      // يمكنك تفعيل هذه الدوال عند ربطها بالخادم
+      // loadNews();
+      // loadSchedule();
+      // loadExams();
+    }
+
+  function loadNews() {
+    fetch("http://54.242.19.19:3000/api/news")
+      .then(response => response.json())
+      .then(data => {
+      const slider = document.getElementById("newsSlider");
+      slider.innerHTML = ''; // مسح السلايدر القديم
+      
+      data.news.forEach(news => {
+        const slide = document.createElement("div");
+        slide.className = "news-slide";
+        slide.innerHTML = `
+          <img src="${news.photo}" alt="${news.title}">
+          <div class="news-text">${news.title}</div>
+        `;
+        slider.appendChild(slide);
+      });
+      
+      startSlider(); // بدء السلايدر بعد تحديث الأخبار
+    })
+    .catch(error => console.error("Error loading news:", error));
+}
+
+
+
+     // دالة لتحليل النصوص المقسومة بـ /
+  function splitAndTrim(text) {
+    return text.split('/').map(item => item.trim());
+  }
+
+  // دالة عرض الجدول في HTML
+  function renderSchedule(data) {
+    const tbody = document.querySelector("#scheduleTable tbody");
+    tbody.innerHTML = '';
+
+    data.forEach(entry => {
+      const dayFormatted = entry.day.charAt(0).toUpperCase() + entry.day.slice(1).toLowerCase();
+      const subjects = splitAndTrim(entry.subject);
+      const times = splitAndTrim(entry.time);
+      const count = Math.min(subjects.length, times.length);
+
+      for (let i = 0; i < count; i++) {
+        const tr = document.createElement('tr');
+
+        if (i === 0) {
+          const tdDay = document.createElement('td');
+          tdDay.rowSpan = count;
+          tdDay.textContent = dayFormatted;
+          tr.appendChild(tdDay);
+        }
+
+        const tdTime = document.createElement('td');
+        tdTime.textContent = times[i];
+        tr.appendChild(tdTime);
+
+        const tdSubject = document.createElement('td');
+        tdSubject.textContent = subjects[i];
+        tr.appendChild(tdSubject);
+
+        tbody.appendChild(tr);
+      }
+    });
+  }
+
+  // دالة لتحميل الجدول حسب classId
+  function loadSchedule(classId) {
+    fetch(`http://54.242.19.19:3000/api/timetables/class/${classId}`)
+      .then(response => response.json())
+      .then(data => {
+        renderSchedule(data);
+      })
+      .catch(error => {
+        console.error('Error loading schedule:', error);
+        const tbody = document.querySelector("#scheduleTable tbody");
+        tbody.innerHTML = `<tr><td colspan="3">Failed to load schedule.</td></tr>`;
+      });
+  }
+  const token = localStorage.getItem("token")
+
+  // ✅ دالة لتحميل بيانات الطالب ثم تحميل الجدول بناءً على classId
+ function loadStudentAndScheduleFromToken() {
+    fetch("http://54.242.19.19:3000/api/students/:id", {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(student => {
+      const classId = student.classId;
+      const studentId = student.id;
+      loadSchedule(classId);
+      loadExamSchedule(studentId);
+    })
+    .catch(err => {
+      console.error("Student error:", err);
+    });
+  }
+
+  // استدعاء الدالة
+  loadStudentAndScheduleFromToken();
+ function formatDate(dateString) {
+    const date = new Date(dateString);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+ function loadExamSchedule(studentId) {
+    const apiUrl = `http://54.242.19.19:3000/api/studentexams/student/${studentId}/exams`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(exams => {
+        const tbody = document.querySelector("#examTable tbody");
+        tbody.innerHTML = "";
+
+        if (exams.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6">📭 No exams found.</td></tr>`;
+          return;
+        }
+
+        exams.forEach(exam => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${exam.subjectName}</td>
+            <td>${exam.duration}</td>
+            <td>${exam.totalMarks}</td>
+            <td>${formatDate(exam.date)}</td>
+            <td>${exam.Type}</td>
+            <td>${exam.status.charAt(0).toUpperCase() + exam.status.slice(1)}</td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error("❌ Error loading exam schedule:", error);
+        document.querySelector("#examTable tbody").innerHTML = `<tr><td colspan="6">⚠️ Failed to load exam schedule.</td></tr>`;
+      });
+  }
+
+    // إدارة تغيير حجم النافذة
+    window.addEventListener('resize', function() {
+      clearTimeout(this.resizeTimer);
+      this.resizeTimer = setTimeout(function() {
+        const sidebar = document.querySelector('.sidebar');
+        const main = document.querySelector('.main');
+        
+        if(window.innerWidth < 768) {
+          sidebar.classList.add('closed');
+          main.style.marginLeft = '0';
+          main.style.maxWidth = '100%';
+        } else {
+          const savedState = localStorage.getItem('sidebarClosed');
+          if(savedState === 'false') {
+            sidebar.classList.remove('closed');
+            main.style.marginLeft = '300px';
+            main.style.maxWidth = 'calc(100% - 300px)';
+          }
+        }
+      }, 250);
+    });
+    // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

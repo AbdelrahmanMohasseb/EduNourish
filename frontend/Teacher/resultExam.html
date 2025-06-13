@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/colors.css">
+    <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-light: #ffffff;
+      --bg-gray: #f5f7fa;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-gray);
+      color: var(--text-primary);
+      transition: all 0.4s ease;
+    }
+    
+    /* 🔥 Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(calc(-1 * var(--sidebar-width) - var(--sidebar-margin)));
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 20px);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar.closed ~ .toggle-btn {
+      left: 28px;
+    }
+    
+    .sidebar.closed ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content */
+    .main {
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin) * 2);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Exam Form Styles */
+    .exam-form {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: var(--bg-light);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    
+    .form-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--primary-color);
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .input-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-control {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+      background-color: var(--bg-light);
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(75, 171, 177, 0.2);
+    }
+    
+    .file-upload {
+      margin-top: 15px;
+    }
+    
+    .file-upload-label {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 4px 8px rgba(75, 171, 177, 0.3);
+    }
+    
+    .file-upload-label:hover {
+      background: #3a9ca1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(75, 171, 177, 0.4);
+    }
+    
+    .file-upload-label i {
+      margin-right: 8px;
+    }
+    
+    .file-name {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .submit-btn {
+      display: block;
+      width: 200px;
+      padding: 12px;
+      margin: 30px auto 0;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px var(--shadow-color);
+    }
+    
+    .submit-btn:hover {
+      background: #3a9ca1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .input-group {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      
+      .form-control {
+        min-width: calc(50% - 15px);
+      }
+      
+      .exam-form {
+        padding: 25px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .form-control {
+        min-width: 100%;
+      }
+      
+      .submit-btn {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .exam-form {
+        padding: 20px;
+      }
+      
+      input, select {
+        padding: 10px;
+      }
+    }
+
+        .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+    </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teacher Portal</span>
+      </div>
+    </div>
+
+    <div class="menu-items">
+      <a href="HomeTeacher.html" class="menu-item active">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </a>
+      <a href="ProfileTeacher.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i> <span>Profile</span>
+      </a>
+      <a href="AttendanceTeacher.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i> <span>Attendance</span>
+      </a>
+      <a href="ClassTeacher.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i> <span>Classes</span>
+      </a>
+      <a href="ExamTeacher.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>Exam</span>
+      </a>
+       <a href="resultExam.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>result Exam</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+ 
+  <div class="main">
+    <div class="exam-form">
+      <h2 class="form-title">Exam Management</h2>
+      
+      <div class="input-group">
+        <div class="form-control">
+          <label for="parentId">Parent ID</label>
+          <input type="text" id="parentId" >
+        </div>
+        <div class="form-control">
+          <label for="teacherId">Teacher ID</label>
+          <input type="text" id="teacherId" >
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="form-control">
+          <label for="examId">Exam ID</label>
+          <input type="text" id="examId" >
+        </div>
+        <div class="form-control">
+          <label for="StudentIDg">Student ID</label>
+          <input type="text" id="StudentIDg" >
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="form-control">
+          <label>ref_image</label>
+          <input type="file" id="ref_image" class="custom-file-input" accept="image/*">
+          <label for="ref_image" class="file-upload-label">
+            <i class="fas fa-cloud-upload-alt"></i> Upload Rot Image
+          </label>
+          <span id="rotFileName" class="file-name">correct_mcu_sheet.png</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="form-control">
+          <label>stud_image</label>
+          <input type="file" id="stud_image" class="custom-file-input" accept="image/*">
+          <label for="stud_image" class="file-upload-label">
+            <i class="fas fa-cloud-upload-alt"></i> Upload Student Image
+          </label>
+          <span id="studFileName" class="file-name">student_mcu_sheet.png</span>
+        </div>
+      </div>
+      
+      <button type="button" class="submit-btn" onclick="submitExam()">
+        <i class="fas fa-paper-plane"></i> Submit Exam
+      </button>
+    </div>
+  </div>
+
+  <script>
+// 🌟 تفعيل وإغلاق الـ Sidebar
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
+
+    if (sidebar && main) {
+        sidebar.classList.toggle('closed');
+        main.style.marginLeft = sidebar.classList.contains('closed') ? '0' : '300px';
+        main.style.maxWidth = sidebar.classList.contains('closed') ? '100%' : 'calc(100% - 300px)';
+
+        localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+}
+
+// تحميل الحالة المحفوظة عند فتح الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  const savedState = localStorage.getItem('sidebarClosed');
+  const sidebar = document.querySelector('.sidebar');
+  const main = document.querySelector('.main');
+
+  if (savedState === 'true') {
+    sidebar.classList.add('closed');
+    main.style.marginLeft = '0';
+    main.style.maxWidth = '100%';
+  }
+
+  // تحديد العنصر النشط في القائمة
+  const currentPage = window.location.pathname.split('/').pop();
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('href') === currentPage) {
+      item.classList.add('active');
+    }
+  });
+
+  // Initialize file input events
+  document.getElementById('ref_image').addEventListener('change', function(e) {
+    const fileNameElement = document.getElementById('rotFileName');
+    if (this.files.length > 0) {
+      fileNameElement.textContent = this.files[0].name;
+    }
+  });
+
+  document.getElementById('stud_image').addEventListener('change', function(e) {
+    const fileNameElement = document.getElementById('studFileName');
+    if (this.files.length > 0) {
+      fileNameElement.textContent = this.files[0].name;
+    }
+  });
+});
+
+// 🌟 إرسال بيانات الامتحان إلى API - النسخة المحسنة
+async function submitExam() {
+  const parentId = document.getElementById('parentId').value;
+  const teacherId = document.getElementById('teacherId').value;
+  const examId = document.getElementById('examId').value;
+  const StudentIDg = document.getElementById('StudentIDg').value;
+  const ref_image = document.getElementById('ref_image').files[0];
+  const stud_image = document.getElementById('stud_image').files[0];
+
+  // التحقق من وجود جميع البيانات المطلوبة
+  if (!parentId || !teacherId || !examId || !StudentIDg) {
+    alert('Please fill all required fields!');
+    return;
+  }
+
+  // إذا كانت الصور مطلوبة
+  if (!ref_image || !stud_image) {
+    alert('Please upload both images!');
+    return;
+  }
+
+  const submitBtn = document.querySelector('.submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+  const formData = new FormData();
+  formData.append('parentId', parentId);
+  formData.append('teacherId', teacherId);
+  formData.append('examId', examId);
+  formData.append('StudentIDg', StudentIDg);
+  formData.append('ref_image', ref_image);
+  formData.append('stud_image', stud_image);
+  for (let [key, value] of formData.entries()) {
+  console.log(`${key}:`, value);
+}
+
+  try {
+    const response = await fetch('https://kerols77-grade.hf.space/grade_exam', {
+      method: 'POST',
+      body: formData,
+      // لا تضيف headers لـ FormData، المتصفح يضيفها تلقائياً
+    });
+
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to submit exam');
+    }
+
+    console.log('Success:', result);
+    alert(`Exam submitted successfully! Result: ${JSON.stringify(result)}`);
+    
+  } catch (error) {
+    console.error('Error:', error);
+    alert(`Error: ${error.message || 'Failed to submit exam. Please try again.'}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Exam';
+  }
+}
+ // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

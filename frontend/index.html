@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/templatemo-grad-school.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/owl.css">
+    <link rel="stylesheet" href="css/lightbox.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <header class="main-header clearfix" role="header">
+        <div class="logo">
+          <a href="#"><em>Edu</em> Nourish</a>
+        </div>
+        <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
+        <nav id="menu" class="main-nav" role="navigation">
+          <ul class="main-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="acadmais.html">Acadmais</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="apply.html">Apply</a></li>
+            <li><a href="#" id="login-link">LOGIN</a></li>
+          </ul>
+        </nav>
+    </header>
+   <!-- ✅ Toast لازم يكون برّه الـ loginModal -->
+<div id="toast" class="toast-message"></div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="login-modal">
+
+  <div class="login-box">
+    <span class="close-btn">&times;</span>
+
+    <!-- Logo + Project Name -->
+    <div class="login-header">
+      <img src="image/logo.jpg" alt="Logo" class="login-logo">
+      <div class="project-name">Edu Nourish</div>
+    </div>
+
+    <!-- محتوى مقسم بالعرض -->
+    <div class="login-content">
+      <!-- الصورة على اليسار -->
+      <div class="login-image-container">
+        <img src="image/login.jpg" alt="Login illustration" class="login-image">
+      </div>
+
+      <!-- النموذج على اليمين -->
+      <div class="login-form">
+        <h3>Login to Your Account</h3>
+        <input type="text" id="loginEmail" class="login-input" placeholder="User Id">
+        <input type="password" id="loginPassword" class="login-input" placeholder="Password">
+        <button id="loginButton" class="login-btn">LOGIN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <section class="first">
+        <div id="carouselExampleCaptions" class="carousel slide carousel-fullscreen" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="false">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="image/home slider (1).jpg" class="d-block w-100" alt="First slide">
+                <div class="carousel-caption d-block">
+                  <h5 style="font-size: 70px;">Future Minds</h5>
+                  <p style="font-size:40px"> We Inspire, You Learn
+
+                  </p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="image/home slider (2).jpg" class="d-block w-100" alt="Second slide">
+                <div class="carousel-caption d-block">
+                  <h5 style="font-size:70px">Creative Learning</h5>
+                  <p style="font-size:40px">Where Ideas Come Alive</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+              <img src="image/home slider (3).jpg" class="d-block w-100" alt="Third slide">
+                <div class="carousel-caption d-block">
+                  <h5 style="font-size:70px">Play & Learn</h5>
+                  <p style="font-size:40px">Education Beyond the Desk</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+               <img src="image/home slider (4).jpg" class="d-block w-100" alt="Fourth slide">
+                <div class="carousel-caption d-block">
+                  <h5 style="font-size:70px">Guided Growth</h5>
+                  <p style="font-size:40px">Every Step, Together </p>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+    </section>
+    <section>
+        <div id="overviews" class="section wb">
+            <div class="container">
+                <div class="section-title row text-center">
+                    <div class="col-md-8 offset-md-2">
+                        <h3>About</h3>
+                        <p class="lead">
+                            At SmartEDU, we believe that education is the foundation of the future.
+                            Our school combines modern learning methods with smart technologies like Artificial Intelligence to offer a complete educational journey — from kindergarten to high school.
+                            Our mission is to empower students to be creative, aware, and future-ready!</p>
+                    </div>
+                </div><!-- end title -->
+            
+                <div class="row align-items-center">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="message-box">
+                            <h4>2025 BEST SmartEDU education school</h4>
+                            <h2>Welcome to SmartEDU — Where Learning Meets Innovation</h2>
+                            <p>
+                               
+At SmartEDU, we blend cutting-edge teaching methods with a nurturing and inclusive environment that encourages creativity, curiosity, and confidence.
+Our mission is to ignite a passion for learning in every student by combining modern educational tools with personalized support.
+We believe that every child has the potential to shine, and we are committed to preparing our students not just for exams — but for life, for innovation, and for a rapidly evolving world. </p>
+    
+                            <a href="/about.html" class="hover-btn-new orange"><span>Learn More</span></a>
+                        </div><!-- end messagebox -->
+                    </div><!-- end col -->
+                    
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="post-media wow fadeIn">
+                            <img src="image/primary school 2 .jpg" alt="" class="img-fluid img-rounded about-img">
+                        </div><!-- end media -->
+                    </div><!-- end col -->
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="post-media wow fadeIn">
+                            <img src="image/primary school_LE_upscale_balanced_x4.jpg" alt="" class="img-fluid img-rounded about-img">
+                        </div><!-- end media -->
+                    </div><!-- end col -->
+                    
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <div class="message-box">
+                            <h2>The standard Lorem Ipsum passage, used since the 1500s</h2>
+                            <p>A School for the Future — Today!</p>
+    
+                            <p>
+                                We're not just preparing students for the future — we're letting them experience it now.
+                                With AI-powered learning tools, smart classrooms, and an interactive curriculum, our students explore, think critically, and grow in a truly modern learning environment.</p>
+    
+                            <a href="/about.html" class="hover-btn-new orange"><span>Learn More</span></a>
+                        </div><!-- end messagebox -->
+                    </div><!-- end col -->
+                    
+                </div><!-- end row -->
+            </div><!-- end container -->
+        </div><!-- end section -->    
+    </section>
+    <section class="member_counter">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_member_counter">
+                        <span class="counter">1024</span>
+                        <h4>All Teachers</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_member_counter">
+                        <span class="counter">960</span>
+                        <h4> All Students</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_member_counter">
+                        <span class="counter">1019</span>
+                        <h4>Online Students</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single_member_counter">
+                        <span class="counter">819</span>
+                        <h4>Ofline Students</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="carouselExample" class="carousel slide">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            
+          </div>
+          <div class="carousel-item">
+            <img src="..." class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="..." class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <h1 class="mb-3">Popular Teachers</h1>
+                <p>Meet our most experienced and beloved educators who are dedicated to your success.</p>
+            </div>
+            
+            <!-- Teacher Slider -->
+            <div id="teacherSlider" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="false">
+                <div class="carousel-inner">
+                    <!-- Slide 1 (Active) -->
+                    <div class="carousel-item active">
+                        <div class="row g-4 justify-content-center">
+                            <!-- Teacher 1 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (1).jpg" alt="Teacher 1">
+                                    <div class="team-text">
+                                        <h3>John Doe</h3>
+                                        <p>Math Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 2 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (7).jpg" alt="Teacher 2">
+                                    <div class="team-text">
+                                        <h3>Jane Smith</h3>
+                                        <p>Physics Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 3 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (3).jpg" alt="Teacher 3">
+                                    <div class="team-text">
+                                        <h3>Robert Johnson</h3>
+                                        <p>Chemistry Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row g-4 justify-content-center">
+                            <!-- Teacher 4 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (10).jpg" alt="Teacher 4">
+                                    <div class="team-text">
+                                        <h3>Sarah Williams</h3>
+                                        <p>Biology Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 5 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (7).jpg" alt="Teacher 5">
+                                    <div class="team-text">
+                                        <h3>Michael Brown</h3>
+                                        <p>History Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 6 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (6).jpg" alt="Teacher 6">
+                                    <div class="team-text">
+                                        <h3>Emily Davis</h3>
+                                        <p>Literature Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Slide 3 -->
+                    <div class="carousel-item">
+                        <div class="row g-4 justify-content-center">
+                            <!-- Teacher 7 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (5).jpg" alt="Teacher 7">
+                                    <div class="team-text">
+                                        <h3>David Wilson</h3>
+                                        <p>Computer Science Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 8 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (4).jpg" alt="Teacher 8">
+                                    <div class="team-text">
+                                        <h3>Jessica Martinez</h3>
+                                        <p>Art Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Teacher 9 -->
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                                <div class="team-item position-relative">
+                                    <img class="img-fluid rounded-circle w-75" src="image/teacher (11).jpg" alt="Teacher 9">
+                                    <div class="team-text">
+                                        <h3>Daniel Anderson</h3>
+                                        <p>Economics Professor</p>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-twitter"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div id="why-us" class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="section-header text-center">
+                        <h2 style="direction: ltr;">Why Edu Nourish</h2>
+                        <p class="lead" style="direction: ltr;">Your journey to excellence starts here with personalized, accessible, and transformative learning experiences.</p>
+                    </div>
+    
+                    <!-- feature -->
+                    <div class="col-md-4">
+                        <div class="feature">
+                            <i class="feature-icon fa fa-flask"></i>
+                            <div class="feature-content">
+                                <h4 style="direction: ltr; text-align: start;">Online Courses</h4>
+                                <p style="direction: ltr; text-align: start;">Discover a world of knowledge with hundreds of diverse courses across disciplines. Learn anytime, anywhere through high-quality interactive content that aligns with your goals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /feature -->
+    
+                    <!-- feature -->
+                    <div class="col-md-4">
+                        <div class="feature">
+                            <i class="feature-icon fa fa-users"></i>
+                            <div class="feature-content">
+                                <h4 style="direction: ltr; text-align: start;">Expert Teachers</h4>
+                                <p style="direction: ltr; text-align: start;">Learn from distinguished field experts with teaching passion and practical experience. Benefit from their rich insights and personalized guidance to maximize your potential.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /feature -->
+    
+                    <!-- feature -->
+                    <div class="col-md-4">
+                        <div class="feature">
+                            <i class="feature-icon fa fa-comments"></i>
+                            <div class="feature-content">
+                                <h4 style="direction: ltr; text-align: start;">Community</h4>
+                                <p style="direction: ltr; text-align: start;">Join thousands of passionate learners. Share ideas, collaborate on projects, and build a strong support network with peers who empower your educational journey.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /feature -->
+                </div>
+    
+                <hr class="section-hr">
+    
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2 style="direction: ltr; text-align: start;">Modern Education: An Exceptional Learning Experience</h2>
+                        <p class="lead" style="direction: ltr; text-align: start;">We provide a comprehensive learning environment tailored to your needs</p>
+                        <p style="direction: ltr; text-align: start;">Whether you aim to develop professional skills or explore new fields, you'll find the perfect path to achieve your goals with us.</p>
+                    </div>
+    
+                    <div class="about-video" id="videoThumbnail">
+                        <img src="image/3f160d3769fa93ab619b4102d944cf4a.jpg" alt="صورة الفيديو">
+                        <div class="play-icon">
+                            <i class="play-icon fa fa-play"></i>
+                        </div>
+                    </div>
+                
+                    <!-- النافذة المنبثقة -->
+                    <div id="videoModal" class="modal">
+                        <div class="modal-content">
+                            <button class="close" id="closeModal">×</button>
+                            <video id="videoPlayer" controls>
+                                <source src="/VID_20190720_024001.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="news-section">
+            <h2>News</h2>
+            <div class="news-articles" id="news-container">
+                <!-- JavaScript سيزرع الأخبار هنا -->
+            </div>
+        </div>
+    </section>
+    <section> 
+        <div class="testimonials-wrapper">
+            <div class="container">
+                <section class="testimonials-section">
+                    <h1>What Parents Say</h1>
+                    
+                    <div class="testimonials-grid" id="testimonials-container">
+                        <!-- سيتم إضافة التعليقات هنا ديناميكياً -->
+                    </div>
+                    
+                </section>
+            </div>
+        </div>
+    </section>
+    <section>
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <!-- About Us -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="widget clearfix">
+                            <div class="widget-title">
+                                <h3>About Us</h3>
+                            </div>
+                            <p> Integer rutrum ligula eu dignissim laoreet. Pellentesque venenatis nibh sed tellus faucibus bibendum.</p>
+                            <div class="footer-right">
+                                <ul class="footer-links-soi">
+                                    <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+                                    <li><a href="#"><i class="fa-brands fa-github"></i></a></li>
+                                    <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fa-brands fa-dribbble"></i></a></li>
+                                    <li><a href="#"><i class="fa-brands fa-pinterest"></i></a></li>
+                                </ul>                                
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Information Links -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="widget clearfix">
+                            <div class="widget-title">
+                                <h3>Information</h3>
+                            </div>
+                            <ul class="footer-links">
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Pricing</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+        
+                    <!-- Contact Details -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="widget clearfix">
+                            <div class="widget-title">
+                                <h3>Contact Us</h3>
+                            </div>
+                            <ul class="footer-links">
+                                <li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+                                <li><a href="#">www.yoursite.com</a></li>
+                                <li>PO Box 16122, Collins Street, Australia</li>
+                                <li>+61 3 8376 6284</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        <div class="copyrights">
+            &copy; 2025 YourSite - All Rights Reserved.
+        </div>
+        
+    </section>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/home.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

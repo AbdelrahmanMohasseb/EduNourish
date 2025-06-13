@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Courses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* 🔥 Sidebar Styles - متطابق مع صفحة الهوم */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content - معدل ليتناسب مع صفحة الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+    
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+
+    /* Slider Styles */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      margin: 30px 0;
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+    }
+
+    .slide p {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+
+    .control-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.7);
+      border: none;
+      color: var(--primary-color);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 15px;
+      border-radius: 50%;
+      z-index: 10;
+    }
+
+    .prev-btn {
+      left: 20px;
+    }
+
+    .next-btn {
+      right: 20px;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      background: var(--bg-light);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+
+    tr:hover {
+      background-color: rgba(75, 171, 177, 0.05);
+    }
+
+    /* Map Styles */
+    #map {
+      height: 350px;
+      width: 100%;
+      margin: 30px 0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Headings */
+    h2 {
+      color: var(--text-primary);
+      margin: 30px 0 20px;
+      font-size: 24px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--primary-color);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .slide img {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .slide img {
+        height: 250px;
+      }
+      
+      .slide p {
+        font-size: 16px;
+        padding: 8px 15px;
+      }
+      
+      th, td {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+      
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .slide img {
+        height: 200px;
+      }
+      
+      #map {
+        height: 250px;
+      }
+      
+      h2 {
+        font-size: 20px;
+      }
+    }
+
+        .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- السايدبار - معدل ليناسب الطالب -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-user-graduate"></i>
+        <span>Student Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="profile.html" class="menu-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+      <a href="AttendanceStudent.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="GradesStudent.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="Courses.html" class="menu-item active">
+        <i class="fas fa-book"></i>
+        <span>Courses</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teachers</span>
+      </a>
+      <a href="Exam.html" class="menu-item">
+        <i class="fas fa-file-alt"></i>
+        <span>Exams</span>
+      </a>
+      <a href="Activities.html" class="menu-item">
+        <i class="fas fa-running"></i>
+        <span>Activities</span>
+      </a>
+      <a href="Resturant.html" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        <span>Cafeteria</span>
+      </a>
+    </div>
+     <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- المحتوى الرئيسي -->
+  <div class="main">
+  <h2>📚 Subjects</h2>
+
+  <div class="slider-container">
+    <div class="slider" id="slider"></div>
+
+    <button class="control-btn prev-btn" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="control-btn next-btn" onclick="moveSlide(1)">&#10095;</button>
+  </div>
+
+      
+  <h2>📚 Class Schedule</h2>
+  <table id="scheduleTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Time</th>
+        <th>Subject</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- البيانات هتتحط هنا -->
+    </tbody>
+  </table>
+  </div>
+
+  <script>
+
+    const token = localStorage.getItem("token")
+    // دالة تبديل السايدبار - متطابقة مع صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    // تهيئة الصفحة - متوافقة مع صفحة الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // تعيين العنصر النشط في القائمة
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // بدء السلايدر
+      startSlider();
+      
+      // تحميل خريطة GPS (مثال)
+      // loadMap();
+    });
+
+   let slideIndex = 0;
+let slideInterval;
+
+function startSlider() {
+  const slides = document.querySelectorAll('.slide');
+  if (slides.length <= 1) return;
+
+  clearInterval(slideInterval);
+
+  slideInterval = setInterval(() => {
+    slideIndex = (slideIndex + 1) % slides.length;
+    document.getElementById("slider").style.transform = `translateX(-${slideIndex * 100}%)`;
+  }, 5000);
+}
+
+function moveSlide(step) {
+  const slides = document.querySelectorAll('.slide');
+  clearInterval(slideInterval);
+  slideIndex = (slideIndex + step + slides.length) % slides.length;
+  document.getElementById("slider").style.transform = `translateX(-${slideIndex * 100}%)`;
+  startSlider();
+}
+
+function goToPage(subjectId) {
+  window.location.href = `SubjectCourse.html?subjectId=${subjectId}`;
+}
+
+// 🚀 تحميل بيانات الطالب وإنشاء الشرائح
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Token not found. Please login.');
+    return;
+  }
+
+   fetch("http://54.242.19.19:3000/api/students/:id",
+   {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (!data || !data.Subjects || !Array.isArray(data.Subjects)) {
+        throw new Error('Invalid student data or missing Subjects');
+      }
+
+      const slider = document.getElementById('slider');
+      slider.innerHTML = '';
+
+      const defaultImages = {
+        math: '../image/50-landscape-4e07d2ee0d608ccb4903875b291a28d6-dli56w4qh2k7.jpg',
+        arabic: '../image/Untitled-design-2025-01-30T110706.731-600x330.jpg',
+        english: '../image/Untitled-design-2025-01-30T110516.241-489x275.jpg',
+        default: '../image/IMG-eac045fe51275fe.jpg'
+      };
+
+      data.Subjects.forEach(subject => {
+        const name = subject.name || 'Subject';
+        const imageKey = name.toLowerCase().includes('math') ? 'math' :
+                         name.toLowerCase().includes('arabic') ? 'arabic' :
+                         name.toLowerCase().includes('english') ? 'english' :
+                         name.toLowerCase().includes('ict') ? 'ict' : 'default';
+
+        const imgSrc = defaultImages[imageKey];
+
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        slide.onclick = () => goToPage(name);
+
+        slide.innerHTML = `
+          <img src="${imgSrc}" alt="${name}" onerror="this.src='${defaultImages.default}'">
+          <p>${name}</p>
+        `;
+
+        slider.appendChild(slide);
+      });
+
+      startSlider();
+    })
+    .catch(error => {
+      console.error('Error fetching student data:', error);
+      document.getElementById('slider').innerHTML = `
+        <div class="slide">
+          <p>⚠️ فشل تحميل المواد. حاول مرة أخرى لاحقًا.</p>
+        </div>
+      `;
+    });
+});
+
+
+ function splitAndTrim(text) {
+    return text.split('/').map(item => item.trim());
+  }
+
+  // دالة عرض الجدول في HTML
+  function renderSchedule(data) {
+    const tbody = document.querySelector("#scheduleTable tbody");
+    tbody.innerHTML = '';
+
+    data.forEach(entry => {
+      const dayFormatted = entry.day.charAt(0).toUpperCase() + entry.day.slice(1).toLowerCase();
+      const subjects = splitAndTrim(entry.subject);
+      const times = splitAndTrim(entry.time);
+      const count = Math.min(subjects.length, times.length);
+
+      for (let i = 0; i < count; i++) {
+        const tr = document.createElement('tr');
+
+        if (i === 0) {
+          const tdDay = document.createElement('td');
+          tdDay.rowSpan = count;
+          tdDay.textContent = dayFormatted;
+          tr.appendChild(tdDay);
+        }
+
+        const tdTime = document.createElement('td');
+        tdTime.textContent = times[i];
+        tr.appendChild(tdTime);
+
+        const tdSubject = document.createElement('td');
+        tdSubject.textContent = subjects[i];
+        tr.appendChild(tdSubject);
+
+        tbody.appendChild(tr);
+      }
+    });
+  }
+
+  // دالة لتحميل الجدول حسب classId
+  function loadSchedule(classId) {
+    fetch(`http://54.242.19.19:3000/api/timetables/class/${classId}`)
+      .then(response => response.json())
+      .then(data => {
+        renderSchedule(data);
+      })
+      .catch(error => {
+        console.error('Error loading schedule:', error);
+        const tbody = document.querySelector("#scheduleTable tbody");
+        tbody.innerHTML = `<tr><td colspan="3">Failed to load schedule.</td></tr>`;
+      });
+  }
+  
+
+  // ✅ دالة لتحميل بيانات الطالب ثم تحميل الجدول بناءً على classId
+  function loadStudentAndScheduleFromToken() {
+    fetch("http://54.242.19.19:3000/api/students/:id", {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(student => {
+      const classId = student.classId;
+      loadSchedule(classId);
+    })
+    .catch(err => {
+      console.error("Student error:", err);
+    });
+  }
+
+  // استدعاء الدالة
+  loadStudentAndScheduleFromToken();
+ function formatDate(dateString) {
+    const date = new Date(dateString);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  }    
+   // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+}); 
+  </script>
+</body>
+</html>

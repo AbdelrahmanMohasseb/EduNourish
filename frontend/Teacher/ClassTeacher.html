@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Classes | Teacher Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-light: #FFFFFF;
+      --bg-gray: #F5F7FA;
+      --text-primary: #2D3748;
+      --text-secondary: #718096;
+      --text-light: #A0AEC0;
+      --border-color: #E2E8F0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --success-color: #4CAF50;
+      --danger-color: #f44336;
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-gray);
+      transition: all 0.4s ease;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(calc(-1 * var(--sidebar-width) - var(--sidebar-margin)));
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 20px);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar.closed ~ .toggle-btn {
+      left: 28px;
+    }
+    
+    .sidebar.closed ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content */
+    .main {
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin) * 2);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Page Header */
+    .page-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    .page-header::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: var(--primary-color);
+      margin: 15px auto 0;
+      border-radius: 3px;
+    }
+    
+    /* Classes Grid */
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    /* Class Card */
+    .class-card {
+      background: var(--bg-light);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .class-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .class-card-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 15px;
+      position: relative;
+    }
+    
+    .class-card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .class-card-subject {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .class-card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: white;
+      color: var(--primary-color);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .class-card-body {
+      padding: 15px;
+    }
+    
+    .class-card-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .class-card-info i {
+      margin-right: 8px;
+      width: 20px;
+      text-align: center;
+      color: var(--primary-color);
+    }
+    
+    /* Expanded Class Content */
+    .class-expanded {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+      background: rgba(75, 171, 177, 0.05);
+      border-radius: 0 0 12px 12px;
+    }
+    
+    .class-card.active .class-expanded {
+      max-height: 500px;
+      padding: 15px;
+    }
+    
+    /* File Upload Section */
+    .file-upload-section {
+      margin-top: 15px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 15px;
+    }
+    
+    .file-upload-title {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .file-upload-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    .file-input-button {
+      background: var(--primary-color);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .file-input-button:hover {
+      background: #3a9ca1;
+    }
+    
+    .file-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-left: 10px;
+    }
+    
+    .upload-button {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      align-self: flex-start;
+    }
+    
+    .upload-button:hover {
+      background: #3e8e41;
+    }
+    
+    /* Uploaded Files List */
+    .uploaded-files {
+      margin-top: 15px;
+    }
+    
+    .uploaded-files-title {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .file-list {
+      list-style: none;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .file-item:last-child {
+      border-bottom: none;
+    }
+    
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .file-icon {
+      color: var(--primary-color);
+    }
+    
+    .file-name {
+      font-size: 0.85rem;
+    }
+    
+    .file-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .file-action {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .file-action:hover {
+      color: var(--primary-color);
+    }
+    
+    .file-action.delete:hover {
+      color: var(--danger-color);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .classes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .classes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .page-header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .class-card-title {
+        font-size: 1.1rem;
+      }
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .main {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .class-card {
+      animation: fadeIn 0.3s ease-out;
+      animation-fill-mode: both;
+    }
+    
+    .class-card:nth-child(1) { animation-delay: 0.1s; }
+    .class-card:nth-child(2) { animation-delay: 0.2s; }
+    .class-card:nth-child(3) { animation-delay: 0.3s; }
+    .class-card:nth-child(4) { animation-delay: 0.4s; }
+    .class-card:nth-child(5) { animation-delay: 0.5s; }
+    .class-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      color: var(--danger-color);
+      text-align: center;
+      padding: 20px;
+      background: rgba(244, 67, 54, 0.1);
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teacher Portal</span>
+      </div>
+    </div>
+
+    <div class="menu-items">
+      <a href="HomeTeacher.html" class="menu-item ">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </a>
+      <a href="ProfileTeacher.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i> <span>Profile</span>
+      </a>
+      <a href="AttendanceTeacher.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i> <span>Attendance</span>
+      </a>
+      <a href="ClassTeacher.html" class="menu-item active">
+        <i class="fas fa-graduation-cap"></i> <span>Classes</span>
+      </a>
+      <a href="ExamTeacher.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>Exam</span>
+      </a>
+       <a href="resultExam.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>result Exam</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- Main Content -->
+  <div class="main">
+    <div class="page-header">
+      <h1><i class="fas fa-chalkboard"></i> My Classes</h1>
+      <p>Manage and view all your assigned classes and student groups</p>
+    </div>
+    
+    <div id="loadingIndicator" class="spinner"></div>
+    <div id="errorContainer" class="error-message" style="display: none;"></div>
+    <div class="classes-grid" id="classesGrid">
+      <!-- Class cards will be injected here -->
+    </div>
+  </div>
+ <script>
+        // تبديل حالة الشريط الجانبي
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const main = document.querySelector('.main');
+
+            sidebar.classList.toggle('closed');
+
+            if (sidebar.classList.contains('closed')) {
+                main.style.marginLeft = '0';
+                main.style.maxWidth = '100%';
+            } else {
+                main.style.marginLeft = '300px';
+                main.style.maxWidth = 'calc(100% - 300px)';
+            }
+
+            localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+        }
+
+ function getTeacherId() {
+    // 1. التحقق من وجود المعلمة في URL
+    const urlParams = new URLSearchParams(window.location.search);
+    let teacherId = urlParams.get('teacherID') || urlParams.get('teacherId') || urlParams.get('id');
+    
+    // 2. إذا لم يوجد في URL، نبحث في localStorage
+    if (!teacherId) {
+        teacherId = localStorage.getItem('teacherID');
+    }
+    
+    // 3. إذا لم يوجد في localStorage، نبحث في بيانات الجلسة
+    if (!teacherId) {
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        teacherId = userData?.teacherId;
+    }
+    
+    // 4. إذا لم يوجد نهائياً، نطلب من المستخدم إدخاله
+    if (!teacherId) {
+        teacherId = prompt('الرجاء إدخال معرّف المعلم:', '');
+        if (teacherId) {
+            localStorage.setItem('teacherID', teacherId);
+        } else {
+            // إذا رفض المستخدم الإدخال، نستخدم معرّف افتراضي (للتجربة فقط)
+            teacherId = 'demo-teacher';
+            console.warn('Using demo teacher ID');
+        }
+    }
+    
+    return teacherId;
+}
+
+        // جلب بيانات المعلم من API
+        async function fetchTeacherDetails(teacherID) {
+            try {
+                const response = await fetch(`http://54.242.19.19:3000/api/teachers/${teacherID}`);
+                if (!response.ok) {
+                    throw new Error('فشل في جلب بيانات المعلم');
+                }
+                const data = await response.json();
+                return data.data[0]; // نفترض أن API يرجع مصفوفة ونريد العنصر الأول
+            } catch (error) {
+                console.error('Error fetching teacher details:', error);
+                throw error;
+            }
+        }
+
+        // جلب جميع الفصول من API
+        async function fetchAllClasses(teacherID) {
+            try {
+                const response = await fetch(`http://54.242.19.19:3000/api/class-teachers/by-teacher/${teacherID}`);
+                if (!response.ok) {
+                    throw new Error('فشل في جلب الفصول الدراسية');
+                }
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error('Error fetching classes:', error);
+                throw error;
+            }
+        }
+
+        // جلب فصول المعلم
+        async function getTeacherClasses(teacherID) {
+            try {
+                const classes = await fetchAllClasses(teacherID);
+                return classes;
+            } catch (error) {
+                console.error('Error getting teacher classes:', error);
+                throw error;
+            }
+        }
+        function redirectToLogin() {
+    window.location.href = 'login.html'; // تغيير هذا إلى مسار صفحة تسجيل الدخول الفعلي
+}
+
+  function promptForTeacherId() {
+    const teacherId = prompt('الرجاء إدخال معرّف المعلم:');
+    if (teacherId) {
+        localStorage.setItem('teacherID', teacherId);
+        window.location.search = `?teacherID=${teacherId}`;
+    } else {
+        alert('معرّف المعلم مطلوب لتحميل البيانات');
+    }
+  }
+
+        // عرض بيانات المعلم
+        function renderTeacherInfo(teacher) {
+            const teacherInfo = document.getElementById('teacherInfo');
+            if (!teacher) return;
+
+            teacherInfo.innerHTML = `
+                <div class="teacher-header">
+                    <img src="${teacher.image || 'default-teacher.png'}" alt="صورة المعلم">
+                    <h3>${teacher.name}</h3>
+                    <p>${teacher.subject || 'مادة غير محددة'}</p>
+                </div>
+                <div class="teacher-details">
+                    <p><i class="fas fa-envelope"></i> ${teacher.email || 'غير متاح'}</p>
+                    <p><i class="fas fa-phone"></i> ${teacher.phone || 'غير متاح'}</p>
+                </div>
+            `;
+        }
+
+        // تحميل فصول المعلم
+        async function loadTeacherClasses() {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorContainer = document.getElementById('errorContainer');
+    const classesGrid = document.getElementById('classesGrid');
+    
+    try {
+        loadingIndicator.style.display = 'block';
+        errorContainer.style.display = 'none';
+        classesGrid.innerHTML = '';
+        
+        const teacherID = getTeacherIdFromUrl();
+        
+        if (!teacherID) {
+            // إذا لم يتم العثور على ID، عرض خيارات للمستخدم
+            errorContainer.innerHTML = `
+                <div class="error-options">
+                    <h3>لم يتم تحديد معرّف المعلم</h3>
+                    <p>الرجاء اختيار أحد الخيارات التالية:</p>
+                    <div class="options">
+                        <button onclick="redirectToLogin()">العودة إلى صفحة تسجيل الدخول</button>
+                        <button onclick="promptForTeacherId()">إدخال معرّف المعلم يدويًا</button>
+                    </div>
+                </div>
+            `;
+            errorContainer.style.display = 'block';
+            return;
+        }
+        
+        // متابعة جلب البيانات إذا كان ID متاحًا
+        const [teacher, classes] = await Promise.all([
+            fetchTeacherDetails(teacherID),
+            getTeacherClasses(teacherID)
+        ]);
+        
+        renderTeacherInfo(teacher);
+        renderClasses(classes);
+        
+    } catch (error) {
+        console.error('Error loading classes:', error);
+        errorContainer.innerHTML = `
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>حدث خطأ!</h3>
+                <p>${error.message}</p>
+                <button onclick="location.reload()">إعادة المحاولة</button>
+            </div>
+        `;
+        errorContainer.style.display = 'block';
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+}
+        // عرض الفصول الدراسية
+        function renderClasses(classes) {
+            const grid = document.getElementById('classesGrid');
+            grid.innerHTML = '';
+            
+            if (!classes || classes.length === 0) {
+                grid.innerHTML = '<p class="no-classes">لا توجد فصول مسجلة بعد.</p>';
+                return;
+            }
+            
+            classes.forEach(cls => {
+                const card = document.createElement('div');
+                card.className = 'class-card';
+                card.dataset.classId = cls.id;
+                
+                card.innerHTML = `
+                    <div class="class-card-header">
+                        <div class="class-card-title">${cls.className}</div>
+                        <div class="class-card-badge">ID: ${cls.id}</div>
+                    </div>
+                    <div class="class-card-body">
+                        <div class="class-card-info">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>تم الإنشاء: ${new Date(cls.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="class-card-info">
+                            <i class="fas fa-history"></i>
+                            <span>آخر تحديث: ${new Date(cls.updatedAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    <div class="class-expanded">
+                        <div class="file-upload-section">
+                            <h4 class="file-upload-title"><i class="fas fa-upload"></i> رفع الملفات</h4>
+                            <form class="file-upload-form" onsubmit="uploadFile(event, '${cls.id}')">
+                                <div class="file-input-wrapper">
+                                    <button type="button" class="file-input-button">
+                                        <i class="fas fa-file"></i> اختر ملف
+                                    </button>
+                                    <input type="file" class="file-input" onchange="displayFileName(this)">
+                                </div>
+                                <span class="file-name">لم يتم اختيار ملف</span>
+                                <button type="submit" class="upload-button">
+                                    <i class="fas fa-cloud-upload-alt"></i> رفع
+                                </button>
+                            </form>
+                        </div>
+                        <div class="uploaded-files">
+                            <h4 class="uploaded-files-title"><i class="fas fa-folder-open"></i> ملفات الفصل</h4>
+                            <ul class="file-list" id="fileList-${cls.id}">
+                                <li>لا توجد ملفات مرفوعة بعد</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            setupClassCardInteractions();
+        }
+
+        // إعداد تفاعلات بطاقات الفصل
+        function setupClassCardInteractions() {
+            const classCards = document.querySelectorAll('.class-card');
+            
+            classCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.closest('.file-action') || 
+                        e.target.closest('.file-input') || 
+                        e.target.closest('.upload-button')) {
+                        return;
+                    }
+                    
+                    document.querySelectorAll('.class-card').forEach(c => {
+                        if (c !== this) c.classList.remove('active');
+                    });
+                    
+                    this.classList.toggle('active');
+                });
+            });
+        }
+
+        // عرض اسم الملف المختار
+        function displayFileName(input) {
+            const fileNameDisplay = input.closest('.file-upload-form').querySelector('.file-name');
+            if (input.files.length > 0) {
+                fileNameDisplay.textContent = input.files[0].name;
+            } else {
+                fileNameDisplay.textContent = 'لم يتم اختيار ملف';
+            }
+        }
+
+        // رفع الملف (وظيفة وهمية للتوضيح)
+        async function uploadFile(event, classId) {
+            event.preventDefault();
+            const form = event.target;
+            const fileInput = form.querySelector('.file-input');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('الرجاء اختيار ملف أولاً');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const fileName = file.name;
+            
+            try {
+                // في التطبيق الحقيقي، هنا يتم الاتصال بالخادم لرفع الملف
+                // const formData = new FormData();
+                // formData.append('file', file);
+                // formData.append('classId', classId);
+                
+                // const response = await fetch('http://54.242.19.19:3000/api/upload', {
+                //     method: 'POST',
+                //     body: formData
+                // });
+                
+                // if (!response.ok) {
+                //     throw new Error('فشل في رفع الملف');
+                // }
+                
+                // لمحاكاة الرفع الناجح
+                const newFile = {
+                    name: fileName,
+                    date: new Date().toLocaleDateString(),
+                    size: (file.size / 1024).toFixed(2) + ' KB'
+                };
+                
+                addFileToList(newFile, classId);
+                form.reset();
+                form.querySelector('.file-name').textContent = 'لم يتم اختيار ملف';
+                
+                alert('تم رفع الملف بنجاح!');
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert(`خطأ في رفع الملف: ${error.message}`);
+            }
+        }
+
+        // إضافة ملف إلى القائمة
+        function addFileToList(file, classId) {
+            const fileList = document.getElementById(`fileList-${classId}`);
+            
+            if (fileList.firstElementChild?.textContent === 'لا توجد ملفات مرفوعة بعد') {
+                fileList.innerHTML = '';
+            }
+            
+            const fileItem = document.createElement('li');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <i class="fas fa-file file-icon"></i>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-date">${file.date}</span>
+                    <span class="file-size">${file.size}</span>
+                </div>
+                <div class="file-actions">
+                    <button class="file-action download" onclick="downloadFile('${file.name}', '${classId}')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="file-action delete" onclick="deleteFile('${file.name}', '${classId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            fileList.appendChild(fileItem);
+        }
+
+        // تنزيل الملف (وظيفة وهمية)
+        function downloadFile(filename, classId) {
+            alert(`جاري تنزيل الملف: ${filename}`);
+            console.log(`Download initiated: ${filename} for class ${classId}`);
+        }
+
+        // حذف الملف
+        function deleteFile(filename, classId) {
+            if (confirm(`هل أنت متأكد من حذف الملف "${filename}"؟`)) {
+                // في التطبيق الحقيقي، هنا يتم الاتصال بالخادم لحذف الملف
+                // await fetch(`http://54.242.19.19:3000/api/files/${filename}?classId=${classId}`, {
+                //     method: 'DELETE'
+                // });
+                
+                const fileList = document.getElementById(`fileList-${classId}`);
+                const items = fileList.querySelectorAll('.file-item');
+                
+                items.forEach(item => {
+                    if (item.querySelector('.file-name').textContent === filename) {
+                        item.remove();
+                    }
+                });
+                
+                if (fileList.children.length === 0) {
+                    fileList.innerHTML = '<li>لا توجد ملفات مرفوعة بعد</li>';
+                }
+                
+                alert('تم حذف الملف بنجاح');
+            }
+        }
+
+        // عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            const savedState = localStorage.getItem('sidebarClosed');
+            const sidebar = document.querySelector('.sidebar');
+            const main = document.querySelector('.main');
+
+            if (savedState === 'true') {
+                sidebar.classList.add('closed');
+                main.style.marginLeft = '0';
+                main.style.maxWidth = '100%';
+            } else {
+                main.style.marginLeft = '300px';
+                main.style.maxWidth = 'calc(100% - 300px)';
+            }
+            
+            await loadTeacherClasses();
+        });
+
+         // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+    </script>
+</body>
+</html>

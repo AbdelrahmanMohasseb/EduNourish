@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exam Schedule</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #008f99;
+      --primary-light: #f2f2f2;
+      --text-dark: #1a1a1a;
+      --text-light: #f2f2f2;
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      transition: all 0.4s ease;
+    }
+    
+    /* 🔥 Sidebar Styles - متطابق مع الصفحة الرئيسية */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(20, 18, 18, 0.1);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--primary);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary);
+      background: rgba(0, 143, 153, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary);
+      font-weight: 500;
+      background: rgba(0, 143, 153, 0.1);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع الصفحة الرئيسية */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary);
+      transition: transform 0.3s ease;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+   
+    /* Main Content */
+    .main-content {
+      width: calc(100% - var(--sidebar-width) - (var(--sidebar-margin) * 2));
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin));
+      padding: 40px;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sidebar.closed ~ .main-content {
+      width: calc(100% - (var(--sidebar-margin) * 2));
+      margin-left: var(--sidebar-margin);
+    }
+
+    /* Content Styling */
+    .page-header {
+      width: 100%;
+      max-width: 1000px;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .page-description {
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .exam-container {
+      width: 100%;
+      max-width: 1000px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      overflow: hidden;
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    th, td {
+      padding: 18px 15px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+      transition: var(--transition);
+    }
+
+    th {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background-color: var(--primary-light);
+    }
+
+    tr:hover td {
+      transform: scale(1.01);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+
+    tr:nth-child(even):hover {
+      background-color: var(--primary-light);
+    }
+
+    .exam-subject {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .exam-day {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .exam-day::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary);
+    }
+
+    .exam-date {
+      font-weight: 500;
+    }
+
+    .exam-time {
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .no-exams {
+      padding: 40px;
+      text-align: center;
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-upcoming {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .status-completed {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .status-ongoing {
+      background-color: #fff8e1;
+      color: #ffa000;
+    }
+
+    /* Filter Controls */
+    .filter-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .filter-btn:hover {
+      background: #f5f5f5;
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .main-content {
+        padding: 35px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      th, td {
+        padding: 15px 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-width: 240px;
+        --sidebar-margin: 10px;
+      }
+      
+      .main-content {
+        padding: 25px 15px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      th, td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+      }
+
+      .exam-day::before {
+        display: none;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .sidebar {
+        width: 100%;
+        max-width: 280px;
+        height: 100vh;
+        top: 0;
+        border-radius: 0;
+      }
+      
+      .sidebar:not(.closed) ~ .main-content {
+        transform: translateX(280px);
+      }
+      
+      h1 {
+        font-size: 1.6rem;
+      }
+      
+      th, td {
+        padding: 10px 6px;
+        font-size: 0.8rem;
+      }
+
+      .filter-controls {
+        gap: 8px;
+      }
+
+      .filter-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-content {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    tr {
+      animation: fadeIn 0.3s ease-out;
+      animation-fill-mode: both;
+    }
+
+    tr:nth-child(1) { animation-delay: 0.1s; }
+    tr:nth-child(2) { animation-delay: 0.2s; }
+    tr:nth-child(3) { animation-delay: 0.3s; }
+    tr:nth-child(4) { animation-delay: 0.4s; }
+    tr:nth-child(5) { animation-delay: 0.5s; }
+    tr:nth-child(6) { animation-delay: 0.6s; }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+
+   <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomePerent.html" class="menu-item ">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+        
+      <a href="MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student</span>
+      </a>
+      <a href="MyChildCourses.html" class="menu-item">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span>Student Courses</span>
+      </a>
+      <a href="MyChildExam.html" class="menu-item active">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="MyChildResturant.html" class="menu-item">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Restaurant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>Recommended Food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+ 
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Final Exam Schedule</h1>
+      <p class="page-description">View your child's upcoming exams and their schedule</p>
+    </div>
+
+    <div class="filter-controls">
+      <button class="filter-btn active" data-filter="all">All Exams</button>
+      <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+    </div>
+
+    <div class="exam-container">
+      <table id="examTable">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Day</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be inserted here dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Toggle sidebar function
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('closed');
+      
+      // Save state to localStorage
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Check saved state on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+      }
+      
+      // Set active menu item based on current page
+      const currentPage = window.location.pathname.split('/').pop();
+      const menuItems = document.querySelectorAll('.menu-item');
+      
+      menuItems.forEach(item => {
+        item.classList.remove('active');
+        const itemPage = item.getAttribute('href');
+        if (itemPage === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Sample exam data with status
+      const examData = [
+        { 
+          subject: "Mathematics", 
+          day: "Monday", 
+          date: "2023-06-12", 
+          time: "09:00 - 11:00",
+          status: "completed"
+        },
+        { 
+          subject: "Science", 
+          day: "Tuesday", 
+          date: "2023-06-13", 
+          time: "10:00 - 12:00",
+          status: "completed"
+        },
+        { 
+          subject: "English", 
+          day: "Wednesday", 
+          date: "2023-06-14", 
+          time: "09:00 - 11:00",
+          status: "upcoming"
+        },
+        { 
+          subject: "History", 
+          day: "Thursday", 
+          date: "2023-06-15", 
+          time: "10:00 - 12:00",
+          status: "upcoming"
+        },
+        { 
+          subject: "Arabic", 
+          day: "Sunday", 
+          date: "2023-06-18", 
+          time: "09:00 - 11:00",
+          status: "upcoming"
+        }
+      ];
+
+      // Function to render exams
+      function renderExams(filter = 'all') {
+        const tbody = document.querySelector("#examTable tbody");
+        tbody.innerHTML = '';
+        
+        const filteredExams = filter === 'all' 
+          ? examData 
+          : examData.filter(exam => exam.status === filter);
+        
+        if (filteredExams.length === 0) {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = 5;
+          cell.className = "no-exams";
+          cell.textContent = "No exams found matching your criteria";
+          row.appendChild(cell);
+          tbody.appendChild(row);
+          return;
+        }
+        
+        filteredExams.forEach(exam => {
+          const row = document.createElement("tr");
+          
+          // Determine status badge
+          let statusBadge;
+          if (exam.status === 'completed') {
+            statusBadge = `<span class="status-badge status-completed">Completed</span>`;
+          } else if (exam.status === 'upcoming') {
+            statusBadge = `<span class="status-badge status-upcoming">Upcoming</span>`;
+          } else {
+            statusBadge = `<span class="status-badge status-ongoing">Ongoing</span>`;
+          }
+          
+          row.innerHTML = `
+            <td class="exam-subject">${exam.subject}</td>
+            <td class="exam-day">${exam.day}</td>
+            <td class="exam-date">${formatDate(exam.date)}</td>
+            <td class="exam-time">${exam.time}</td>
+            <td>${statusBadge}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Format date to be more readable
+      function formatDate(dateString) {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+      }
+
+      // Initial render
+      renderExams();
+
+      // Filter functionality
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          renderExams(this.dataset.filter);
+        });
+      });
+
+      // Simulate loading data from API
+      setTimeout(() => {
+        // This would be replaced with actual API call
+        console.log("Loading exam data...");
+      }, 500);
+    });
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Courses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #008f99;
+      --primary-light: #f2f2f2;
+      --text-dark: #1a1a1a;
+      --text-light: #f2f2f2;
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      transition: all 0.4s ease;
+    }
+    
+    /* 🔥 Sidebar Styles - متطابق مع الصفحة الرئيسية */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(20, 18, 18, 0.1);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--primary);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary);
+      background: rgba(0, 143, 153, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary);
+      font-weight: 500;
+      background: rgba(0, 143, 153, 0.1);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع الصفحة الرئيسية */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary);
+      transition: transform 0.3s ease;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content Area - تم التعديل ليتناسب مع المحتوى الجديد */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      margin-left: 320px;
+      width: calc(100% - 320px);
+      transition: all 0.4s ease;
+      padding-top: 80px;
+    }
+
+    .sidebar.closed ~ .main-content {
+      margin-left: 0;
+      width: 100%;
+      padding-top: 80px;
+    }
+
+    header {
+      position: relative;
+      z-index: 900; 
+      background-color: var(--primary);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      border-radius: 0 0 15px 15px;
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+    }
+    
+    /* Course Slider Styles */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      height: 350px;
+      border-radius: 20px;
+      margin: 30px 0;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+    
+    .slide {
+      min-width: 100%;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    
+    .slide:hover img {
+      transform: scale(1.03);
+    }
+    
+    .slide p {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.7);
+      color: var(--text-light);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    
+    .control-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 22px;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .prev-btn { left: 15px; }
+    .next-btn { right: 15px; }
+    
+    /* Schedule Table Styles */
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .schedule-table th, 
+    .schedule-table td {
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .schedule-table th {
+      background-color: var(--primary);
+      color: var(--text-light);
+      font-weight: 700;
+    }
+    
+    .schedule-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .schedule-table tr:hover {
+      background-color: #f0f4ff;
+    }
+    
+    /* Map Container */
+    .map-container {
+      height: 350px;
+      width: 100%;
+      margin: 30px 0;
+      border-radius: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .container {
+        padding: 0 20px;
+      }
+      
+      .slider-container {
+        height: 300px;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .main-content {
+        padding: 30px;
+      }
+      
+      header {
+        font-size: 24px;
+        padding: 20px;
+      }
+      
+      .slider-container {
+        height: 250px;
+      }
+      
+      .map-container {
+        height: 300px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 25px 15px;
+      }
+      
+      .sidebar:not(.closed) ~ .main-content {
+        margin-left: 320px;
+        width: calc(100% - 320px);
+      }
+      
+      .slider-container {
+        height: 200px;
+      }
+      
+      .slide p {
+        font-size: 1rem;
+        padding: 8px 12px;
+      }
+      
+      .schedule-table th, 
+      .schedule-table td {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .map-container {
+        height: 250px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      header {
+        font-size: 22px;
+        padding: 15px;
+      }
+      
+      .slider-container {
+        height: 180px;
+      }
+      
+      .map-container {
+        height: 200px;
+      }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+   <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomePerent.html" class="menu-item ">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+        
+      <a href="MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student</span>
+      </a>
+      <a href="MyChildCourses.html" class="menu-item active">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span>Student Courses</span>
+      </a>
+      <a href="MyChildExam.html" class="menu-item">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="MyChildResturant.html" class="menu-item">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Restaurant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>Recommended Food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+ 
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <header>
+      Student Courses - <span id="studentName">Ali Ahmed</span>
+    </header>
+
+    <div class="container">
+      <!-- Course Slider -->
+      <div class="slider-container">
+        <div class="slider" id="slider">
+          <div class="slide" onclick="goToPage('math.html')">
+            <img src="https://via.placeholder.com/800x400?text=Mathematics" alt="Mathematics">
+            <p>Mathematics Course - Grade 5</p>
+          </div>
+          <div class="slide" onclick="goToPage('science.html')">
+            <img src="https://via.placeholder.com/800x400?text=Science" alt="Science">
+            <p>Science Laboratory - Grade 5</p>
+          </div>
+          <div class="slide" onclick="goToPage('arabic.html')">
+            <img src="https://via.placeholder.com/800x400?text=Arabic" alt="Arabic">
+            <p>Arabic Language - Grade 5</p>
+          </div>
+        </div>
+        <button class="control-btn prev-btn" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="control-btn next-btn" onclick="moveSlide(1)">&#10095;</button>
+      </div>
+
+      <!-- Schedule Table -->
+      <table class="schedule-table">
+        <tr>
+          <th>Day</th>
+          <th>8:00 - 9:00</th>
+          <th>9:00 - 10:00</th>
+          <th>10:00 - 11:00</th>
+          <th>11:00 - 12:00</th>
+          <th>12:00 - 1:00</th>
+        </tr>
+        <tr><td>Saturday</td><td>Math</td><td>Science</td><td>English</td><td>History</td><td>PE</td></tr>
+        <tr><td>Sunday</td><td>English</td><td>Math</td><td>Biology</td><td>Art</td><td>PE</td></tr>
+        <tr><td>Monday</td><td>Science</td><td>Arabic</td><td>English</td><td>Math</td><td>Computer</td></tr>
+        <tr><td>Tuesday</td><td>Math</td><td>English</td><td>Art</td><td>Science</td><td>History</td></tr>
+        <tr><td>Wednesday</td><td>PE</td><td>Arabic</td><td>Math</td><td>Science</td><td>English</td></tr>
+        <tr><td>Thursday</td><td>Computer</td><td>Math</td><td>English</td><td>Biology</td><td>Free Period</td></tr>
+      </table>
+
+      <!-- Bus Map -->
+      <div class="map-container" id="map"></div>
+    </div>
+  </div>
+
+  <script>
+    // Slide functionality
+    let slideIndex = 0;
+    let autoSlider;
+
+    function startSlider() {
+      autoSlider = setInterval(autoSlide, 4000);
+    }
+
+    function autoSlide() {
+      const slides = document.querySelectorAll('.slide');
+      slideIndex = (slideIndex + 1) % slides.length;
+      document.getElementById('slider').style.transform = `translateX(-${slideIndex * 100}%)`;
+    }
+
+    function moveSlide(step) {
+      clearInterval(autoSlider);
+      const slides = document.querySelectorAll('.slide');
+      slideIndex = (slideIndex + step + slides.length) % slides.length;
+      document.getElementById('slider').style.transform = `translateX(-${slideIndex * 100}%)`;
+      startSlider();
+    }
+
+    // Sidebar functionality - نفس صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('closed');
+      
+      // Save state to localStorage
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Check saved state on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+      }
+      
+      // Set active menu item based on current page
+      const currentPage = window.location.pathname.split('/').pop();
+      const menuItems = document.querySelectorAll('.menu-item');
+      
+      menuItems.forEach(item => {
+        item.classList.remove('active');
+        const itemPage = item.getAttribute('href');
+        if (itemPage === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Initialize slider
+      startSlider();
+      
+      // Initialize map
+      initMap();
+    });
+
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    function initMap() {
+      // هذه وظيفة افتراضية - تحتاج إلى استبدالها بتنفيذ خرائط جوجل الفعلي
+      const mapElement = document.getElementById('map');
+      mapElement.innerHTML = '<div style="padding:20px;text-align:center;color:var(--primary)"><i class="fas fa-map-marker-alt" style="font-size:48px;margin-bottom:15px;"></i><p>School Bus Location Map</p><p class="small">(Google Maps integration would appear here with valid API key)</p></div>';
+      
+      // في التنفيذ الفعلي:
+      // const school = { lat: 24.7136, lng: 46.6753 };
+      // const map = new google.maps.Map(document.getElementById("map"), {...});
+      // new google.maps.Marker({ position: school, map: map });
+    }
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+
+  <!-- في التنفيذ الفعلي:
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+  </script> -->
+</body>
+</html>

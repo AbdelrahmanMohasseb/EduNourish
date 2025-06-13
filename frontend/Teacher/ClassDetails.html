@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1; /* اللون الأساسي */
+      --bg-light: #FFFFFF;     /* خلفيات العناصر */
+      --bg-gray: #F5F7FA;      /* خلفية الصفحة */
+      --text-primary: #2D3748; /* النصوص الأساسية */
+      --text-secondary: #718096; /* النصوص الثانوية */
+      --text-light: #A0AEC0;   /* نصوص خفيفة */
+      --border-color: #E2E8F0; /* حدود */
+      --shadow-color: rgba(0, 0, 0, 0.1); /* ظلال */
+      --success-color: #4CAF50; /* لون النجاح */
+      --danger-color: #f44336;  /* لون الخطر */
+      --warning-color: #FFC107; /* لون التحذير */
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-gray);
+      transition: all 0.4s ease;
+    }
+    
+    /* 🔥 Sidebar Styles - معدلة لتتناسب مع الهوم */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - معدل ليتناسب مع الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content - معدل ليتناسب مع الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+    
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Card Styles - مع أنيميشن قوي */
+    .card {
+      background: var(--bg-light);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.3s; }
+    .card:nth-child(3) { animation-delay: 0.5s; }
+    
+    .card:hover {
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 15px 35px rgba(75, 171, 177, 0.2);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s ease;
+    }
+    
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    /* Class Info Section */
+    .class-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+      .class-info {
+        flex-direction: row;
+        text-align: left;
+      }
+    }
+    
+    .class-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      box-shadow: 0 5px 15px rgba(75, 171, 177, 0.3);
+      transition: all 0.4s ease;
+    }
+    
+    .class-image:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(75, 171, 177, 0.4);
+    }
+    
+    .class-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .class-description {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px var(--shadow-color);
+      margin-top: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-light);
+    }
+    
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+    }
+    
+    td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+    
+    tr:hover td {
+      background-color: rgba(75, 171, 177, 0.05);
+      color: var(--text-primary);
+    }
+    
+    .present {
+      color: var(--success-color);
+      font-weight: 500;
+    }
+    
+    .absent {
+      color: var(--danger-color);
+      font-weight: 500;
+    }
+    
+    .late {
+      color: var(--warning-color);
+      font-weight: 500;
+    }
+    
+    /* File Input Style */
+    .file-input {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 200px;
+    }
+    
+    .file-input:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .file-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(75, 171, 177, 0.3);
+    }
+    
+    /* Responsive Design - معدل ليتناسب مع الهوم */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+      
+      .main {
+        padding: 25px 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+      
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+      
+      .card {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .card {
+        padding: 15px;
+      }
+      
+      th, td {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teacher Portal</span>
+      </div>
+    </div>
+
+    <div class="menu-items">
+      <a href="HomeTeacher.html" class="menu-item ">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </a>
+      <a href="ProfileTeacher.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i> <span>Profile</span>
+      </a>
+      <a href="AttendanceTeacher.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i> <span>Attendance</span>
+      </a>
+      <a href="ClassTeacher.html" class="menu-item active">
+        <i class="fas fa-graduation-cap"></i> <span>Classes</span>
+      </a>
+      <a href="ExamTeacher.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>Exam</span>
+      </a>
+       <a href="resultExam.html" class="menu-item">
+        <i class="fas fa-users"></i> <span>result Exam</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- Main Content - معدل ليتناسب مع الهوم -->
+  <div class="main">
+    <!-- Class Info Card -->
+    <div class="card">
+      <div class="class-info">
+        <img id="classImage" src="https://via.placeholder.com/120" alt="Class Image" class="class-image">
+        <div>
+          <h1 id="className" class="class-title">Physics - Grade 10</h1>
+          <p id="classDescription" class="class-description">Advanced Physics Course for 10th Grade</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Table Card -->
+    <div class="card">
+      <h2 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">Students</h2>
+      <div class="table-container">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Attendance Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Students will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Upload Materials Card -->
+    <div class="card">
+      <h2 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">Upload Materials</h2>
+      <div class="table-container">
+        <table id="materialsTable">
+          <thead>
+            <tr>
+              <th>Session Date</th>
+              <th>Session Name</th>
+              <th>Upload Material</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Materials sessions will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle sidebar function - معدل ليتناسب مع الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Initialize Page - معدل ليتناسب مع الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // Set active menu item
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Handle responsive design
+      window.addEventListener('resize', handleResponsiveDesign);
+      handleResponsiveDesign();
+      
+      // Load sample data
+      loadClassData();
+      
+      // Add intersection observer for cards
+      const cards = document.querySelectorAll('.card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      cards.forEach(card => {
+        observer.observe(card);
+      });
+    });
+
+    // Responsive Design Handler - معدل ليتناسب مع الهوم
+    function handleResponsiveDesign() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if(window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if(savedState === 'false') {
+          sidebar.classList.remove('closed');
+          main.style.marginLeft = '300px';
+          main.style.maxWidth = 'calc(100% - 300px)';
+        }
+      }
+    }
+
+    // Load class data
+    function loadClassData() {
+      // Sample data - replace with actual API call
+      const classData = {
+        classInfo: {
+          name: "Physics - Grade 10",
+          description: "Advanced Physics Course for 10th Grade",
+          image: "https://via.placeholder.com/120"
+        },
+        students: [
+          { id: 1, name: "Ali Ahmed", status: "Present" },
+          { id: 2, name: "Sara Mohamed", status: "Absent" },
+          { id: 3, name: "Youssef Hassan", status: "Present" },
+          { id: 4, name: "Laila Mahmoud", status: "Present" },
+          { id: 5, name: "Omar Khalid", status: "Late" }
+        ],
+        sessions: [
+          { date: "2025-04-20", name: "Electric Circuits" },
+          { date: "2025-04-21", name: "Magnetism Basics" },
+          { date: "2025-04-22", name: "Electromagnetic Waves" }
+        ]
+      };
+
+      // Fill class info
+      document.getElementById('className').textContent = classData.classInfo.name;
+      document.getElementById('classDescription').textContent = classData.classInfo.description;
+      document.getElementById('classImage').src = classData.classInfo.image;
+
+      // Fill students table
+      const studentsTable = document.querySelector('#studentsTable tbody');
+      studentsTable.innerHTML = '';
+      classData.students.forEach(student => {
+        const row = document.createElement('tr');
+        const statusClass = student.status === 'Present' ? 'present' : 
+                          student.status === 'Absent' ? 'absent' : 'late';
+        
+        row.innerHTML = `
+          <td>${student.id}</td>
+          <td>${student.name}</td>
+          <td class="${statusClass}">${student.status}</td>
+        `;
+        studentsTable.appendChild(row);
+      });
+
+      // Fill materials table
+      const materialsTable = document.querySelector('#materialsTable tbody');
+      materialsTable.innerHTML = '';
+      classData.sessions.forEach(session => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${session.date}</td>
+          <td>${session.name}</td>
+          <td>
+            <input type="file" class="file-input">
+          </td>
+        `;
+        materialsTable.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>

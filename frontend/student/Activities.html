@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activities</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-light: #ffffff;
+      --bg-gray: #f5f7fa;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-gray);
+      margin: 0;
+      transition: all 0.4s ease;
+    }
+
+    /* 🔥 Sidebar Styles - متطابقة مع صفحة الهوم */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(calc(-1 * var(--sidebar-width) - var(--sidebar-margin)));
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 20px);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar.closed ~ .toggle-btn {
+      left: 28px;
+    }
+    
+    .sidebar.closed ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content - معدل ليتناسب مع صفحة الهوم */
+    .main {
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin) * 2);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Activity Styles */
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--text-primary);
+      font-size: 28px;
+    }
+    
+    .swiper {
+      width: 100%;
+      padding: 20px 0;
+    }
+    
+    .swiper-slide {
+      background: var(--bg-light);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .swiper-slide:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+    
+    .activity-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .activity-card:hover img {
+      transform: scale(1.03);
+    }
+    
+    .activity-card .info {
+      padding: 20px;
+    }
+    
+    .activity-card .info h4 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    
+    .activity-card .info p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    /* Responsive Design - معدل ليتناسب مع صفحة الهوم */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      
+      .activity-card img {
+        height: 180px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .swiper-slide {
+        max-width: 100%;
+      }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- 🔥 Sidebar HTML - نفس صفحة الهوم -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Student Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="profile.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Profile</span>
+      </a>
+      <a href="AttendanceStudent.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="GradesStudent.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="Courses.html" class="menu-item">
+        <i class="fas fa-users"></i>
+        <span>Courses</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fas fa-envelope"></i>
+        <span>Teacher</span>
+      </a>
+      <a href="Exam.html" class="menu-item">
+        <i class="fas fa-cog"></i>
+        <span>Exam</span>
+      </a>
+      <a href="Activities.html" class="menu-item active">
+        <i class="fas fa-running"></i>
+        <span>Activities</span>
+      </a>
+      <a href="Resturant.html" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        <span>Restaurant</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="main">
+    <h2>Available Activities</h2>
+
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper" id="activitySlider">
+        <!-- Slides will be injected here -->
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    // Toggle sidebar function - نفس صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Initialize Page - نفس صفحة الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+      
+      // Set active menu item based on current page
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Handle responsive design
+      window.addEventListener('resize', handleResponsiveDesign);
+      handleResponsiveDesign();
+
+      // Initialize with sample data (replace with your API call)
+      const activities = [
+        {
+          id: 1,
+          title: "Math Quiz",
+          description: "Basic arithmetic operations quiz for beginners",
+          image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        },
+        {
+          id: 2,
+          title: "Science Experiment",
+          description: "Hands-on chemistry lab activity",
+          image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        },
+        {
+          id: 3,
+          title: "History Presentation",
+          description: "Group project on ancient civilizations",
+          image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        },
+        {
+          id: 4,
+          title: "Creative Writing",
+          description: "Short story writing workshop",
+          image: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        },
+        {
+          id: 5,
+          title: "Art Competition",
+          description: "Annual school art competition",
+          image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        },
+        {
+          id: 6,
+          title: "Sports Day",
+          description: "Annual inter-class sports competition",
+          image: "https://images.unsplash.com/photo-1547347298-4074fc3086f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+        }
+      ];
+
+      const slider = document.getElementById("activitySlider");
+      activities.forEach(activity => {
+        const slide = document.createElement("div");
+        slide.className = "swiper-slide";
+        slide.innerHTML = `
+          <div class="activity-card" onclick="goToActivity('${activity.id}')">
+            <img src="${activity.image}" alt="${activity.title}">
+            <div class="info">
+              <h4>${activity.title}</h4>
+              <p>${activity.description}</p>
+            </div>
+          </div>
+        `;
+        slider.appendChild(slide);
+      });
+
+      // Initialize Swiper
+      new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        breakpoints: {
+          0: { slidesPerView: 1, spaceBetween: 15 },
+          640: { slidesPerView: 2, spaceBetween: 15 },
+          992: { slidesPerView: 3, spaceBetween: 20 },
+          1200: { slidesPerView: 4, spaceBetween: 20 }
+        }
+      });
+    });
+
+    // Responsive Design Handler - نفس صفحة الهوم
+    function handleResponsiveDesign() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if(window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if(savedState === 'false') {
+          sidebar.classList.remove('closed');
+          main.style.marginLeft = '300px';
+          main.style.maxWidth = 'calc(100% - 300px)';
+        }
+      }
+    }
+
+    function goToActivity(id) {
+      window.location.href = `activity-details.html?id=${id}`;
+    }
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

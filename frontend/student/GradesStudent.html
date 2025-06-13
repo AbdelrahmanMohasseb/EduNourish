@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Grades</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* 🔥 Sidebar Styles - متطابق مع صفحة الهوم */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content - معدل ليتناسب مع صفحة الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+    
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--text-primary);
+      font-size: 28px;
+    }
+
+    /* بطاقات الدرجات */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .grade-card {
+      background: var(--bg-light);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      width: 220px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .grade-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px var(--shadow-color);
+    }
+
+    .grade-card h2 {
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .grade-card p {
+      font-size: 28px;
+      color: var(--primary-color);
+      margin: 10px 0;
+      font-weight: 600;
+    }
+
+    /* Modal - نافذة التفاصيل */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--bg-light);
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 5px 15px var(--shadow-color);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    .modal-content p {
+      margin: 15px 0;
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    .close-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* رسالة الخطأ */
+    .error-message {
+      text-align: center;
+      color: #e74c3c;
+      margin-top: 30px;
+      font-size: 16px;
+    }
+
+    /* التكيف مع الشاشات */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .grade-card {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .grade-card {
+        width: 100%;
+        max-width: 250px;
+      }
+      
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 24px;
+      }
+      
+      .grade-card h2 {
+        font-size: 16px;
+      }
+      
+      .grade-card p {
+        font-size: 24px;
+      }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- السايدبار - معدل ليناسب الطالب -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-user-graduate"></i>
+        <span>Student Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="profile.html" class="menu-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+      <a href="AttendanceStudent.html" class="menu-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="GradesStudent.html" class="menu-item active">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="Courses.html" class="menu-item">
+        <i class="fas fa-book"></i>
+        <span>Courses</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teachers</span>
+      </a>
+      <a href="Exam.html" class="menu-item">
+        <i class="fas fa-file-alt"></i>
+        <span>Exams</span>
+      </a>
+      <a href="Activities.html" class="menu-item">
+        <i class="fas fa-running"></i>
+        <span>Activities</span>
+      </a>
+      <a href="Resturant.html" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        <span>Cafeteria</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+ <!-- Main content -->
+<div class="main">
+  <h1>📊 Student Grades</h1>
+
+  <div class="cards-container" id="gradesContainer">
+    <p>Loading grades...</p>
+  </div>
+
+  <!-- Grade details modal -->
+  <div class="modal" id="gradeModal">
+    <div class="modal-content">
+      <h2>Grade Details</h2>
+      <p id="mark"></p>
+      <p id="grade"></p>
+      <p id="examId"></p>
+      <p id="createdAt"></p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+  <script>
+    // دالة تبديل السايدبار - متطابقة مع صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    // تهيئة الصفحة - متوافقة مع صفحة الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // تعيين العنصر النشط في القائمة
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // تحميل الدرجات
+      fetchStudentData();
+    });
+   const token = localStorage.getItem('token');
+  const gradesContainer = document.getElementById('gradesContainer');
+  const modal = document.getElementById('gradeModal');
+  const markEl = document.getElementById('mark');
+  const gradeEl = document.getElementById('grade');
+  const examIdEl = document.getElementById('examId');
+  const createdAtEl = document.getElementById('createdAt');
+
+  async function fetchStudentData() {
+    try {
+      const response = await fetch('http://54.242.19.19:3000/api/students/:id', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('فشل في جلب بيانات الطالب');
+
+      const student = await response.json();
+      const grades = student.Grads;
+      if (!Array.isArray(grades) || grades.length === 0) {
+        gradesContainer.innerHTML = "<p>No grades available.</p>";
+        return;
+      }
+
+      gradesContainer.innerHTML = '';
+
+      grades.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'grade-card';
+        card.style = `
+          padding: 16px;
+          background: #f5f5f5;
+          border-radius: 10px;
+          margin: 10px;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        `;
+        card.innerHTML = `
+          <h3>Exam ${item.examId || (index + 1)}</h3>
+          <p>Score: ${parseFloat(item.obtainedMarks).toFixed(2)}</p>
+        `;
+        card.onclick = () => openModal(item);
+        gradesContainer.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      gradesContainer.innerHTML = `
+        <p>An error occurred while loading grades. Please try again later.</p>
+      `;
+    }
+  }
+ function openModal(data) {
+    markEl.textContent = `Score: ${parseFloat(data.obtainedMarks).toFixed(2)} / 100`;
+    gradeEl.textContent = `Grade: ${data.grade || 'Not Available'}`;
+    examIdEl.textContent = `Exam ID: ${data.examId || 'Unknown'}`;
+    createdAtEl.textContent = `Created At: Not Available`;
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  window.onclick = function (e) {
+    if (e.target == modal) closeModal();
+  }
+
+   // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

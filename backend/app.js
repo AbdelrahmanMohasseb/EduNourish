@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const path = require('path');
 const socketManager = require("./src/services/socketManager.js");
 
 
@@ -50,10 +51,15 @@ app.post(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://mario5542395.github.io/finally/"); 
-  next();
-});
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// // Fallback route for SPA (if needed)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/index.html'));
+// });
+
 
 app.use(cors());
 

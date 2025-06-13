@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner | Share Your Recommendations</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+     <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="/Parent/HomePerent.html" class="menu-item ">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/Parent/ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="/Parent/Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+        
+      <a href="/Parent/MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="/Parent/MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="/Parent/MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="/Parent/ProfileTeacher.html" class="menu-item">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student </span>
+      </a>
+      <a href="/Parent/MyChildCourses.html" class="menu-item">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span> Student Courses</span>
+      </a>
+      <a href="/Parent/MyChildExam.html" class="menu-item">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="/Parent/MyChildResturant.html" class="menu-item">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Resturant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item active">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>recommanded food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+ 
+    <div class="app-container">
+        <div class="meal-card">
+            <div class="card-header">
+                <div class="header-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h1>Share Your food </h1>
+                <p class="subtitle">Enter your recommended food</p>
+            </div>
+            
+            <form id="meal-form" class="meal-form">
+                <div class="form-group">
+                    <label for="meal-input">Your Recommendations:</label>
+                    <textarea 
+                        id="meal-input" 
+                        rows="5" 
+                        placeholder=""
+                        required></textarea>
+                    <div class="character-count"><span id="char-count">0</span>/500</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Meal Plan
+                    </button>
+                </div>
+            </form>
+            
+            <div id="result" class="result-container">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Role Organization</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+   :root {
+      --primary: #4BABB1;
+      --primary-light: #E6F7F9;
+      --primary-dark: #3A8A90;
+      --secondary: #6C757D;
+      --success: #28A745;
+      --warning: #FFC107;
+      --danger: #DC3545;
+      --bg-light: #FFFFFF;
+      --bg-gray: #F8F9FA;
+      --text-primary: #212529;
+      --text-secondary: #6C757D;
+      --border-color: #E9ECEF;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to right, #f2f2f2, #f2f2f2);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      transition: padding-left 0.4s ease;
+    }
+
+    /* 🔥 Sidebar Styles */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .project-name i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .menu-item:hover {
+      color: var(--primary);
+      background: rgba(59, 130, 246, 0.08);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      color: var(--primary);
+      font-weight: 500;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle-btn i {
+      color: var(--primary);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .main-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: margin-left 0.4s ease;
+      margin-left: 300px;
+    }
+
+    .content-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      color: #333;
+      font-size: 32px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .center-button {
+      display: flex;
+      justify-content: center;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background-color: var(--primary);
+      color: white;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      width: 100%;
+      cursor: pointer;
+      min-height: 80px;
+    }
+
+    button:hover {
+      background-color: #197c97;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main-container {
+        margin-left: 0 !important;
+        padding: 15px;
+      }
+
+      .content-box {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 15px;
+        min-height: auto;
+      }
+
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content-box {
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Organize Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeOrganization.html" class="menu-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileOrganization.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Profile</span>
+      </a>
+      <a href="datasearchOrganization.html" class="menu-item">
+        <i class="fas fa-users"></i>
+        <span>Data Search</span>
+      </a>
+      <a href="NewsOrganization.html" class="menu-item">
+        <i class="fas fa-envelope"></i>
+        <span>News</span>
+      </a>
+      <a href="SelectOrganization.html" class="menu-item">
+        <i class="fas fa-cog"></i>
+        <span>Creation</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="content-box">
+      <h1>✨ Select Your Role ✨</h1>
+      
+      <div class="grid">
+        <button onclick="goToPage('SignUpOrganizationStudent.html')">🎓 Student</button>
+        <button onclick="goToPage('SignUpOrganizationParent.html')">👨‍👩‍👧 Parent</button>
+      </div>
+      
+      <div class="center-button">
+        <button onclick="goToPage('SignUpOrganizationTeacher.html')">📚 Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle sidebar function
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const mainContainer = document.querySelector('.main-container');
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        mainContainer.style.marginLeft = '0';
+      } else {
+        mainContainer.style.marginLeft = '300px';
+      }
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.querySelector('.sidebar');
+      const mainContainer = document.querySelector('.main-container');
+      const savedState = localStorage.getItem('sidebarClosed');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        mainContainer.style.marginLeft = '0';
+      }
+
+      // Set active menu item
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    function goToPage(page) {
+      window.location.href = page;
+    }
+
+    // Handle responsive design
+    window.addEventListener('resize', function() {
+      const sidebar = document.querySelector('.sidebar');
+      const mainContainer = document.querySelector('.main-container');
+      if(window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        mainContainer.style.marginLeft = '0';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if(savedState === 'false') {
+          sidebar.classList.remove('closed');
+          mainContainer.style.marginLeft = '300px';
+        }
+      }
+    });
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

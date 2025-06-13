@@ -1,0 +1,38 @@
+:root {
+    /* Primary Colors */
+    --primary-color: #4babb1;
+    --primary-color-dark: #3a8a8f;
+    --primary-color-light: #6cc1c7;
+    
+    /* Secondary Colors */
+    --secondary-color: #1f1f1f;
+    --secondary-color-light: #333333;
+    
+    /* Background Colors */
+    --bg-light: #ffffff;
+    --bg-gray: #f2f3f5;
+    --bg-dark: #1f1f1f;
+    
+    /* Text Colors */
+    --text-primary: #1f1f1f;
+    --text-secondary: #333333;
+    --text-light: #767676;
+    --text-white: #ffffff;
+    
+    /* Border Colors */
+    --border-color: #ededed;
+    --border-color-light: #ddd;
+    
+    /* Status Colors */
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    
+    /* Hover States */
+    --hover-primary: #3a8a8f;
+    --hover-light: #f8f9fa;
+    
+    /* Shadow Colors */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+} 

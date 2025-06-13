@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parents Homepage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #008f99;
+      --primary-light: #f2f2f2;
+      --text-dark: #1a1a1a;
+      --text-light: #f2f2f2;
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+      --logout-color: #4BABB1;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      transition: all 0.4s ease;
+    }
+
+    /* 🔥 Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(20, 18, 18, 0.1);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--primary);
+      text-align: center;
+    }
+
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .project-name i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .menu-item:hover {
+      color: var(--primary);
+      background: rgba(0, 143, 153, 0.08);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      color: var(--primary);
+      font-weight: 500;
+      background: rgba(0, 143, 153, 0.1);
+    }
+
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      border: none;
+      outline: none;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle-btn i {
+      color: var(--primary);
+      transition: transform 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .sidebar:not(.closed)~.toggle-btn {
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 10px);
+    }
+
+    .sidebar:not(.closed)~.toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      margin-left: calc(var(--sidebar-width) + (var(--sidebar-margin) * 2));
+      width: calc(100% - (var(--sidebar-width) + (var(--sidebar-margin) * 2)));
+      transition: all 0.4s ease;
+      padding-top: 80px;
+    }
+
+    .sidebar.closed~.main-content {
+      margin-left: 0;
+      width: 100%;
+      padding-top: 80px;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 900;
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      border-radius: 0 0 15px 15px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar.closed~.main-content .container {
+      max-width: 1400px;
+    }
+
+    /* Sections */
+    .section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section h2 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 20px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    .section h2 i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* Parent Info Card */
+    .parent-card {
+      background: #f5f7fa;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease;
+    }
+
+    .parent-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .parent-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 3px solid white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .parent-info {
+      flex: 1;
+    }
+
+    .parent-info h3 {
+      color: var(--primary);
+      font-size: 18px;
+      margin: 0 0 8px 0;
+    }
+
+    .parent-info div {
+      margin-bottom: 5px;
+      color: var(--text-dark);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .parent-info i {
+      color: var(--primary);
+      width: 16px;
+      text-align: center;
+    }
+
+    /* Student Cards */
+    .student {
+      background: #f5f7fa;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .student.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .student-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-info {
+      flex: 1;
+    }
+
+    .student-info strong {
+      color: var(--primary);
+      font-size: 16px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .student-info div {
+      margin-bottom: 3px;
+      color: var(--text-dark);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .student-info i {
+      color: var(--primary);
+      font-size: 12px;
+      width: 14px;
+      text-align: center;
+    }
+
+    /* Tables */
+    .schedule,
+    .attendance {
+      overflow-x: auto;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      min-width: 600px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 8px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+
+    th {
+      background-color: var(--primary-light);
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f0f4ff;
+    }
+
+    /* Attendance Status */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: capitalize;
+    }
+
+    .status-present {
+      background-color: rgba(28, 200, 138, 0.1);
+      color: #1cc88a;
+    }
+
+    .status-absent {
+      background-color: rgba(231, 74, 59, 0.1);
+      color: #e74a3b;
+    }
+
+    .status-late {
+      background-color: rgba(246, 194, 62, 0.1);
+      color: #f6c23e;
+    }
+
+    .status-excused {
+      background-color: rgba(54, 185, 204, 0.1);
+      color: #36b9cc;
+    }
+
+    /* Loading Spinner */
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      color: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #loading i {
+      font-size: 40px;
+      margin-bottom: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Error Message */
+    .error-message {
+      color: #e74a3b;
+      background-color: rgba(231, 74, 59, 0.1);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 15px 0;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Logout Button */
+    .logout-btn {
+      margin-top: auto;
+      color: var(--logout-color) !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .logout-btn:hover {
+      color: var(--logout-color) !important;
+      background: rgba(75, 171, 177, 0.08);
+    }
+
+    .logout-btn i {
+      color: var(--logout-color) !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .container {
+        padding: 0 20px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-content {
+        padding: 20px;
+      }
+
+      header {
+        font-size: 22px;
+        padding: 15px;
+      }
+
+      .section h2 {
+        font-size: 18px;
+      }
+
+      .parent-photo {
+        width: 70px;
+        height: 70px;
+      }
+
+      .student-photo {
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .sidebar:not(.closed)~.main-content {
+        margin-left: calc(var(--sidebar-width) + var(--sidebar-margin));
+        width: calc(100% - (var(--sidebar-width) + var(--sidebar-margin)));
+      }
+
+      .parent-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .parent-photo {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      header {
+        font-size: 20px;
+        padding: 12px;
+      }
+
+      .section h2 {
+        font-size: 16px;
+      }
+
+      th,
+      td {
+        padding: 8px 6px;
+        font-size: 12px;
+      }
+
+      .parent-photo {
+        width: 60px;
+        height: 60px;
+      }
+
+      .student-photo {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+      }
+    }
+
+
+    /* Notification Button */
+    .notification-btn {
+      position: fixed;
+      top: 78px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+
+    .notification-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+
+    .notification-btn i {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    /* Adjust notification button position when sidebar is open */
+    .sidebar:not(.closed)~.notification-btn {
+      left: 300px;
+    }
+
+    /* Notification Popup */
+    .notification-popup {
+      position: fixed;
+      top: 130px;
+      left: 28px;
+      width: 350px;
+      max-height: 500px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      z-index: 102;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      transition: all 0.3s ease;
+
+      .notification-popup.expanded {
+        max-height: 80vh;
+        /* يمنعها من الخروج من الشاشة */
+      }
+
+
+    }
+
+    .notification-popup {
+      max-height: 500px;
+      transition: max-height 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .notification-popup.expanded {
+      max-height: 80vh;
+      /* يمنع الخروج من الشاشة */
+    }
+
+    .sidebar:not(.closed)~.notification-popup {
+      left: 300px;
+    }
+
+    .notification-popup-header {
+      padding: 15px 20px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notification-popup-header h3 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .notification-popup-header .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .notification-popup-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .notification-popup-footer {
+      padding: 10px;
+      text-align: center;
+      border-top: 1px solid #eee;
+    }
+
+    .view-all-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    /* Notification Item in Popup */
+    .popup-notification {
+      padding: 12px 20px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .popup-notification:hover {
+      background: #f8fafc;
+    }
+
+    .popup-notification.unread {
+      background: #f8faff;
+    }
+
+    .popup-notification-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #1f2937;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .popup-notification-message {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
+    .popup-notification-time {
+      color: #9ca3af;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    .unread-dot {
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(79, 70, 229, 0.3);
+      border-radius: 50%;
+      border-top-color: #4f46e5;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: #9ca3af;
+    }
+
+    .empty-state i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #d1d5db;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 320px;
+      padding: 30px;
+      transition: margin 0.4s ease;
+    }
+
+    .sidebar.closed~.main-content {
+      margin-left: 80px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        padding: 15px;
+      }
+
+      .sidebar:not(.closed)~.main-content {
+        margin-left: 0;
+      }
+
+      .sidebar {
+        z-index: 1000;
+      }
+
+      .toggle-btn,
+      .notification-btn {
+        z-index: 1001;
+      }
+
+      .notification-popup {
+        width: 300px;
+        left: 15px;
+        top: 120px;
+      }
+    }
+  </style>
+  <script src="http://54.242.19.19:3000/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('http://54.242.19.19:3000');
+  </script>
+</head>
+
+<body>
+  <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+
+    <div class="menu-items">
+      <a href="HomePerent.html" class="menu-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <a href="MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student</span>
+      </a>
+      <a href="MyChildCourses.html" class="menu-item">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span>Student Courses</span>
+      </a>
+      <a href="MyChildExam.html" class="menu-item">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="MyChildResturant.html" class="menu-item">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Restaurant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>Recommended Food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  <!-- Notification Button -->
+  <button class="notification-btn" onclick="toggleNotificationPopup()">
+    <i class="fas fa-bell"></i>
+    <span class="notification-badge" id="notificationBadge">0</span>
+  </button>
+
+  <!-- Notification Popup -->
+  <div class="notification-popup" id="notificationPopup">
+    <div class="notification-popup-header">
+      <h3>Notifications</h3>
+      <button class="close-btn" onclick="toggleNotificationPopup()">&times;</button>
+    </div>
+    <div class="notification-popup-content" id="notificationPopupContent">
+      <div class="loading-text">
+        <div class="loading-spinner"></div>
+        <span>Loading notifications...</span>
+      </div>
+    </div>
+    <div class="notification-popup-footer">
+      <a href="#" id="viewAllToggle" class="view-all-link">View All Notifications</a>
+
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <header>
+      Welcome, <span id="parentName">[Parent Name]</span>
+    </header>
+
+    <div class="container">
+      <div class="section" id="studentsSection">
+        <h2><i class="fas fa-child"></i> Your Children</h2>
+        <div id="studentsContainer"></div>
+      </div>
+
+      <div class="section" id="attendanceSection">
+        <h2><i class="fas fa-user-check"></i> Attendance Tracking</h2>
+        <div class="attendance">
+          <table id="attendanceTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Teacher ID</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADVISOR_ID = localStorage.getItem('userID');
+
+    let notifications = [];
+
+    if (!ADVISOR_ID) {
+      console.warn('Advisor ID not found. Notifications will not be loaded.');
+    }
+
+    /*     function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('closed');
+
+            const popup = document.getElementById('notificationPopup');
+            popup.style.left = sidebar.classList.contains('closed') ? '28px' : '300px';
+        }
+  */
+    function toggleNotificationPopup() {
+      const popup = document.getElementById('notificationPopup');
+      popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+      if (popup.style.display === 'flex') loadPopupNotifications();
+    }
+
+    document.addEventListener('click', function (event) {
+      const popup = document.getElementById('notificationPopup');
+      const notificationBtn = document.querySelector('.notification-btn');
+      if (!popup.contains(event.target) && !notificationBtn.contains(event.target)) {
+        popup.style.display = 'none';
+      }
+    });
+
+    async function fetchNotifications() {
+      const ADVISOR_ID = localStorage.getItem('userID');
+      if (!ADVISOR_ID) {
+        console.warn('Advisor ID not found. Skipping notification fetch.');
+        return [];
+      }
+
+      try {
+        const response = await fetch(`http://54.242.19.19:3000/api/notifications/${ADVISOR_ID}`);
+        const data = await response.json();
+        notifications = data?.data?.notifications ?? [];
+        return notifications;
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        notifications = [];
+        return [];
+      }
+    }
+
+    async function fetchUnreadCount() {
+      if (!notifications.length) return 0;
+      const unreadCount = notifications.filter(n => !n.isRead).length;
+      return unreadCount;
+    }
+
+    async function markNotificationAsRead(notificationId) {
+      const ADVISOR_ID = localStorage.getItem('userID');
+      if (!ADVISOR_ID || !notificationId) return false;
+
+      try {
+        const notification = notifications.find(n => n.id === notificationId);
+        if (notification && !notification.isRead) {
+          notification.isRead = true;
+
+          if (typeof socket !== 'undefined') {
+            socket.emit('mark_notification_read', {
+              notificationId,
+              parentId: ADVISOR_ID
+            });
+          } else {
+            await fetch(`http://54.242.19.19:3000/api/notifications/markAsRead/${notificationId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ parentId: ADVISOR_ID })
+            });
+          }
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+        return false;
+      }
+    }
+
+    function formatTime(timestamp) {
+      const now = new Date();
+      const date = new Date(timestamp);
+      const seconds = Math.floor((now - date) / 1000);
+      const intervals = [
+        { label: "year", seconds: 31536000 },
+        { label: "month", seconds: 2592000 },
+        { label: "day", seconds: 86400 },
+        { label: "hour", seconds: 3600 },
+        { label: "minute", seconds: 60 }
+      ];
+      for (const i of intervals) {
+        const val = Math.floor(seconds / i.seconds);
+        if (val >= 1) return `${val} ${i.label}${val > 1 ? 's' : ''} ago`;
+      }
+      return "just now";
+    }
+
+    async function loadPopupNotifications() {
+      const popupContent = document.getElementById('notificationPopupContent');
+      popupContent.innerHTML = `
+            <div class="loading-text">
+                <div class="loading-spinner"></div>
+                <span>Loading notifications...</span>
+            </div>
+        `;
+
+      try {
+        await fetchNotifications();
+
+        if (!notifications.length) {
+          popupContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No notifications found</p>
+                    </div>
+                `;
+          return;
+        }
+
+        popupContent.innerHTML = notifications.map(notification => `
+                <div class="popup-notification ${notification.isRead ? '' : 'unread'}" data-id="${notification.id}">
+                    <div class="popup-notification-title">
+                        ${notification.title}
+                        ${!notification.isRead ? '<span class="unread-dot">•</span>' : ''}
+                    </div>
+                    <div class="popup-notification-message">${notification.message}</div>
+                    <div class="popup-notification-time">${formatTime(notification.timestamp)}</div>
+                </div>
+            `).join('');
+
+        document.querySelectorAll('.popup-notification').forEach(item => {
+          item.addEventListener('click', async function () {
+            const notificationId = this.dataset.id;
+            const success = await markNotificationAsRead(notificationId);
+
+            if (success) {
+              this.classList.remove('unread');
+              this.querySelector('.unread-dot')?.remove();
+              updateUnreadCount();
+            }
+          });
+        });
+
+      } catch (error) {
+        popupContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Failed to load notifications</p>
+                </div>
+            `;
+      }
+    }
+
+    async function updateUnreadCount() {
+      const count = await fetchUnreadCount();
+      const badge = document.getElementById('notificationBadge');
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.style.display = count === 0 ? 'none' : 'flex';
+    }
+
+    document.getElementById('viewAllToggle').addEventListener('click', function (e) {
+      e.preventDefault();
+      const popup = document.getElementById('notificationPopup');
+      const isExpanded = popup.classList.toggle('expanded');
+      this.textContent = isExpanded ? 'Collapse Notifications' : 'View All Notifications';
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchNotifications().then(() => {
+        updateUnreadCount();
+      });
+
+      setInterval(updateUnreadCount, 300000); // كل 5 دقايق
+    });
+
+
+
+
+
+
+
+
+
+    // Toggle sidebar function
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('closed');
+
+      const popup = document.getElementById('notificationPopup');
+      popup.style.left = sidebar.classList.contains('closed') ? '28px' : '300px';
+      // Save state to localStorage
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    // Helper to make section visible
+    function makeVisible(element) {
+      if (element) {
+        element.classList.add('visible');
+      }
+    }
+
+    // Format date to readable format
+    function formatDate(dateString) {
+      try {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+      } catch (e) {
+        return dateString; // Return original if can't parse
+      }
+    }
+
+    // Get status badge class
+    function getStatusClass(status) {
+      if (!status) return '';
+      switch (status.toLowerCase()) {
+        case 'present': return 'status-present';
+        case 'absent': return 'status-absent';
+        case 'late': return 'status-late';
+        case 'excused': return 'status-excused';
+        default: return '';
+      }
+    }
+
+    async function fetchParentData() {
+      const token = localStorage.getItem('token');
+      const id = new URLSearchParams(window.location.search).get('id') || '';
+      const apiUrl = `http://54.242.19.19:3000/api/parents/:id`;
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching parent data:', error);
+        // Return sample data if API fails
+        return {
+          "id": "1002",
+          "username": "madona",
+          "email": "mado1@gmail.com",
+          "phoneNumber": "01091334041",
+          "photo": "https://via.placeholder.com/150",
+          "address": "Alexandria",
+          "age": 23,
+          "gender": "female",
+          "Students": [
+            {
+              "id": "11111",
+              "userName": "ahmed mohamed salah",
+              "email": "ah2017@gmail.com",
+              "photo": "https://via.placeholder.com/150",
+              "age": 10,
+              "gender": "male",
+              "academicYear": "2A",
+              "classId": "1",
+              "Attendances": [
+                {
+                  "date": "2025-07-05T00:00:00.000Z",
+                  "status": "present",
+                  "remarks": "",
+                  "teacherID": "20"
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+
+    async function displayParentData() {
+      const loadingSpinner = document.getElementById('loading');
+      if (loadingSpinner) loadingSpinner.style.display = 'flex';
+
+      try {
+        const parentData = await fetchParentData();
+
+        // Display parent name in header
+        const parentNameElement = document.getElementById('parentName');
+        if (parentNameElement) {
+          parentNameElement.textContent = parentData.username || "Parent";
+        }
+
+        // Display parent information
+        const parentContainer = document.getElementById('parentContainer');
+        if (parentContainer) {
+          parentContainer.innerHTML = '';
+          const parentDiv = document.createElement('div');
+          parentDiv.className = 'parent-card';
+          parentDiv.innerHTML = `
+            <img src="${parentData.photo || 'https://via.placeholder.com/150'}" alt="${parentData.username}" class="parent-photo">
+            <div class="parent-info">
+              <h3>${parentData.username}</h3>
+              <div><i class="fas fa-envelope"></i> ${parentData.email || 'N/A'}</div>
+              <div><i class="fas fa-phone"></i> ${parentData.phoneNumber || 'N/A'}</div>
+              <div><i class="fas fa-map-marker-alt"></i> ${parentData.address || 'N/A'}</div>
+              <div><i class="fas fa-user"></i> ${parentData.age || 'N/A'} | ${parentData.gender || 'N/A'}</div>
+              ${parentData.Bus ? `<div><i class="fas fa-bus"></i> Bus: ${parentData.Bus.number || 'N/A'} (${parentData.Bus.driverName || 'N/A'})</div>` : ''}
+            </div>
+          `;
+          parentContainer.appendChild(parentDiv);
+          setTimeout(() => parentDiv.classList.add('visible'), 100);
+        }
+
+        // Display students information
+        const studentsContainer = document.getElementById('studentsContainer');
+        if (studentsContainer) {
+          studentsContainer.innerHTML = '';
+
+          if (parentData.Students && parentData.Students.length > 0) {
+            parentData.Students.forEach((student, index) => {
+              const studentDiv = document.createElement('div');
+              studentDiv.className = 'student';
+              studentDiv.innerHTML = `
+                <img src="${student.photo || 'https://via.placeholder.com/150'}" alt="${student.userName}" class="student-photo">
+                <div class="student-info">
+                  <strong>${student.userName}</strong>
+                  <div><i class="fas fa-graduation-cap"></i> ${student.academicYear || 'N/A'}</div>
+                  <div><i class="fas fa-users"></i> Class: ${student.classId || 'N/A'}</div>
+                  <div><i class="fas fa-user"></i> ${student.age || 'N/A'} | ${student.gender || 'N/A'}</div>
+                  ${student.pocketmoney ? `<div><i class="fas fa-money-bill-wave"></i> Pocket: ${student.pocketmoney}</div>` : ''}
+                </div>
+              `;
+              studentsContainer.appendChild(studentDiv);
+              setTimeout(() => studentDiv.classList.add('visible'), 100 * (index + 1));
+            });
+          } else {
+            studentsContainer.innerHTML = '<p>No children found</p>';
+          }
+        }
+
+        // Display attendance data
+        const attendanceBody = document.getElementById('attendanceBody');
+        if (attendanceBody) {
+          attendanceBody.innerHTML = '';
+
+          if (parentData.Students && parentData.Students.length > 0) {
+            let hasAttendanceData = false;
+
+            parentData.Students.forEach(student => {
+              if (student.Attendances && student.Attendances.length > 0) {
+                hasAttendanceData = true;
+
+                // Sort attendances by date (newest first)
+                const sortedAttendances = [...student.Attendances].sort((a, b) => {
+                  return new Date(b.date) - new Date(a.date);
+                });
+
+                // Display all attendances
+                sortedAttendances.forEach(attendance => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td>${student.userName}</td>
+                    <td>${formatDate(attendance.date)}</td>
+                    <td><span class="status-badge ${getStatusClass(attendance.status)}">${attendance.status || '-'}</span></td>
+                    <td>${attendance.remarks || '-'}</td>
+                    <td>${attendance.teacherID || '-'}</td>
+                  `;
+                  attendanceBody.appendChild(row);
+                });
+              }
+            });
+
+            if (!hasAttendanceData) {
+              attendanceBody.innerHTML = '<tr><td colspan="5">No attendance records found</td></tr>';
+            }
+          } else {
+            attendanceBody.innerHTML = '<tr><td colspan="5">No children found</td></tr>';
+          }
+        }
+
+        // Make sections visible
+        makeVisible(document.getElementById('parentSection'));
+        makeVisible(document.getElementById('studentsSection'));
+        makeVisible(document.getElementById('attendanceSection'));
+
+      } catch (error) {
+        console.error('Error displaying data:', error);
+        const container = document.querySelector('.container');
+        if (container) {
+          const errorElement = document.createElement('div');
+          errorElement.className = 'error-message';
+          errorElement.textContent = 'Error loading data. Please try again later.';
+          container.prepend(errorElement);
+        }
+      } finally {
+        if (loadingSpinner) loadingSpinner.style.display = 'none';
+      }
+    }
+
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Add your logout logic here
+      // For example, redirect to login page:
+      window.location.href = '../index.html';
+
+      // Clear any stored data
+      localStorage.clear();
+    });
+
+    // Initialize the page when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Check saved sidebar state
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+      }
+
+      // Set active menu item based on current page
+      const currentPage = window.location.pathname.split('/').pop();
+      const menuItems = document.querySelectorAll('.menu-item');
+
+      menuItems.forEach(item => {
+        item.classList.remove('active');
+        const itemPage = item.getAttribute('href');
+        if (itemPage === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Load and display data
+      displayParentData();
+    });
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cards Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/colors.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1; /* اللون الأساسي */
+      --bg-light: #FFFFFF;     /* خلفيات العناصر */
+      --bg-gray: #F5F7FA;      /* خلفية الصفحة */
+      --text-primary: #2D3748; /* النصوص الأساسية */
+      --text-secondary: #718096; /* النصوص الثانوية */
+      --border-color: #E2E8F0; /* حدود */
+      --shadow-color: rgba(0, 0, 0, 0.1); /* ظلال */
+    }
+
+    * { 
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* 🔥 Sidebar Styles - متطابقة مع صفحة الهوم */
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Main Content - معدل ليتناسب مع الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 40px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      padding: 40px 20px;
+    }
+
+    /* Card Container - تصميم جديد مع أنيميشن */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 6px 12px var(--shadow-color);
+      overflow: hidden;
+      cursor: pointer;
+      min-height: 400px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.3s; }
+    .card:nth-child(3) { animation-delay: 0.5s; }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(75, 171, 177, 0.2);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      border-bottom: 3px solid var(--primary-color);
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      padding: 25px;
+      text-align: center;
+    }
+
+    .card-content h3 {
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .card-content h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: var(--primary-color);
+      transition: width 0.4s ease;
+    }
+
+    .card:hover .card-content h3::after {
+      width: 80px;
+    }
+
+    .card-content p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    /* Responsive Design - معدل ليتناسب مع الهوم */
+    @media (max-width: 1200px) {
+      .main {
+        padding: 30px;
+      }
+      .card-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+      
+      .main {
+        margin-left: 280px !important;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+
+      .card {
+        min-height: 380px;
+      }
+
+      .card img {
+        height: 250px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .card-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .card {
+        min-height: 350px;
+      }
+      
+      .card img {
+        height: 220px;
+      }
+    }
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Organize Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomeOrganization.html" class="menu-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileOrganization.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Profile</span>
+      </a>
+      <a href="datasearchOrganization.html" class="menu-item">
+        <i class="fas fa-users"></i>
+        <span>Data Search</span>
+      </a>
+      <a href="NewsOrganization.html" class="menu-item">
+        <i class="fas fa-envelope"></i>
+        <span>News</span>
+      </a>
+      <a href="SelectOrganization.html" class="menu-item">
+        <i class="fas fa-cog"></i>
+        <span>Creation</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+</a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- Main Content - تصميم معدل -->
+  <div class="main">
+    <div class="card-container">
+      <div class="card" onclick="window.location.href='searchOrganizationParent.html'">
+        <img src="/images/388437a0f50bf9b03f51afc54ccc1ad1.jpg" alt="Parent">
+        <div class="card-content">
+          <h3>Parent</h3>
+          <p>Manage parent information and communications</p>
+        </div>
+      </div>
+      
+      <div class="card" onclick="window.location.href='searchOrganizationStudent.html'">
+        <img src="/images/60a1719d559469dbb6bfa1b6d0890e5e.jpg" alt="Student">
+        <div class="card-content">
+          <h3>Student</h3>
+          <p>Student management portal and records</p>
+        </div>
+      </div>
+
+      <div class="card" onclick="window.location.href='searchOrganizationTeacher.html'">
+        <img src="/images/0ebdb9f8cb628dc5224bd2f84a2ff9e2.jpg" alt="Teacher">
+        <div class="card-content">
+          <h3>Teacher</h3>
+          <p>Teacher resources and management tools</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle sidebar function - نفس صفحة الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Initialize Page - نفس صفحة الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // Set active menu item
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Handle responsive design
+      window.addEventListener('resize', handleResponsiveDesign);
+      handleResponsiveDesign();
+      
+      // Add intersection observer for cards
+      const cards = document.querySelectorAll('.card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      cards.forEach(card => {
+        observer.observe(card);
+      });
+    });
+
+    // Responsive Design Handler - نفس صفحة الهوم
+    function handleResponsiveDesign() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if(window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if(savedState === 'false') {
+          sidebar.classList.remove('closed');
+          main.style.marginLeft = '300px';
+          main.style.maxWidth = 'calc(100% - 300px)';
+        }
+      }
+    } // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

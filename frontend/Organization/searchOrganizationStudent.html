@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Search Student by ID</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    :root {
+      --primary-color: #4babb1;
+      --bg-light: #ffffff;
+      --bg-gray: #f5f7fa;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      border: none;
+      outline: none;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      margin-left: 320px;
+      width: calc(100% - 320px);
+      transition: all 0.4s ease;
+    }
+
+    .sidebar.closed ~ .main-content {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: var(--primary-color);
+      font-size: 28px;
+    }
+
+    input[type='text'] {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    input[type='text']:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(33, 147, 176, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: var(--primary-color);
+      color: #f2f2f2;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background-color: #3a999b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-card {
+      transition: all 0.3s ease-in-out;
+      transform: translateY(10px);
+      opacity: 0;
+      animation: fadeInUp 0.5s forwards;
+      margin: 15px 0;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .student-card img {
+      width: 100px;
+      border-radius: 50%;
+      float: right;
+      margin-left: 15px;
+    }
+
+    #result {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    #studentsContainer h2 {
+      margin-top: 60px;
+      color: var(--primary-color);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Organize Portal</span>
+      </div>
+    </div>
+
+    <div class="menu-items">
+      <a href="HomeOrganization.html" class="menu-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileOrganization.html" class="menu-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Profile</span>
+      </a>
+      <a href="datasearchOrganization.html" class="menu-item">
+        <i class="fas fa-users"></i>
+        <span>Data Search</span>
+      </a>
+      <a href="NewsOrganization.html" class="menu-item">
+        <i class="fas fa-envelope"></i>
+        <span>News</span>
+      </a>
+      <a href="SelectOrganization.html" class="menu-item">
+        <i class="fas fa-cog"></i>
+        <span>Creation</span>
+      </a>
+    </div>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="main-content">
+    <div class="container">
+      <h2>Search Student by ID</h2>
+      <input type="text" id="searchInput" placeholder="Enter student ID..." />
+      <button onclick="searchByID()">Search</button>
+      <div id="result"></div>
+    </div>
+
+    <div id="studentsContainer"></div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('closed');
+    }
+
+ function searchByID() {
+  const searchInput = document.getElementById('searchInput').value.trim();
+  const resultDiv = document.getElementById('result');
+
+  if (searchInput === '') {
+    alert('Please enter an ID to search.');
+    return;
+  }
+
+  resultDiv.innerHTML = '<p>🔄 Loading student...</p>';
+
+  fetch(`http://54.242.19.19:3000/api/students/byparam/${searchInput}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Student not found');
+      return response.json();
+    })
+    .then(data => {
+      resultDiv.innerHTML = `
+        <div class="student-card">
+          <img src="${data.photo || 'https://via.placeholder.com/100'}" alt="Student Photo" />
+          <p><strong>Name:</strong> ${data.userName || 'N/A'}</p>
+          <p><strong>ID:</strong> ${data.id || 'N/A'}</p>
+          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+          <p><strong>Phone:</strong> ${data.phoneNumber || 'N/A'}</p>
+          <p><strong>Address:</strong> ${data.address || 'N/A'}</p>
+          <p><strong>Description:</strong> ${data.description || 'لا يوجد وصف'}</p>
+        </div>
+      `;
+    })
+    .catch(err => {
+      resultDiv.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
+    });
+}
+  /*  function loadAllStudents() {
+      const container = document.getElementById('studentsContainer');
+      container.innerHTML = '<p>🔄 Loading all students...</p>';
+
+      fetch('http://54.242.19.19:3000/api/students')
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch students');
+          return res.json();
+        })
+        .then(data => {
+          if (!Array.isArray(data) || data.length === 0) {
+            container.innerHTML = '<p>No students found.</p>';
+            return;
+          }
+
+          container.innerHTML = '<h2>All Students</h2>';
+    data.forEach(student => {
+      const card = document.createElement('div');
+      card.className = 'student-card';
+      card.innerHTML = `
+        <img src="${student.photo || 'https://via.placeholder.com/100'}" alt="Student Photo" />
+        <h3>${student.userName || 'N/A'}</h3>
+        <p><strong>ID:</strong> ${student.id || 'N/A'}</p>
+        <p><strong>Email:</strong> ${student.email || 'N/A'}</p>
+        <p><strong>Phone:</strong> ${student.phoneNumber || 'N/A'}</p>
+        <p><strong>Address:</strong> ${student.address || 'N/A'}</p>
+        <p><strong>Description:</strong> لا يوجد وصف</p>
+      `;
+      container.appendChild(card);
+    });
+        })
+        .catch(err => {
+          container.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
+        });
+    }
+
+    window.onload = () => {
+      loadAllStudents();
+    };*/
+  </script>
+</body>
+</html>

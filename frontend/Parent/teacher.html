@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/colors.css">
+    <style>
+    :root {
+      --primary-color: #4BABB1; /* اللون الأساسي */
+      --bg-light: #FFFFFF;     /* خلفيات العناصر */
+      --bg-gray: #F5F7FA;      /* خلفية الصفحة */
+      --text-primary: #2D3748; /* النصوص الأساسية */
+      --text-secondary: #718096; /* النصوص الثانوية */
+      --text-light: #A0AEC0;   /* نصوص خفيفة */
+      --border-color: #E2E8F0; /* حدود */
+      --shadow-color: rgba(0, 0, 0, 0.1); /* ظلال */
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-gray);
+        transition: all 0.4s ease;
+    }
+    
+   /* 🔥 Sidebar Styles - معدلة لتتناسب مع الهوم */
+   .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - معدل ليتناسب مع الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+    
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content - معدل ليتناسب مع الهوم */
+    .main {
+      margin-left: 300px;
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+    
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Teachers Section - أنيميشن قوي ومعدل */
+    .teachers-section {
+        padding: 30px 0;
+        animation: fadeIn 0.8s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .teachers-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        justify-content: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .teacher-card {
+        background: var(--bg-light);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow-color);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .teacher-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(75, 171, 177, 0.2);
+    }
+    
+    .teacher-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+    
+    .teacher-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .teacher-img {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        height: 250px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .teacher-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.6s ease;
+    }
+    
+    .teacher-card:hover .teacher-img img {
+        transform: scale(1.1);
+    }
+    
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        border-radius: 10px;
+    }
+    
+    .teacher-card:hover .overlay {
+        opacity: 1;
+    }
+    
+    .social-icons a {
+        color: white;
+        margin: 0 10px;
+        font-size: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .social-icons a:hover {
+        color: var(--primary-color);
+        transform: translateY(-5px) scale(1.2);
+    }
+    
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: var(--text-primary);
+        text-align: center;
+        position: relative;
+        display: inline-block;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s ease;
+    }
+    
+    h2:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+    
+    h3 {
+        margin: 15px 0 8px;
+        font-size: 1.4rem;
+        color: var(--text-primary);
+        transition: color 0.3s ease;
+    }
+    
+    .teacher-card:hover h3 {
+        color: var(--primary-color);
+    }
+    
+    p {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+    
+    /* أنيميشن للبطاقات عند التحميل */
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .teacher-card {
+      animation: cardEntrance 0.6s ease-out;
+      animation-fill-mode: backwards;
+    }
+    
+    .teacher-card:nth-child(1) { animation-delay: 0.1s; }
+    .teacher-card:nth-child(2) { animation-delay: 0.2s; }
+    .teacher-card:nth-child(3) { animation-delay: 0.3s; }
+    .teacher-card:nth-child(4) { animation-delay: 0.4s; }
+    .teacher-card:nth-child(5) { animation-delay: 0.5s; }
+    .teacher-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    /* Responsive Design - معدل ليتناسب مع الهوم */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+      
+      .teachers-container {
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 20px;
+      }
+      
+      .teacher-img {
+          height: 200px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+      
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .toggle-btn {
+        left: 15px !important;
+        top: 20px;
+      }
+      
+      .teachers-section {
+          padding: 20px 10px;
+      }
+      
+      .teacher-card {
+          padding: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .teachers-container {
+          grid-template-columns: 1fr;
+          max-width: 400px;
+      }
+      
+      h2 {
+          font-size: 1.8rem;
+      }
+    }
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+    </style>
+</head>
+<body>
+    
+   <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomePerent.html" class="menu-item ">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+        
+      <a href="MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="teacher.html" class="menu-item active">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student</span>
+      </a>
+      <a href="MyChildCourses.html" class="menu-item">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span>Student Courses</span>
+      </a>
+      <a href="MyChildExam.html" class="menu-item">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="MyChildResturant.html" class="menu-item">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Restaurant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>Recommended Food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+ 
+  <!-- Main Content - معدل ليتناسب مع الهوم -->
+  <div class="main">
+    <!-- قسم المدرسين -->
+    <section class="teachers-section">
+        <h2>Our Teachers</h2>
+        <div class="teachers-container">
+            
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/0ebdb9f8cb628dc5224bd2f84a2ff9e2.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Madona Ashraf</h3>
+                <p>English Teacher</p>
+            </div>
+
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/388437a0f50bf9b03f51afc54ccc1ad1.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Mario Samy</h3>
+                <p>Arabic Teacher</p>
+            </div>
+
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/487688c643a553b6ee9103394945d82d.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Momen Mostafa</h3>
+                <p>Math Teacher</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- المدرسين الجدد -->
+    <section class="teachers-section">
+        <h2>New Teachers</h2>
+        <div class="teachers-container">
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/0ebdb9f8cb628dc5224bd2f84a2ff9e2.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Fatma-Elzahrah Mohamed</h3>
+                <p>Science Teacher</p>
+            </div>
+
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/388437a0f50bf9b03f51afc54ccc1ad1.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Abdalrahman Ali</h3>
+                <p>Web Design Instructor</p>
+            </div>
+
+            <div class="teacher-card" onclick="window.location.href='teacherpage.html'">
+                <div class="teacher-img">
+                    <img src="/images/487688c643a553b6ee9103394945d82d.jpg" alt="Teacher">
+                    <div class="overlay">
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-skype"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <h3>Ali Khaled Ebn-Elwaleed</h3>
+                <p>Computer Science</p>
+            </div>
+        </div>
+    </section>
+  </div>
+  
+  <script>
+    // Toggle sidebar function - معدل ليتناسب مع الهوم
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      sidebar.classList.toggle('closed');
+      
+      if(sidebar.classList.contains('closed')) {
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+      
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+    
+    // Initialize Page - معدل ليتناسب مع الهوم
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarClosed');
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if (savedState === 'true') {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      }
+
+      // Set active menu item
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === currentPage) {
+          item.classList.add('active');
+        }
+      });
+
+      // Handle responsive design
+      window.addEventListener('resize', handleResponsiveDesign);
+      handleResponsiveDesign();
+    });
+
+    // Responsive Design Handler - معدل ليتناسب مع الهوم
+    function handleResponsiveDesign() {
+      const sidebar = document.querySelector('.sidebar');
+      const main = document.querySelector('.main');
+      
+      if(window.innerWidth < 768) {
+        sidebar.classList.add('closed');
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+      } else {
+        const savedState = localStorage.getItem('sidebarClosed');
+        if(savedState === 'false') {
+          sidebar.classList.remove('closed');
+          main.style.marginLeft = '300px';
+          main.style.maxWidth = 'calc(100% - 300px)';
+        }
+      }
+    }
+
+    // أنيميشن إضافية للبطاقات عند التمرير
+    const teacherCards = document.querySelectorAll('.teacher-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    teacherCards.forEach(card => {
+      observer.observe(card);
+    });
+
+     // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

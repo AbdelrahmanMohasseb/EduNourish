@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-light: #ffffff;
+      --bg-gray: #f5f7fa;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --sidebar-width: 280px;
+      --sidebar-margin: 20px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      margin: 0;
+      padding: 0;
+      transition: all 0.4s ease;
+    }
+    
+    /* 🔥 Sidebar Styles - متطابقة مع صفحة الهوم */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: var(--sidebar-margin);
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sidebar.closed {
+      transform: translateX(calc(-1 * var(--sidebar-width) - var(--sidebar-margin)));
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+    
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+    
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+    
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    /* Toggle Button - متطابق مع صفحة الهوم */
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: calc(var(--sidebar-width) + var(--sidebar-margin) + 20px);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s;
+      border: none;
+      outline: none;
+    }
+    
+    .toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px var(--shadow-color);
+    }
+    
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar.closed ~ .toggle-btn {
+      left: 28px;
+    }
+    
+    .sidebar.closed ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+    
+    /* Main Content - معدل ليتناسب مع صفحة الهوم */
+    .main {
+      margin-left: calc(var(--sidebar-width) + var(--sidebar-margin) * 2);
+      padding: 30px 40px;
+      transition: all 0.3s ease;
+      max-width: calc(100% - 320px);
+    }
+
+    .sidebar.closed ~ .main {
+      margin-left: 0;
+      max-width: 100%;
+      padding: 30px 20px;
+    }
+    
+    /* Header */
+    .page-header {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    
+    /* Menu Container */
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    /* Menu Card */
+    .menu-card {
+      background-color: var(--bg-light);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+    
+    .menu-card img {
+      width: 100%;
+      border-radius: 8px;
+      height: 180px;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+    
+    .menu-card h3 {
+      color: var(--primary-color);
+      margin: 10px 0;
+      font-size: 20px;
+    }
+    
+    .menu-card p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .popup-content {
+      background: var(--bg-light);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      animation: slideIn 0.3s ease-out;
+      position: relative;
+    }
+    
+    .popup-content h2 {
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-size: 24px;
+    }
+    
+    .popup-content p {
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    
+    .popup-content strong {
+      color: var(--text-primary);
+    }
+    
+    .close-btn {
+      display: inline-block;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .close-btn:hover {
+      background: #3a9ca1;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px var(--shadow-color);
+    }
+    
+    @keyframes slideIn {
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Responsive Design - معدل ليتناسب مع صفحة الهوم */
+    @media (max-width: 1200px) {
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 300px);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        left: 10px;
+        width: 260px;
+      }
+
+      .main {
+        margin-left: 280px;
+        max-width: calc(100% - 280px);
+        padding: 25px 30px;
+      }
+      
+      .menu-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 240px;
+        height: 97vh;
+        top: 1.5vh;
+      }
+
+      .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        padding: 20px 15px;
+      }
+      
+      .page-header {
+        font-size: 20px;
+        padding: 15px;
+      }
+      
+      .menu-container {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+      }
+      
+      .popup-content {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .menu-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .menu-card img {
+        height: 160px;
+      }
+    }
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  
+   <!-- 🔥 Sidebar HTML -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Parent Portal</span>
+      </div>
+    </div>
+    
+    <div class="menu-items">
+      <a href="HomePerent.html" class="menu-item ">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="ProfileParent.html" class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Profile</span>
+      </a>
+      <a href="Payment.html" class="menu-item">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        <span>Payment</span>
+      </a>
+      <div class="sidebar-header">
+        <div class="project-name">
+          <span>My Child</span>
+          <i class="fa fa-child" aria-hidden="true"></i>
+        </div>
+      </div>
+        
+      <a href="MyChildGrades.html" class="menu-item">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Grades</span>
+      </a>
+      <a href="MyChildBus.html" class="menu-item">
+        <i class="fa fa-bus" aria-hidden="true"></i>
+        <span>Student BUS</span>
+      </a>
+      <a href="MyChildAttendance.html" class="menu-item">
+        <i class="fa fa-check-square" aria-hidden="true"></i>
+        <span>Student Attendance</span>
+      </a>
+      <a href="teacher.html" class="menu-item">
+        <i class="fa fa-address-book" aria-hidden="true"></i>
+        <span>Teacher Of Student</span>
+      </a>
+      <a href="MyChildCourses.html" class="menu-item">
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+        <span>Student Courses</span>
+      </a>
+      <a href="MyChildExam.html" class="menu-item">
+        <i class="fa fa-tasks" aria-hidden="true"></i>
+        <span>Student Exam</span>
+      </a>
+      <a href="MyChildResturant.html" class="menu-item active">
+        <i class="fa fa-cutlery" aria-hidden="true"></i>
+        <span>Restaurant</span>
+      </a>
+      <a href="/Parent/recommanded food/index.html" class="menu-item">
+        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+        <span>Recommended Food</span>
+      </a>
+    </div>
+
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+ 
+   <div class="main">
+    <div class="page-header">
+      Our Delicious Menu
+    </div>
+    
+    <div class="menu-container" id="menuList">
+  <!-- Menu items will be dynamically added here -->
+</div>
+  </div>
+
+  <div class="popup" id="popup" style="display:none;">
+  <div class="popup-content">
+    <h2 id="popupTitle">Meal Name</h2>
+    <p id="popupDescription">Detailed description of the meal goes here.</p>
+    <p><strong>Price: </strong><span id="popupPrice">$</span></p>
+    <p><strong>Ingredients: </strong><span id="popupIngredients">Ingredients list</span></p>
+    <button class="close-btn" id="closePopup">Close</button>
+  </div>
+</div>
+
+
+<script>
+  // Toggle sidebar function - نفس صفحة الهوم
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
+    
+    sidebar.classList.toggle('closed');
+    
+    if(sidebar.classList.contains('closed')) {
+      main.style.marginLeft = '0';
+      main.style.maxWidth = '100%';
+    } else {
+      main.style.marginLeft = '300px';
+      main.style.maxWidth = 'calc(100% - 300px)';
+    }
+    
+    localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+  }
+  
+  // Initialize Page - نفس صفحة الهوم
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedState = localStorage.getItem('sidebarClosed');
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
+    
+    if (savedState === 'true') {
+      sidebar.classList.add('closed');
+      main.style.marginLeft = '0';
+      main.style.maxWidth = '100%';
+    }
+    
+    // Set active menu item based on current page
+    const currentPage = window.location.pathname.split('/').pop();
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('href') === currentPage) {
+        item.classList.add('active');
+      }
+    });
+
+    // Handle responsive design
+    window.addEventListener('resize', handleResponsiveDesign);
+    handleResponsiveDesign();
+    
+    // Add click event to all menu cards
+    document.querySelectorAll('.menu-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // Mock data - replace with actual data from your API
+        const mealData = {
+          name: card.querySelector('h3').textContent,
+          description: "This is a detailed description of " + card.querySelector('h3').textContent + ". It's prepared with the finest ingredients and cooked to perfection by our expert chefs.",
+          price: card.querySelector('p').textContent.split(' - ')[0],
+          ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"]
+        };
+        showPopup(mealData);
+      });
+    });
+    
+    // Close popup button
+    document.getElementById('closePopup').addEventListener('click', () => {
+      document.getElementById('popup').style.display = 'none';
+    });
+  });
+
+  // Responsive Design Handler - نفس صفحة الهوم
+  function handleResponsiveDesign() {
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
+    
+    if(window.innerWidth < 768) {
+      sidebar.classList.add('closed');
+      main.style.marginLeft = '0';
+      main.style.maxWidth = '100%';
+    } else {
+      const savedState = localStorage.getItem('sidebarClosed');
+      if(savedState === 'false') {
+        sidebar.classList.remove('closed');
+        main.style.marginLeft = '300px';
+        main.style.maxWidth = 'calc(100% - 300px)';
+      }
+    }
+  }
+
+  // Function to show popup with meal details
+  function showPopup(item) {
+    document.getElementById('popupTitle').textContent = item.name;
+    document.getElementById('popupDescription').textContent = item.description;
+    document.getElementById('popupPrice').textContent = item.price;
+    document.getElementById('popupIngredients').textContent = item.ingredients.join(", ");
+    document.getElementById('popup').style.display = 'flex';
+  }
+
+
+
+  const apiUrl = "http://54.242.19.19:3000/api/ResturantMenu/view"; // 🔁 عدل الرابط حسب API الحقيقي
+
+function loadMenu() {
+  fetch('http://54.242.19.19:3000/api/ResturantMenu/view')
+    .then(response => response.json())
+    .then(data => {
+      const menuContainer = document.getElementById("menuList");
+      menuContainer.innerHTML = ""; // Clear existing menu
+
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.classList.add("menu-card");
+
+        const price = item.price !== undefined ? `$${Number(item.price).toFixed(2)}` : "N/A";
+
+        card.innerHTML = `
+          <img src="${item.photo}" alt="${item.name}" class="menu-img">
+          <h3>${item.name}</h3>
+          <p><strong>Description:</strong> ${item.description || "No description"}</p>
+          <p><strong>Price:</strong> ${price}</p>
+        `;
+
+        // ✅ أضف الـ click event هنا لكل كارت بعد إنشاؤه
+        card.addEventListener('click', () => {
+          const mealData = {
+            name: item.name,
+            description: item.description || "No description available.",
+            price: price,
+            ingredients: item.ingredients || ["Unknown"]  // حسب API بتاعك
+          };
+          showPopup(mealData);
+        });
+
+        menuContainer.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching menu:', error);
+      document.getElementById("menuList").innerHTML = `<p>⚠️ Failed to load menu. Please try again later.</p>`;
+    });
+}
+
+  // تحميل القائمة عند تحميل الصفحة
+  window.addEventListener("DOMContentLoaded", loadMenu);
+
+  // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+
+</script>
+</body>
+</html>

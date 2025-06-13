@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exam Schedule</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/colors.css"/>
+  <style>
+    :root {
+      --primary-color: #4BABB1;
+      --bg-gray: #F0F2F5;
+      --bg-light: #FFFFFF;
+      --text-primary: #2D3748;
+      --text-secondary: #718096;
+      --border-color: #E2E8F0;
+      --shadow-color: rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-gray);
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar {
+      width: 280px;
+      height: 95vh;
+      position: fixed;
+      top: 2.5vh;
+      left: 20px;
+      background: var(--bg-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      transition: all 0.4s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar.closed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .project-name i {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      margin: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .menu-item:hover {
+      color: var(--primary-color);
+      background: rgba(75, 171, 177, 0.08);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(75, 171, 177, 0.08);
+    }
+
+    .menu-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary-color);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .menu-item i {
+      margin-right: 12px;
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 101;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .toggle-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .toggle-btn i {
+      color: var(--primary-color);
+      transition: transform 0.3s;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn {
+      left: 300px;
+    }
+
+    .sidebar:not(.closed) ~ .toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    .main-content {
+      margin-left: 300px;
+      padding: 40px;
+      transition: all 0.4s ease;
+      min-height: 100vh;
+    }
+
+    .sidebar.closed ~ .main-content {
+      margin-left: 0;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--text-primary);
+      margin-bottom: 30px;
+    }
+
+    /* ✅ Stylish Exam Table */
+    .table-container {
+      overflow-x: auto;
+      animation: fadeInUp 0.6s ease-in-out;
+    }
+
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-light);
+      box-shadow: 0 4px 20px var(--shadow-color);
+    }
+
+    .modern-table thead {
+      background: linear-gradient(to right, var(--primary-color), #3a9ca3);
+      color: white;
+    }
+
+    .modern-table th,
+    .modern-table td {
+      padding: 16px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    .modern-table tbody tr:hover {
+      background-color: #e6f7fa;
+      transform: scale(1.01);
+    }
+
+    .modern-table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .modern-table td {
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content { padding: 20px; }
+      .modern-table th, .modern-table td { font-size: 14px; padding: 12px; }
+    }
+
+     .logout-btn {
+  margin-top: auto; /* Pushes it to the bottom */
+  color: #4BABB1 !important; /* Red color for logout */
+}
+
+.logout-btn:hover {
+  color: #4BABB1 !important;
+  background: rgba(75, 171, 177, 0.08);
+}
+
+.logout-btn i {
+  color: #4BABB1 !important;
+}
+
+.logout-btn:hover i {
+  color: #4BABB1 !important;
+}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="project-name">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Teacher Portal</span>
+      </div>
+    </div>
+    <div class="menu-items">
+      <a href="HomeStudent.html" class="menu-item"><i class="fas fa-home"></i>Home</a>
+      <a href="profile.html" class="menu-item"><i class="fas fa-calendar-alt"></i>Profile</a>
+      <a href="AttendanceStudent.html" class="menu-item"><i class="fas fa-clipboard-check"></i>Attendance</a>
+      <a href="GradesStudent.html" class="menu-item"><i class="fas fa-graduation-cap"></i>Grades</a>
+      <a href="Courses.html" class="menu-item"><i class="fas fa-users"></i>Courses</a>
+      <a href="teacher.html" class="menu-item"><i class="fas fa-envelope"></i>Teacher</a>
+      <a href="Exam.html" class="menu-item active"><i class="fas fa-cog"></i>Exam</a>
+      <a href="Activities.html" class="menu-item"><i class="fas fa-envelope"></i>Activities</a>
+      <a href="Resturant.html" class="menu-item"><i class="fas fa-cog"></i>Restaurant</a>
+    </div>
+    <a href="#" class="menu-item logout-btn" id="logout-btn">
+  <i class="fas fa-sign-out-alt"></i>
+  <span>Logout</span>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="main-content">
+    <h2>📝 Exam Schedule</h2>
+    <div class="table-container">
+      <table id="examTable" class="modern-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Duration (min)</th>
+            <th>Total Marks</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('closed');
+      localStorage.setItem('sidebarClosed', sidebar.classList.contains('closed'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.querySelector('.sidebar');
+      if (localStorage.getItem('sidebarClosed') === 'true') {
+        sidebar.classList.add('closed');
+      }
+
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === window.location.pathname.split('/').pop()) {
+          item.classList.add('active');
+        }
+      });
+
+      loadStudentAndScheduleFromToken();
+    });
+
+    function loadStudentAndScheduleFromToken() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        document.querySelector("#examTable tbody").innerHTML =
+          `<tr><td colspan="6">🚫 Unauthorized - Token missing.</td></tr>`;
+        return;
+      }
+
+      fetch("http://54.242.19.19:3000/api/students/id", {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(student => {
+        const studentId = student.id;
+        loadExamSchedule(studentId);
+      })
+      .catch(err => {
+        document.querySelector("#examTable tbody").innerHTML =
+          `<tr><td colspan="6">⚠️ Failed to load student info.</td></tr>`;
+      });
+    }
+
+    function loadExamSchedule(studentId) {
+      const apiUrl = `http://54.242.19.19:3000/api/studentexams/student/${studentId}/exams`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(exams => {
+          const tbody = document.querySelector("#examTable tbody");
+          tbody.innerHTML = "";
+
+          if (!Array.isArray(exams) || exams.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6">📭 No exams found.</td></tr>`;
+            return;
+          }
+
+          exams.forEach(exam => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${exam.subjectName}</td>
+              <td>${exam.duration}</td>
+              <td>${exam.totalMarks}</td>
+              <td>${formatDate(exam.date)}</td>
+              <td>${exam.Type}</td>
+              <td>${capitalize(exam.status)}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          document.querySelector("#examTable tbody").innerHTML =
+            `<tr><td colspan="6">⚠️ Failed to load exam schedule.</td></tr>`;
+        });
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString();
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+    // Logout functionality
+document.getElementById('logout-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Add your logout logic here
+  // For example, redirect to home page:
+  window.location.href = '../index.html'; // Change to your home page URL
+  
+  // If you need to clear session/local storage:
+  // localStorage.clear();
+  // sessionStorage.clear();
+});
+  </script>
+</body>
+</html>

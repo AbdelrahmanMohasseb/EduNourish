@@ -1,0 +1,502 @@
+*{
+  z-index: 1;
+}
+.breadcrumb_bg {
+    background-image: url("../image/contact_LE_upscale_balanced_x4.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  /* line 5, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  
+  /* line 10, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    content: "";
+    opacity: 0.8;
+    z-index: -1;
+  }
+  
+  /* line 22, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb .breadcrumb_iner {
+    height: 450px;
+    width: 100%;
+    display: table;
+  }
+  
+  /* line 27, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb .breadcrumb_iner .breadcrumb_iner_item {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  /* line 31, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb .breadcrumb_iner .breadcrumb_iner_item h2 {
+    color: #fff;
+    font-size: 50px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+  }
+  
+  @media (max-width: 576px) {
+    /* line 31, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+    .breadcrumb .breadcrumb_iner .breadcrumb_iner_item h2 {
+      font-size: 35px;
+    }
+  }
+  
+  @media only screen and (min-width: 576px) and (max-width: 767px) {
+    /* line 31, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+    .breadcrumb .breadcrumb_iner .breadcrumb_iner_item h2 {
+      font-size: 35px;
+    }
+  }
+  
+  @media only screen and (min-width: 768px) and (max-width: 991px) {
+    /* line 31, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+    .breadcrumb .breadcrumb_iner .breadcrumb_iner_item h2 {
+      font-size: 40px;
+    }
+  }
+  
+  /* line 53, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb .breadcrumb_iner .breadcrumb_iner_item p {
+    font-size: 15px;
+    color: #fff;
+  }
+  
+  /* line 58, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb .breadcrumb_iner .breadcrumb_iner_item span {
+    margin: 0px 5px;
+    font-size: 12px;
+  }
+  
+  /* line 68, E:/172 Etrain Education/172_Etrain_Education_html/sass/_breadcrumb.scss */
+  .breadcrumb {
+    margin-bottom: 0px !important;
+  }
+  .section-title {
+    margin-top: 100px;
+    display: block;
+    position: relative;
+    margin-bottom: 60px;
+}
+
+.section-title p {
+    color: #999;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 33px;
+    margin: 0;
+}
+
+.section-title h3 {
+    font-size: 50px;
+    font-weight: 500;
+    line-height: 62px;
+    margin: 0 0 25px;
+    padding: 0;
+    text-transform: none;
+}
+
+.contact_form {
+    border: none;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+    background-color: #333333;
+    padding: 40px 30px;
+    height: 600px;
+    width: 100%;
+    margin-bottom:100px ;
+}
+
+.contact_form .form-control {
+    background-color: #fff;
+    margin-bottom: 30px;
+    border: 1px solid #ebebeb;
+    box-sizing: border-box;
+    color: #bcbcbc;
+    font-size: 16px;
+    outline: 0 none;
+    padding: 10px 25px;
+    height: 80px;
+    resize: none;
+    box-shadow: none !important;
+    width: 100%;
+}
+
+.contact_form textarea {
+    color: #bcbcbc;
+    padding: 20px 25px !important;
+    height: 160px !important;
+}
+
+#contact {
+    background: url(images/bg.png) no-repeat center center #fff;
+}
+
+.map-container {
+    padding-left: 15px;
+    height: 600px;
+}
+
+.map-box {
+    height: 100%;
+    width: 100%;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    min-height: 500px;
+}
+
+@media (max-width: 768px) {
+    .map-container {
+        padding-left: 0;
+        margin-top: 30px;
+    }
+}
+      /* Particles.js Container Styles */
+      #particles-js {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent; /* جعلها شفافة */
+        z-index: 0; /* تأكد من أنها في الخلف */
+        pointer-events: none; /* تسمح بالتفاعل مع العناصر تحتها */
+      }
+
+/* تعديلات لضمان ظهور العناصر فوق الجسيمات */
+.booking-container {
+  position: relative;
+  z-index: 1;
+  background-color: rgb(255, 255, 255); /* خلفية شبه شفافة */
+}
+
+.footer {
+  padding: 50px 0 30px;
+  background: #ffffff;
+  color: #000000;
+  text-align: left;
+  border-top: 3px solid #c9c5c5;
+  z-index: 1001;
+  position: absolute;
+  width: 100%;
+}
+
+/* ✅ ضبط العناوين */
+.footer .widget-title h3 {
+  color: #FF6700;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+/* ✅ ضبط الروابط */
+.footer .footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer .footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer .footer-links a {
+  color: #333;
+  font-size: 16px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer .footer-links a:hover {
+  color: #FF6700;
+}
+
+/* ✅ ضبط الأيقونات */
+.footer-links-soi {
+  margin: 15px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.footer-links-soi li {
+  display: inline-block;
+  margin: 5px;
+}
+
+.footer-links-soi li a {
+  background: #000000;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  border-radius: 50%;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.footer-links-soi li a:hover {
+  background: #FF6700;
+  transform: scale(1.1);
+}
+
+/* ✅ تحسين حقوق النشر */
+.copyrights {
+  border-top: 1px solid #ddd;
+  background-color: #f8f8f8;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ✅ تحسين التناسق على الهواتف */
+@media (max-width: 768px) {
+  .footer {
+      text-align: center;
+  }
+
+  .footer .widget {
+      text-align: center;
+      margin-bottom: 20px;
+  }
+
+  .footer-links-soi {
+      justify-content: center;
+  }
+}
+.footer p{
+  color: #000;
+  font-size: medium;
+}
+.login-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(22, 34, 57, 0.95), rgba(22, 34, 57, 0.95));
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.login-box {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 16px;
+  width: 800px;
+  max-width: 95%;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease-in-out;
+}
+
+/* Header */
+.login-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.login-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.login-logo:hover {
+  transform: rotate(10deg) scale(1.05);
+}
+
+.project-name {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: rgba(22, 34, 57, 0.95);
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* Layout row */
+.login-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+}
+
+/* Left image */
+.login-image-container {
+  flex: 1;
+  padding: 10px;
+}
+.login-image {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Form */
+.login-form {
+  flex: 1;
+  text-align: left;
+}
+
+.login-form h3 {
+  color: rgba(22, 34, 57, 0.95);
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border: none;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: #f0f3f7;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.3);
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #1a237e, #303f9f);
+  color: white;
+  border: none;
+  padding: 14px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background 0.3s, transform 0.2s ease;
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, #303f9f, #1a237e);
+  transform: scale(1.02);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  color: #888;
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+.close-btn:hover {
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-content {
+      flex-direction: column;
+      gap: 20px;
+  }
+
+  .login-box {
+      padding: 25px 20px;
+  }
+
+  .login-form {
+      text-align: center;
+  }
+
+  .login-form h3 {
+      text-align: center;
+  }
+
+  .project-name {
+      font-size: 1.5rem;
+  }
+}
+@media (max-width: 412px){
+  .contact_form .form-control{
+    height: 60px;
+  }
+}
+.toast-message {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    min-width: 300px;
+    max-width: 80%;
+    padding: 16px 24px;
+    background-color: #323232;
+    color: #fff;
+    font-size: 16px;
+    font-family: "Segoe UI", sans-serif;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.toast-message.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-message.success {
+    background-color: #28a745;
+}
+
+.toast-message.error {
+    background-color: #dc3545;
+}
+
+.toast-message.warning {
+    background-color: #ffc107;
+    color: #000;
+}
