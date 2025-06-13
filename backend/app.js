@@ -47,8 +47,14 @@ app.post(
   paymentController.stripeWebhook
 );
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://mario5542395.github.io/finally/"); 
+  next();
+});
+
 app.use(cors());
 
 app.use("/api/Login", loginRoutes);
