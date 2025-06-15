@@ -22,8 +22,8 @@ exports.createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
+      success_url: 'http://127.0.0.1:5501/Parent/Payment.html?status=success',
+      cancel_url: 'http://127.0.0.1:5501/Parent/Payment.html?status=cancel',
     });
 
     await Payment.create({

@@ -356,6 +356,97 @@
 .logout-btn:hover i {
   color: #4BABB1 !important;
 }
+ .recommended-section {
+      margin-top: 50px;
+      background: var(--bg-light);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+
+    .recommended-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .university-list {
+      margin-bottom: 30px;
+    }
+
+    .university-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background: rgba(75, 171, 177, 0.05);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .university-item:hover {
+      background: rgba(75, 171, 177, 0.1);
+      transform: translateX(5px);
+    }
+
+    .university-icon {
+      margin-right: 15px;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .university-info h3 {
+      color: var(--text-primary);
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    .university-info p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* PDF Download Button */
+    .pdf-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(75, 171, 177, 0.3);
+    }
+
+    .pdf-btn:hover {
+      background: #3a9a9f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(75, 171, 177, 0.4);
+    }
+
+    .pdf-btn i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .recommended-section {
+        padding: 20px 15px;
+      }
+      
+      .pdf-btn {
+        width: 100%;
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -424,6 +515,14 @@
   <div class="cards-container" id="gradesContainer">
     <p>Loading grades...</p>
   </div>
+
+ <!-- Recommended Universities Section -->
+    <div class="recommended-section">
+      <h2>🎓 Recommended Universities Based on Your Grades</h2>    
+      <button class="pdf-btn" onclick="generatePDF()">
+        <i class="fas fa-file-pdf"></i>
+        Send Full Recommendations (PDF)
+      </button>
 
   <!-- Grade details modal -->
   <div class="modal" id="gradeModal">
@@ -562,6 +661,39 @@ document.getElementById('logout-btn').addEventListener('click', function(e) {
   // localStorage.clear();
   // sessionStorage.clear();
 });
+
+ // Previous JavaScript remains the same
+    
+    // PDF Generation Function
+  function generatePDF() {
+  const pdfBtn = document.querySelector('.pdf-btn');
+  const originalText = pdfBtn.innerHTML;
+  const studentId = localStorage.getItem('userID');
+  console.log(studentId);
+  
+  // Show loading state
+  pdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+  pdfBtn.disabled = true;
+
+  // Call the actual backend API
+  fetch(`https://kerols77-UniRecommend.hf.space/recommend/${studentId}`, {
+    method: 'POST'
+  })
+  .then(() => {
+    // Reset button after backend starts the PDF process
+    pdfBtn.innerHTML = originalText;
+    pdfBtn.disabled = false;
+
+    // Show success message
+    alert('Your university recommendations PDF is being generated and sent.');
+  })
+  .catch(error => {
+    console.error('PDF generation failed:', error);
+    pdfBtn.innerHTML = originalText;
+    pdfBtn.disabled = false;
+    alert('Failed to generate PDF. Please try again later.');
+  });
+}
   </script>
 </body>
 </html>

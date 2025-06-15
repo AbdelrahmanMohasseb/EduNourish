@@ -1229,7 +1229,9 @@
 
       try {
         const parentData = await fetchParentData();
-
+         console.log(parentData.Students[0].id);
+        localStorage.setItem('studentID', parentData.Students[0].id);
+         
         // Display parent name in header
         const parentNameElement = document.getElementById('parentName');
         if (parentNameElement) {

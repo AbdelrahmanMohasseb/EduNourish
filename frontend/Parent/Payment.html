@@ -403,7 +403,7 @@
       <h1>Make a Payment</h1>
 
       <input type="number" class="input-field" placeholder="Amount" id="amount">
-      <input type="text" class="input-field" placeholder="Payment Type (Deposit/Withdraw)" id="type">
+      <input type="text" class="input-field" placeholder="Payment Type (checkout/pocketmoney)" id="type">
       
       <button class="btn">Submit Payment</button>
 
@@ -459,6 +459,61 @@
         }
       });
     });
+    document.querySelector('.btn').addEventListener('click', async function () {
+    const amountInput = document.getElementById('amount');
+    const typeInput = document.getElementById('type');
+    const amount = amountInput.value.trim();
+    const type = typeInput.value.trim();
+
+    if (!amount || isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount.');
+      return;
+    }
+
+    if (!type || (type !== 'checkout' && type !== 'pocketmoney')) {
+      alert('Payment type must be either "checkout" or "pocketmoney".');
+      return;
+    }
+    const studentId = localStorage.getItem('studentID'); // Assuming you have a function to get the student ID
+    const apiUrl = `http://localhost:3000/api/payments/create-checkout-session/${studentId}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, type }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment session creation failed.');
+      }
+
+      const data = await response.json();
+
+      if (data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        alert('Something went wrong. No URL returned.');
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert('Payment failed: ' + error.message);
+    }
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+
+  if (status === 'success') {
+    alert('Payment successful! Thank you.');
+  } else if (status === 'cancel') {
+    alert('Payment was cancelled.');
+  }
+});
      // Logout functionality
 document.getElementById('logout-btn').addEventListener('click', function(e) {
   e.preventDefault();

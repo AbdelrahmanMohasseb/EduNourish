@@ -35,12 +35,7 @@ const createAdviceFromFlask = async (req, res) => {
 
 const getAllAdvice = async (req, res) => {
   try {
-    const allAdvice = await Advice.findAll({
-      include: [
-        { model: Parent },
-        { model: Teacher },
-      ]
-    });
+    const allAdvice = await Advice.findAll();
     res.status(200).json(allAdvice);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching advice', error });
