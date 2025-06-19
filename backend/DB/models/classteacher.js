@@ -20,7 +20,7 @@ const ClassTeacher = sequelize.define("ClassTeacher", {
     type: DataTypes.STRING,
     references: {
       model: "Teachers",
-      key: "id"
+      key: "teacherID"
     }
   },
   subject: {

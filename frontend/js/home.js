@@ -194,7 +194,7 @@ document.getElementById("loginButton").addEventListener("click", async () => {
                     default:
                         showToast("The type of user is unknown.", "error");
                 }
-            }, 1500); // ⏱️ وقت التوست قبل التحويل
+            }, 500); // ⏱️ وقت التوست قبل التحويل
         } else {
             showToast(data.message || "The number or password is incorrect.", "error");
         }
